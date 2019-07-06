@@ -1,0 +1,16 @@
+image: node:12
+
+cache:
+  paths:
+  - node_modules/
+
+stages:
+  - test
+
+test_it_all:
+  stage: test
+  script:
+   - npm install
+   - npm run lint
+   - npm test
+
