@@ -1,0 +1,15 @@
+scenario: Demonstrate the Salesforce Cog
+description: Proves that this Cog works.
+
+steps:
+-
+  step: When I create a Salesforce lead
+  data:
+    lead:
+      Email: atoma.tommy@example.com
+      FirstName: Atoma
+      LastName: Tommy
+      Company: Automaton Inc
+- step: Then the LastName field on Salesforce Lead atoma.tommmy@example.com should equal Tommy
+- step: And the Company field on Salesforce Lead atoma.tommy@example.com should equal Automaton Inc
+- step: Finally, delete the atoma.tommy@example.com Salesforce Lead
