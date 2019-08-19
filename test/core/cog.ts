@@ -4,9 +4,9 @@ import { default as sinon } from 'ts-sinon';
 import * as sinonChai from 'sinon-chai';
 import 'mocha';
 
-import { Step as ProtoStep, StepDefinition, FieldDefinition, RunStepResponse, RunStepRequest } from '../src/proto/cog_pb';
-import { Cog } from '../src/cog';
-import { CogManifest } from '../src/proto/cog_pb';
+import { Step as ProtoStep, StepDefinition, FieldDefinition, RunStepResponse, RunStepRequest } from '../../src/proto/cog_pb';
+import { Cog } from '../../src/core/cog';
+import { CogManifest } from '../../src/proto/cog_pb';
 import { Metadata } from 'grpc';
 import { Duplex } from 'stream';
 
@@ -15,11 +15,11 @@ chai.use(sinonChai);
 describe('Cog:GetManifest', () => {
   const expect = chai.expect;
   let cogUnderTest: Cog;
-  let apiClientStub: any;
+  let clientWrapperStub: any;
 
   beforeEach(() => {
-    apiClientStub = sinon.stub();
-    cogUnderTest = new Cog(apiClientStub);
+    clientWrapperStub = sinon.stub();
+    cogUnderTest = new Cog(clientWrapperStub);
   });
 
   it('should return expected cog metadata', (done) => {
@@ -71,7 +71,7 @@ describe('Cog:RunStep', () => {
   let protoStep: ProtoStep;
   let grpcUnaryCall: any = {};
   let cogUnderTest: Cog;
-  let apiClientStub: any;
+  let clientWrapperStub: any;
 
   beforeEach(() => {
     protoStep = new ProtoStep();
@@ -79,23 +79,18 @@ describe('Cog:RunStep', () => {
       getStep: function () {return protoStep},
       metadata: null
     };
-    apiClientStub = sinon.stub();
-    apiClientStub.Connection = sinon.stub();
-    cogUnderTest = new Cog(apiClientStub);
+    clientWrapperStub = sinon.stub();
+    clientWrapperStub.Connection = sinon.stub();
+    cogUnderTest = new Cog(clientWrapperStub);
   });
 
-  it('authenticates api client with call metadata', (done) => {
+  it('authenticates client wrapper with call metadata', (done) => {
     // Construct grpc metadata and assert the client was authenticated.
-    const expectedCallArgs = {
-      accessToken: 'an-access-token-123',
-      instanceUrl: 'https://example.my.force.com'
-    };
     grpcUnaryCall.metadata = new Metadata();
-    grpcUnaryCall.metadata.add('accessToken', expectedCallArgs.accessToken);
-    grpcUnaryCall.metadata.add('instanceUrl', expectedCallArgs.instanceUrl);
+    grpcUnaryCall.metadata.add('anythingReally', 'some-value');
 
     cogUnderTest.runStep(grpcUnaryCall, (err, response: RunStepResponse) => {
-      expect(apiClientStub.Connection).to.have.been.calledWith(expectedCallArgs);
+      expect(clientWrapperStub).to.have.been.calledWith(grpcUnaryCall.metadata);
       done();
     })
   });
@@ -117,7 +112,7 @@ describe('Cog:RunStep', () => {
     const mockTestStepMap: any = {TestStepId: sinon.stub()}
     mockTestStepMap.TestStepId.returns(mockStepExecutor);
 
-    cogUnderTest = new Cog(apiClientStub, mockTestStepMap);
+    cogUnderTest = new Cog(clientWrapperStub, mockTestStepMap);
     protoStep.setStepId('TestStepId');
 
     cogUnderTest.runStep(grpcUnaryCall, (err, response: RunStepResponse) => {
@@ -134,7 +129,7 @@ describe('Cog:RunStep', () => {
     const mockTestStepMap: any = {TestStepId: sinon.stub()}
     mockTestStepMap.TestStepId.returns(mockStepExecutor);
 
-    cogUnderTest = new Cog(apiClientStub, mockTestStepMap);
+    cogUnderTest = new Cog(clientWrapperStub, mockTestStepMap);
     protoStep.setStepId('TestStepId');
 
     cogUnderTest.runStep(grpcUnaryCall, (err, response: RunStepResponse) => {
@@ -151,7 +146,7 @@ describe('Cog:RunSteps', () => {
   let runStepRequest: RunStepRequest;
   let grpcDuplexStream: any;
   let cogUnderTest: Cog;
-  let apiClientStub: any;
+  let clientWrapperStub: any;
 
   beforeEach(() => {
     protoStep = new ProtoStep();
@@ -160,25 +155,20 @@ describe('Cog:RunSteps', () => {
     grpcDuplexStream._write = sinon.stub().callsArg(2);
     grpcDuplexStream._read = sinon.stub();
     grpcDuplexStream.metadata = new Metadata();
-    apiClientStub = sinon.stub();
-    apiClientStub.Connection = sinon.stub();
-    cogUnderTest = new Cog(apiClientStub);
+    clientWrapperStub = sinon.stub();
+    clientWrapperStub.Connection = sinon.stub();
+    cogUnderTest = new Cog(clientWrapperStub);
   });
 
-  it('authenticates api client with call metadata', () => {
+  it('authenticates client wrapper with call metadata', () => {
     runStepRequest.setStep(protoStep);
 
     // Construct grpc metadata and assert the client was authenticated.
-    const expectedCallArgs = {
-      accessToken: 'some-access-token-123',
-      instanceUrl: 'https://example.my.force.com'
-    };
-    grpcDuplexStream.metadata.add('accessToken', expectedCallArgs.accessToken);
-    grpcDuplexStream.metadata.add('instanceUrl', expectedCallArgs.instanceUrl);
+    grpcDuplexStream.metadata.add('anythingReally', 'some-value');
 
     cogUnderTest.runSteps(grpcDuplexStream);
     grpcDuplexStream.emit('data', runStepRequest);
-    expect(apiClientStub.Connection).to.have.been.calledWith(expectedCallArgs);
+    expect(clientWrapperStub).to.have.been.calledWith(grpcDuplexStream.metadata);
   });
 
   it('responds with error when called with unknown stepId', (done) => {
@@ -206,7 +196,7 @@ describe('Cog:RunSteps', () => {
     mockStepExecutor.executeStep.resolves(expectedResponse);
     const mockTestStepMap: any = {TestStepId: sinon.stub()}
     mockTestStepMap.TestStepId.returns(mockStepExecutor);
-    cogUnderTest = new Cog(apiClientStub, mockTestStepMap);
+    cogUnderTest = new Cog(clientWrapperStub, mockTestStepMap);
     protoStep.setStepId('TestStepId');
     runStepRequest.setStep(protoStep);
 
@@ -229,7 +219,7 @@ describe('Cog:RunSteps', () => {
     mockStepExecutor.executeStep.throws()
     const mockTestStepMap: any = {TestStepId: sinon.stub()}
     mockTestStepMap.TestStepId.returns(mockStepExecutor);
-    cogUnderTest = new Cog(apiClientStub, mockTestStepMap);
+    cogUnderTest = new Cog(clientWrapperStub, mockTestStepMap);
     protoStep.setStepId('TestStepId');
     runStepRequest.setStep(protoStep);
 

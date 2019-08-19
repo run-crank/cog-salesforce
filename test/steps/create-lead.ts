@@ -13,15 +13,11 @@ describe('CreateLeadStep', () => {
   const expect = chai.expect;
   let protoStep: ProtoStep;
   let stepUnderTest: Step;
-  let apiClientStub: any;
-  let sobjectStub: any;
+  let clientWrapperStub: any = {};
 
   beforeEach(() => {
-    sobjectStub = {create: sinon.stub(),
-    };
-    apiClientStub = {sobject: sinon.stub()};
-    apiClientStub.sobject.returns(sobjectStub);
-    stepUnderTest = new Step(apiClientStub);
+    clientWrapperStub.createLead = sinon.stub();
+    stepUnderTest = new Step(clientWrapperStub);
     protoStep = new ProtoStep();
   });
 
@@ -30,6 +26,7 @@ describe('CreateLeadStep', () => {
     expect(stepDef.getStepId()).to.equal('CreateLead');
     expect(stepDef.getName()).to.equal('Create a Salesforce Lead');
     expect(stepDef.getExpression()).to.equal('create a Salesforce Lead');
+    expect(stepDef.getType()).to.equal(StepDefinition.Type.ACTION);
   });
 
   it('should return expected step fields', () => {
@@ -47,34 +44,21 @@ describe('CreateLeadStep', () => {
   it('should respond with pass if lead is created.', async () => {
     // Stub a response that matches expectations.
     const expectedResponse: any = {id: 'abcxyz'};
-    sobjectStub.create.callsArgWith(1, null, expectedResponse);
+    clientWrapperStub.createLead.resolves(expectedResponse);
 
     // Set step data corresponding to expectations
     const expectedLead: any = {lead: {Email: 'anything@example.com'}};
     protoStep.setData(Struct.fromJavaScript(expectedLead));
 
     const response: RunStepResponse = await stepUnderTest.executeStep(protoStep);
-    expect(apiClientStub.sobject).to.have.been.calledWith('Lead');
+    expect(clientWrapperStub.createLead).to.have.been.calledWith(expectedLead.lead);
     expect(response.getOutcome()).to.equal(RunStepResponse.Outcome.PASSED);
-    expect(sobjectStub.create).to.have.been.calledWith(expectedLead.lead);
   });
 
-  it('should respond with fail if create method returns an error.', async () => {
+  it('should respond with error if create method returns an error.', async () => {
     // Stub a response that matches expectations.
     const expectedError: Error = new Error('Any Error');
-    sobjectStub.create.callsArgWith(1, expectedError);
-
-    // Set step data corresponding to expectations
-    const expectedLead: any = {lead: {Email: 'anything@example.com'}};
-    protoStep.setData(Struct.fromJavaScript(expectedLead));
-
-    const response: RunStepResponse = await stepUnderTest.executeStep(protoStep);
-    expect(response.getOutcome()).to.equal(RunStepResponse.Outcome.FAILED);
-  });
-
-  it('should respond with error if create method throws an error', async () => {
-    // Stub a response that matches expectations.
-    sobjectStub.create.throws();
+    clientWrapperStub.createLead.rejects(expectedError);
 
     // Set step data corresponding to expectations
     const expectedLead: any = {lead: {Email: 'anything@example.com'}};

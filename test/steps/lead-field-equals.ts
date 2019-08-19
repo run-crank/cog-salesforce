@@ -13,14 +13,12 @@ describe('LeadFieldEqualsStep', () => {
   const expect = chai.expect;
   let protoStep: ProtoStep;
   let stepUnderTest: Step;
-  let apiClientStub: any;
+  let clientWrapperStub: any = {};
   let sobjectStub: any;
 
   beforeEach(() => {
-    sobjectStub = {findOne: sinon.stub()};
-    apiClientStub = {sobject: sinon.stub()};
-    apiClientStub.sobject.returns(sobjectStub);
-    stepUnderTest = new Step(apiClientStub);
+    clientWrapperStub.findLeadByEmail = sinon.stub();
+    stepUnderTest = new Step(clientWrapperStub);
     protoStep = new ProtoStep();
   });
 
@@ -57,7 +55,7 @@ describe('LeadFieldEqualsStep', () => {
   it('should respond with pass if API client resolves expected data', async () => {
     // Stub a response that matches expectations.
     const expectedUser: any = {someField: 'Expected Value'};
-    sobjectStub.findOne.callsArgWith(2, null, expectedUser)
+    clientWrapperStub.findLeadByEmail.resolves(expectedUser);
 
     // Set step data corresponding to expectations
     const expectations: any = {
@@ -68,15 +66,14 @@ describe('LeadFieldEqualsStep', () => {
     protoStep.setData(Struct.fromJavaScript(expectations));
 
     const response: RunStepResponse = await stepUnderTest.executeStep(protoStep);
-    expect(apiClientStub.sobject).to.have.been.calledWith('Lead');
-    expect(sobjectStub.findOne).to.have.been.calledWith({Email: expectations.email}, [expectations.field]);
+    expect(clientWrapperStub.findLeadByEmail).to.have.been.calledWith(expectations.email, expectations.field);
     expect(response.getOutcome()).to.equal(RunStepResponse.Outcome.PASSED);
   });
 
   it('should respond with fail if API client resolves unexpected data', async () => {
     // Stub a response that does not match expectations.
     const expectedUser: any = {someField: 'Expected Value'};
-    sobjectStub.findOne.callsArgWith(2, null, expectedUser)
+    clientWrapperStub.findLeadByEmail.resolves(expectedUser);
 
     // Set step data corresponding to expectations
     protoStep.setData(Struct.fromJavaScript({
@@ -91,7 +88,7 @@ describe('LeadFieldEqualsStep', () => {
 
   it('should respond with error if API client resolves no results', async () => {
     // Stub a response with no results in the body.
-    sobjectStub.findOne.callsArgWith(2, null, null);
+    clientWrapperStub.findLeadByEmail.resolves(null);
 
     protoStep.setData(Struct.fromJavaScript({
       field: 'anyField',
@@ -106,7 +103,7 @@ describe('LeadFieldEqualsStep', () => {
   it('should respond with error if resolved user does not contain given field', async () => {
     // Stub a response with valid response, but no expected field.
     const expectedUser: any = {someField: 'Expected Value'};
-    sobjectStub.findOne.callsArgWith(2, null, expectedUser)
+    clientWrapperStub.findLeadByEmail.resolves(expectedUser);
 
     protoStep.setData(Struct.fromJavaScript({
       field: 'someOtherField',
@@ -121,22 +118,13 @@ describe('LeadFieldEqualsStep', () => {
   it('should respond with error if API client returns error', async () => {
     // Stub a response that responds with error.
     const error: Error = new Error('Any error');
-    sobjectStub.findOne.callsArgWith(2, error);
+    clientWrapperStub.findLeadByEmail.throws(error);
 
     protoStep.setData(Struct.fromJavaScript({
       field: 'someOtherField',
       expectedValue: 'Any Value',
       email: 'anything@example.com',
     }));
-
-    const response: RunStepResponse = await stepUnderTest.executeStep(protoStep);
-    expect(response.getOutcome()).to.equal(RunStepResponse.Outcome.ERROR);
-  });
-
-  it('should respond with error if API client throws error', async () => {
-    // Stub a response that throws any exception.
-    sobjectStub.findOne.throws();
-    protoStep.setData(Struct.fromJavaScript({}));
 
     const response: RunStepResponse = await stepUnderTest.executeStep(protoStep);
     expect(response.getOutcome()).to.equal(RunStepResponse.Outcome.ERROR);

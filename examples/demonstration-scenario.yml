@@ -10,6 +10,6 @@ steps:
       FirstName: Atoma
       LastName: Tommy
       Company: Automaton Inc
-- step: Then the LastName field on Salesforce Lead atoma.tommmy@example.com should equal Tommy
+- step: Then the LastName field on Salesforce Lead atoma.tommy@example.com should equal Tommy
 - step: And the Company field on Salesforce Lead atoma.tommy@example.com should equal Automaton Inc
 - step: Finally, delete the atoma.tommy@example.com Salesforce Lead
