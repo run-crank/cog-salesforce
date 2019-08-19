@@ -1,13 +1,12 @@
 import { BaseStep, Field, StepInterface } from '../base-step';
-import { Step, RunStepResponse, FieldDefinition } from '../proto/cog_pb';
+import { Step, RunStepResponse, FieldDefinition, StepDefinition } from '../proto/cog_pb';
 import { Value } from 'google-protobuf/google/protobuf/struct_pb';
 
 export class CreateLead extends BaseStep implements StepInterface {
 
   protected stepName: string = 'Create a Salesforce Lead';
-
   protected stepExpression: string = 'create a Salesforce Lead';
-
+  protected stepType: StepDefinition.Type = StepDefinition.Type.ACTION;
   protected expectedFields: Field[] = [{
     field: 'lead',
     type: FieldDefinition.Type.MAP,

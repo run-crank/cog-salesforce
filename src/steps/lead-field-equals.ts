@@ -1,15 +1,14 @@
 import { BaseStep, Field, StepInterface } from '../base-step';
-import { Step, RunStepResponse, FieldDefinition } from '../proto/cog_pb';
+import { Step, RunStepResponse, FieldDefinition, StepDefinition } from '../proto/cog_pb';
 import { Value } from 'google-protobuf/google/protobuf/struct_pb';
 import { Record } from 'jsforce';
 
 export class LeadFieldEquals extends BaseStep implements StepInterface {
 
   protected stepName: string = 'Assert that a field on a Salesforce Lead has a given value';
-
   /* tslint:disable-next-line:max-line-length */
   protected stepExpression: string = 'the (?<field>.+) field on Salesforce Lead (?<email>.+) should equal (?<expectedValue>.+)';
-
+  protected stepType: StepDefinition.Type = StepDefinition.Type.VALIDATION;
   protected expectedFields: Field[] = [{
     field: 'field',
     type: FieldDefinition.Type.STRING,

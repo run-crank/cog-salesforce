@@ -26,6 +26,7 @@ describe('Cog:GetManifest', () => {
     const version: string = JSON.parse(fs.readFileSync('package.json').toString('utf8')).version;
     cogUnderTest.getManifest(null, (err, manifest: CogManifest) => {
       expect(manifest.getName()).to.equal('automatoninc/salesforce');
+      expect(manifest.getLabel()).to.equal('Salesforce');
       expect(manifest.getVersion()).to.equal(version);
       done();
     });
@@ -39,7 +40,7 @@ describe('Cog:GetManifest', () => {
 
       // Instance URL field
       const instanceUrl: any = authFields.filter(a => a.key === 'instanceUrl')[0];
-      expect(instanceUrl.type).to.equal(FieldDefinition.Type.STRING);
+      expect(instanceUrl.type).to.equal(FieldDefinition.Type.URL);
       expect(instanceUrl.optionality).to.equal(FieldDefinition.Optionality.REQUIRED);
 
       // Access Token field

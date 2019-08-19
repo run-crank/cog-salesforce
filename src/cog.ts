@@ -12,10 +12,11 @@ import { Connection } from 'jsforce';
 export class Cog implements ICogServiceServer {
 
   private cogName: string = 'automatoninc/salesforce';
+  private cogLabel: string = 'Salesforce';
   private cogVersion: string = JSON.parse(fs.readFileSync('package.json').toString('utf8')).version;
   private authFields: Field[] = [{
     field: 'instanceUrl',
-    type: FieldDefinition.Type.STRING,
+    type: FieldDefinition.Type.URL,
     description: 'Your Salesforce server URL (e.g. https://na1.salesforce.com)',
   }, {
     field: 'accessToken',
@@ -59,6 +60,7 @@ export class Cog implements ICogServiceServer {
     });
 
     manifest.setName(this.cogName);
+    manifest.setLabel(this.cogLabel);
     manifest.setVersion(this.cogVersion);
     manifest.setStepDefinitionsList(stepDefinitions);
 
