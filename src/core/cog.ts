@@ -62,6 +62,7 @@ export class Cog implements ICogServiceServer {
   }
 
   runSteps(call: grpc.ServerDuplexStream<RunStepRequest, RunStepResponse>) {
+    const client = this.getClientWrapper(call.metadata);
     let processing = 0;
     let clientEnded = false;
 
@@ -69,7 +70,7 @@ export class Cog implements ICogServiceServer {
       processing = processing + 1;
 
       const step: Step = runStepRequest.getStep();
-      const response: RunStepResponse = await this.dispatchStep(step, call.metadata);
+      const response: RunStepResponse = await this.dispatchStep(step, call.metadata, client);
       call.write(response);
 
       processing = processing - 1;
@@ -100,8 +101,13 @@ export class Cog implements ICogServiceServer {
     callback(null, response);
   }
 
-  private async dispatchStep(step: Step, metadata: grpc.Metadata): Promise<RunStepResponse> {
-    const client = this.getClientWrapper(metadata);
+  private async dispatchStep(
+    step: Step,
+    metadata: grpc.Metadata,
+    client = null,
+  ): Promise<RunStepResponse> {
+    // If a pre-auth'd client was provided, use it. Otherwise, create one.
+    const wrapper = client || this.getClientWrapper(metadata);
     const stepId = step.getStepId();
     let response: RunStepResponse = new RunStepResponse();
 
@@ -113,7 +119,7 @@ export class Cog implements ICogServiceServer {
     }
 
     try {
-      const stepExecutor: StepInterface = new this.stepMap[stepId](client);
+      const stepExecutor: StepInterface = new this.stepMap[stepId](wrapper);
       response = await stepExecutor.executeStep(step);
     } catch (e) {
       response.setOutcome(RunStepResponse.Outcome.ERROR);

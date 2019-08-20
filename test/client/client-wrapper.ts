@@ -23,7 +23,11 @@ describe('ClientWrapper', () => {
     sobjectStub.delete = sinon.stub();
     sobjectStub.findOne = sinon.stub();
     sobjectStub.create = sinon.stub();
-    sfdcClientStub = {sobject: sinon.stub()};
+    sfdcClientStub = {
+      login: sinon.stub(),
+      sobject: sinon.stub(),
+    };
+    sfdcClientStub.login.callsArgWith(2, null, {});
     sfdcClientStub.sobject.returns(sobjectStub);
     jsForceConstructorStub = sinon.stub();
     jsForceConstructorStub.Connection = sinon.stub();
@@ -32,17 +36,24 @@ describe('ClientWrapper', () => {
 
   it('authentication', () => {
     // Construct grpc metadata and assert the client was authenticated.
-    const expectedCallArgs = {
-      instanceUrl: 'https://na123.salesforce.com',
-      accessToken: 'some-access-token',
+    const username = 'some.user@example.com';
+    const password = 'some-user-password';
+    const oauth2Args = {
+      loginUrl: 'https://na123.salesforce.com',
+      clientId: 'some-client-id',
+      clientSecret: 'some-client-secret',
     };
     metadata = new Metadata();
-    metadata.add('instanceUrl', expectedCallArgs.instanceUrl);
-    metadata.add('accessToken', expectedCallArgs.accessToken);
+    metadata.add('instanceUrl', oauth2Args.loginUrl);
+    metadata.add('clientId', oauth2Args.clientId);
+    metadata.add('clientSecret', oauth2Args.clientSecret);
+    metadata.add('username', username);
+    metadata.add('password', password);
 
     // Assert that the underlying API client was authenticated correctly.
     clientWrapperUnderTest = new ClientWrapper(metadata, jsForceConstructorStub);
-    expect(jsForceConstructorStub.Connection).to.have.been.calledWith(expectedCallArgs);
+    expect(jsForceConstructorStub.Connection).to.have.been.calledWith({oauth2: oauth2Args});
+    expect(sfdcClientStub.login).to.have.been.calledWith(username, password);
   });
 
   it('createLead', async () => {
@@ -87,7 +98,7 @@ describe('ClientWrapper', () => {
       .to.be.rejectedWith(anError);
   });
 
-  it('findLeadByEmail', () => {
+  it('findLeadByEmail', (done) => {
     const expectedEmail = 'test@example.com';
     const expectedField = 'Id';
 
@@ -96,8 +107,11 @@ describe('ClientWrapper', () => {
 
     // Call the method and make assertions.
     clientWrapperUnderTest.findLeadByEmail(expectedEmail, expectedField);
-    expect(sfdcClientStub.sobject).to.have.been.calledWith('Lead');
-    expect(sobjectStub.findOne).to.have.been.calledWith({ Email: expectedEmail }, [expectedField]);
+    setTimeout(() => {
+      expect(sfdcClientStub.sobject).to.have.been.calledWith('Lead');
+      expect(sobjectStub.findOne).to.have.been.calledWith({ Email: expectedEmail }, [expectedField]);
+      done();
+    }, 1)
   });
 
   it('findLeadByEmail:apiError', () => {
@@ -138,8 +152,8 @@ describe('ClientWrapper', () => {
 
     // Call the method and make assertions.
     clientWrapperUnderTest.deleteLeadByEmail(expectedEmail);
-    expect(sfdcClientStub.sobject).to.have.been.calledWith('Lead');
     setTimeout(() => {
+      expect(sfdcClientStub.sobject).to.have.been.calledWith('Lead');
       expect(sobjectStub.delete).to.have.been.calledWith(expectedRecord.Id);
       done();
     }, 1);

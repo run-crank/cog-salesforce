@@ -43,10 +43,25 @@ describe('Cog:GetManifest', () => {
       expect(instanceUrl.type).to.equal(FieldDefinition.Type.URL);
       expect(instanceUrl.optionality).to.equal(FieldDefinition.Optionality.REQUIRED);
 
-      // Access Token field
-      const accessToken: any = authFields.filter(a => a.key === 'accessToken')[0];
-      expect(accessToken.type).to.equal(FieldDefinition.Type.STRING);
-      expect(accessToken.optionality).to.equal(FieldDefinition.Optionality.REQUIRED);
+      // Client ID field
+      const clientId: any = authFields.filter(a => a.key === 'clientId')[0];
+      expect(clientId.type).to.equal(FieldDefinition.Type.STRING);
+      expect(clientId.optionality).to.equal(FieldDefinition.Optionality.REQUIRED);
+
+      // Client Secret field
+      const clientSecret: any = authFields.filter(a => a.key === 'clientSecret')[0];
+      expect(clientSecret.type).to.equal(FieldDefinition.Type.STRING);
+      expect(clientSecret.optionality).to.equal(FieldDefinition.Optionality.REQUIRED);
+
+      // Username field
+      const username: any = authFields.filter(a => a.key === 'username')[0];
+      expect(username.type).to.equal(FieldDefinition.Type.STRING);
+      expect(username.optionality).to.equal(FieldDefinition.Optionality.REQUIRED);
+
+      // Password field
+      const password: any = authFields.filter(a => a.key === 'password')[0];
+      expect(password.type).to.equal(FieldDefinition.Type.STRING);
+      expect(password.optionality).to.equal(FieldDefinition.Optionality.REQUIRED);
 
       done();
     });
@@ -169,6 +184,10 @@ describe('Cog:RunSteps', () => {
     cogUnderTest.runSteps(grpcDuplexStream);
     grpcDuplexStream.emit('data', runStepRequest);
     expect(clientWrapperStub).to.have.been.calledWith(grpcDuplexStream.metadata);
+
+    // Ensure it is not re-instantiated each time.
+    grpcDuplexStream.emit('data', runStepRequest);
+    return expect(clientWrapperStub).to.have.been.calledOnce;
   });
 
   it('responds with error when called with unknown stepId', (done) => {

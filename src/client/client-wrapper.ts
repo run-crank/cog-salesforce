@@ -5,23 +5,57 @@ import { FieldDefinition } from '../proto/cog_pb';
 
 export class ClientWrapper {
 
+  // For now, only support Username and Password Login (OAuth2 Resource Owner Password Credential)
   public static expectedAuthFields: Field[] = [{
     field: 'instanceUrl',
     type: FieldDefinition.Type.URL,
-    description: 'Your Salesforce server URL (e.g. https://na1.salesforce.com)',
+    description: 'Salesforce login/instance URL (e.g. https://na1.salesforce.com)',
   }, {
-    field: 'accessToken',
+    field: 'clientId',
     type: FieldDefinition.Type.STRING,
-    description: 'Your Salesforce OAuth2 access token.',
+    description: 'Your Salesforce OAuth2 client ID',
+  }, {
+    field: 'clientSecret',
+    type: FieldDefinition.Type.STRING,
+    description: 'Your Salesforce OAuth2 client secret',
+  }, {
+    field: 'username',
+    type: FieldDefinition.Type.STRING,
+    description: 'Your Salesforce username',
+  }, {
+    field: 'password',
+    type: FieldDefinition.Type.STRING,
+    description: 'Your Salesforce password',
   }];
 
   private client: jsforce.Connection;
+  private clientReady: Promise<boolean>;
 
   constructor (auth: grpc.Metadata, clientConstructor = jsforce) {
-    this.client = new clientConstructor.Connection({
-      instanceUrl: auth.get('instanceUrl').toString(),
-      accessToken: auth.get('accessToken').toString(),
-    });
+    // User/Password OAuth2 Resource Owner Credential Flow
+    if (auth.get('clientSecret') && auth.get('password')) {
+      // Construct the connection.
+      this.client = new clientConstructor.Connection({
+        oauth2: {
+          loginUrl: auth.get('instanceUrl').toString(),
+          clientId: auth.get('clientId').toString(),
+          clientSecret: auth.get('clientSecret').toString(),
+        },
+      });
+
+      // Wraps the async login function in a way that ensures steps can wait
+      // until the client is actually authenticated.
+      this.clientReady = new Promise((resolve) => {
+        // Login using the username/password.
+        this.client.login(
+          auth.get('username').toString(),
+          auth.get('password').toString(),
+          (err, userInfo) => {
+            resolve(true);
+          },
+        );
+      });
+    }
   }
 
   /**
@@ -30,6 +64,7 @@ export class ClientWrapper {
    * @param {Record<string, any>} lead - The Lead record to create.
    */
   public async createLead(lead: Record<string, any>): Promise<jsforce.SuccessResult> {
+    await this.clientReady;
     return new Promise((resolve, reject) => {
       try {
         this.client.sobject('Lead').create(lead, (err, result: any) => {
@@ -54,6 +89,7 @@ export class ClientWrapper {
    * @param {String} field - Lead field to include on the returned record.
    */
   public async findLeadByEmail(email: string, field: string): Promise<Record<string, any>> {
+    await this.clientReady;
     return new Promise((resolve, reject) => {
       try {
         this.client.sobject('Lead').findOne({ Email: email }, [field], (err, record) => {
@@ -76,6 +112,7 @@ export class ClientWrapper {
    * @param {String} email - The email address of the Lead to be deleted.
    */
   public async deleteLeadByEmail(email: string): Promise<jsforce.SuccessResult> {
+    await this.clientReady;
     return new Promise(async (resolve, reject) => {
       try {
         const lead = await this.findLeadByEmail(email, 'Id');
