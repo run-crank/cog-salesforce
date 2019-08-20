@@ -1,11 +1,11 @@
 {
   "name": "cog-salesforce",
   "version": "0.1.0",
-  "description": "Automaton Cog for Salesforce",
+  "description": "Salesforce Cog for use with Crank",
   "cog": {
     "name": "automatoninc/salesforce",
     "label": "Salesforce",
-    "homepage": "",
+    "homepage": "https://github.com/run-crank/cog-salesforce",
     "authHelpUrl": "https://help.salesforce.com/articleView?id=connected_app_create.htm&type=5#oauth"
   },
   "scripts": {

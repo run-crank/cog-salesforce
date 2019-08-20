@@ -1,7 +1,8 @@
 # Salesforce Cog
 
-This is an Automaton Cog for Salesforce, providing steps and assertions for you to
-validate the state and behavior of your Salesforce instance.
+This is a [Crank][what-is-crank] Cog for Salesforce, providing steps and
+assertions for you to validate the state and behavior of your Salesforce
+instance.
 
 * [Installation](#installation)
 * [Usage](#usage)
@@ -13,8 +14,8 @@ Ensure you have the `crank` CLI and `docker` installed and running locally,
 then run the following.  You'll be prompted to enter your Salesforce
 credentials once the Cog is successfully installed.
 
-```bash
-crank cog:install automatoninc/salesforce
+```shell-session
+$ crank cog:install automatoninc/salesforce
 ```
 
 Note: you can always re-authenticate later.
@@ -31,9 +32,9 @@ You will be asked for the following authentication details on installation.
 - **username**: Username
 - **password**: Password
 
-```bash
+```shell-session
 # Re-authenticate by running this
-crank cog:auth automatoninc/salesforce
+$ crank cog:auth automatoninc/salesforce
 ```
 <!-- authenticationDetailsEnd -->
 
@@ -107,3 +108,5 @@ re-authenticate this Cog by running `crank cog:auth automatoninc/salesforce`
 ### Tests and Housekeeping
 Tests can be found in the `test` directory and run like this: `npm test`.
 Ensure your code meets standards by running `npm run lint`.
+
+[what-is-crank]: https://crank.run?utm_medium=readme&utm_source=automatoninc%2Fsalesforce
