@@ -4,7 +4,9 @@
   "description": "Automaton Cog for Salesforce",
   "cog": {
     "name": "automatoninc/salesforce",
-    "label": "Salesforce"
+    "label": "Salesforce",
+    "homepage": "",
+    "authHelpUrl": ""
   },
   "scripts": {
     "build-docker": "docker build -t automatoninc/salesforce:$npm_package_version -t automatoninc/salesforce:latest .",
