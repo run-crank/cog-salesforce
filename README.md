@@ -25,11 +25,11 @@ Note: you can always re-authenticate later.
 <!-- authenticationDetails -->
 You will be asked for the following authentication details on installation.
 
-- **instanceUrl**: Salesforce login/instance URL (e.g. https://na1.salesforce.com)
-- **clientId**: Your Salesforce OAuth2 client ID
-- **clientSecret**: Your Salesforce OAuth2 client secret
-- **username**: Your Salesforce username
-- **password**: Your Salesforce password
+- **instanceUrl**: Login/instance URL (e.g. https://na1.salesforce.com)
+- **clientId**: OAuth2 Client ID
+- **clientSecret**: OAuth2 Client Secret
+- **username**: Username
+- **password**: Password
 
 ```bash
 # Re-authenticate by running this
@@ -41,25 +41,25 @@ crank cog:auth automatoninc/salesforce
 <!-- stepDetails -->
 <h4 id="CreateLead">Create a Salesforce Lead</h4>
 
-- **Expression**: `create a Salesforce Lead`
+- **Expression**: `create a salesforce lead`
 - **Expected Data**:
-  - `lead`: An object representing a valid Lead object
+  - `lead`: A map of field names to field values
 - **Step ID**: `CreateLead`
 
 <h4 id="DeleteLead">Delete a Salesforce Lead</h4>
 
-- **Expression**: `delete the (?<email>.+) Salesforce Lead`
+- **Expression**: `delete the (?<email>.+) salesforce lead`
 - **Expected Data**:
-  - `email`: The e-mail address of the lead to be deleted.
+  - `email`: Lead's email address
 - **Step ID**: `DeleteLead`
 
-<h4 id="LeadFieldEquals">Assert that a field on a Salesforce Lead has a given value</h4>
+<h4 id="LeadFieldEquals">Check a field on a Salesforce Lead</h4>
 
-- **Expression**: `the (?<field>.+) field on Salesforce Lead (?<email>.+) should equal (?<expectedValue>.+)`
+- **Expression**: `the (?<field>[a-zA-Z0-9_]+) field on salesforce lead (?<email>.+) should be (?<expectedValue>.+)`
 - **Expected Data**:
-  - `field`: The field name of the Lead
-  - `email`: The email address of the Lead
-  - `expectedValue`: The expected value of the field.
+  - `email`: Lead's email address
+  - `field`: Field name to check
+  - `expectedValue`: Expected field value
 - **Step ID**: `LeadFieldEquals`
 <!-- stepDetailsEnd -->
 
