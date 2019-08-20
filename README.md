@@ -25,8 +25,11 @@ Note: you can always re-authenticate later.
 <!-- authenticationDetails -->
 You will be asked for the following authentication details on installation.
 
-- **instanceUrl**: Your Salesforce server URL (e.g. https://na1.salesforce.com)
-- **accessToken**: Your Salesforce OAuth2 access token.
+- **instanceUrl**: Salesforce login/instance URL (e.g. https://na1.salesforce.com)
+- **clientId**: Your Salesforce OAuth2 client ID
+- **clientSecret**: Your Salesforce OAuth2 client secret
+- **username**: Your Salesforce username
+- **password**: Your Salesforce password
 
 ```bash
 # Re-authenticate by running this
