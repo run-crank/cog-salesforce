@@ -4,12 +4,12 @@ import { Step, RunStepResponse, FieldDefinition, StepDefinition } from '../proto
 export class CreateLead extends BaseStep implements StepInterface {
 
   protected stepName: string = 'Create a Salesforce Lead';
-  protected stepExpression: string = 'create a Salesforce Lead';
+  protected stepExpression: string = 'create a salesforce lead';
   protected stepType: StepDefinition.Type = StepDefinition.Type.ACTION;
   protected expectedFields: Field[] = [{
     field: 'lead',
     type: FieldDefinition.Type.MAP,
-    description: 'An object representing a valid Lead object',
+    description: 'A map of field names to field values',
   }];
 
   async executeStep(step: Step): Promise<RunStepResponse> {

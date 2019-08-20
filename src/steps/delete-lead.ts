@@ -4,12 +4,12 @@ import { Step, RunStepResponse, FieldDefinition, StepDefinition } from '../proto
 export class DeleteLead extends BaseStep implements StepInterface {
 
   protected stepName: string = 'Delete a Salesforce Lead';
-  protected stepExpression: string = 'delete the (?<email>.+) Salesforce Lead';
+  protected stepExpression: string = 'delete the (?<email>.+) salesforce lead';
   protected stepType: StepDefinition.Type = StepDefinition.Type.ACTION;
   protected expectedFields: Field[] = [{
     field: 'email',
     type: FieldDefinition.Type.EMAIL,
-    description: 'The e-mail address of the lead to be deleted.',
+    description: "Lead's email address",
   }];
 
   async executeStep(step: Step): Promise<RunStepResponse> {

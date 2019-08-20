@@ -5,22 +5,22 @@ import { Step, RunStepResponse, FieldDefinition, StepDefinition } from '../proto
 
 export class LeadFieldEquals extends BaseStep implements StepInterface {
 
-  protected stepName: string = 'Assert that a field on a Salesforce Lead has a given value';
+  protected stepName: string = 'Check a field on a Salesforce Lead';
   /* tslint:disable-next-line:max-line-length */
-  protected stepExpression: string = 'the (?<field>.+) field on Salesforce Lead (?<email>.+) should equal (?<expectedValue>.+)';
+  protected stepExpression: string = 'the (?<field>[a-zA-Z0-9_]+) field on salesforce lead (?<email>.+) should be (?<expectedValue>.+)';
   protected stepType: StepDefinition.Type = StepDefinition.Type.VALIDATION;
   protected expectedFields: Field[] = [{
-    field: 'field',
-    type: FieldDefinition.Type.STRING,
-    description: 'The field name of the Lead',
-  }, {
     field: 'email',
     type: FieldDefinition.Type.EMAIL,
-    description: 'The email address of the Lead',
+    description: "Lead's email address",
+  }, {
+    field: 'field',
+    type: FieldDefinition.Type.STRING,
+    description: 'Field name to check',
   }, {
     field: 'expectedValue',
     type: FieldDefinition.Type.ANYSCALAR,
-    description: 'The expected value of the field.',
+    description: 'Expected field value',
   }];
 
   async executeStep(step: Step): Promise<RunStepResponse> {

@@ -9,23 +9,23 @@ export class ClientWrapper {
   public static expectedAuthFields: Field[] = [{
     field: 'instanceUrl',
     type: FieldDefinition.Type.URL,
-    description: 'Salesforce login/instance URL (e.g. https://na1.salesforce.com)',
+    description: 'Login/instance URL (e.g. https://na1.salesforce.com)',
   }, {
     field: 'clientId',
     type: FieldDefinition.Type.STRING,
-    description: 'Your Salesforce OAuth2 client ID',
+    description: 'OAuth2 Client ID',
   }, {
     field: 'clientSecret',
     type: FieldDefinition.Type.STRING,
-    description: 'Your Salesforce OAuth2 client secret',
+    description: 'OAuth2 Client Secret',
   }, {
     field: 'username',
     type: FieldDefinition.Type.STRING,
-    description: 'Your Salesforce username',
+    description: 'Username',
   }, {
     field: 'password',
     type: FieldDefinition.Type.STRING,
-    description: 'Your Salesforce password',
+    description: 'Password',
   }];
 
   private client: jsforce.Connection;

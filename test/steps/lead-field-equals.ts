@@ -25,8 +25,8 @@ describe('LeadFieldEqualsStep', () => {
   it('should return expected step metadata', () => {
     const stepDef: StepDefinition = stepUnderTest.getDefinition();
     expect(stepDef.getStepId()).to.equal('LeadFieldEquals');
-    expect(stepDef.getName()).to.equal('Assert that a field on a Salesforce Lead has a given value');
-    expect(stepDef.getExpression()).to.equal('the (?<field>.+) field on Salesforce Lead (?<email>.+) should equal (?<expectedValue>.+)');
+    expect(stepDef.getName()).to.equal('Check a field on a Salesforce Lead');
+    expect(stepDef.getExpression()).to.equal('the (?<field>[a-zA-Z0-9_]+) field on salesforce lead (?<email>.+) should be (?<expectedValue>.+)');
     expect(stepDef.getType()).to.equal(StepDefinition.Type.VALIDATION);
   });
 
