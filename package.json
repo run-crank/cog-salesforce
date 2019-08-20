@@ -6,7 +6,7 @@
     "name": "automatoninc/salesforce",
     "label": "Salesforce",
     "homepage": "",
-    "authHelpUrl": ""
+    "authHelpUrl": "https://help.salesforce.com/articleView?id=connected_app_create.htm&type=5#oauth"
   },
   "scripts": {
     "build-docker": "docker build -t automatoninc/salesforce:$npm_package_version -t automatoninc/salesforce:latest .",
