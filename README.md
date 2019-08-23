@@ -1,5 +1,7 @@
 # Salesforce Cog
 
+[![CircleCI](https://circleci.com/gh/run-crank/cog-salesforce/tree/master.svg?style=svg)](https://circleci.com/gh/run-crank/cog-salesforce/tree/master)
+
 This is a [Crank][what-is-crank] Cog for Salesforce, providing steps and
 assertions for you to validate the state and behavior of your Salesforce
 instance.
