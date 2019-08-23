@@ -83,6 +83,7 @@ jobs:
             docker tag $IMAGE_NAME:latest $IMAGE_NAME:$IMAGE_TAG
             docker push $IMAGE_NAME:latest
             docker push $IMAGE_NAME:$IMAGE_TAG
+
 workflows:
   version: 2
   test-all-branches:
@@ -106,6 +107,7 @@ workflows:
             branches:
               only: master
       - publish-dev:
+          context: docker-creds-to-publish-cogs
           requires:
             - test
             - build
@@ -122,6 +124,7 @@ workflows:
             branches:
               ignore: /.*/
       - publish-tag:
+          context: docker-creds-to-publish-cogs
           requires:
             - build
           filters:
