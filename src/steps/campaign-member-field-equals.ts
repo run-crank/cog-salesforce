@@ -46,9 +46,11 @@ export class CampaignMemberFieldEquals extends BaseStep implements StepInterface
       return this.error('No CampaignMember found with email %s', [email]);
     } else if (campaignMember['CampaignId'] !== campaignId) {
       // If campaignMember does not belong to Campaign, return an error.
+      // tslint:disable-next-line:max-line-length
       return this.error('CampaignMember with email %s does not belong to Campaign with id %s', [email, campaignId]);
     } else if (!campaignMember.hasOwnProperty(field)) {
       // If the given field does not exist on the user, return an error.
+      // tslint:disable-next-line:max-line-length
       return this.error('The %s field does not exist on CampaignMember with email %s', [field, email]);
     } else if (campaignMember[field] === expectedValue) {
       // If the value of the field matches expectations, pass.
