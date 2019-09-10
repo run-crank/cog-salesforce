@@ -111,7 +111,7 @@ describe('ClientWrapper', () => {
       expect(sfdcClientStub.sobject).to.have.been.calledWith('Lead');
       expect(sobjectStub.findOne).to.have.been.calledWith({ Email: expectedEmail }, [expectedField]);
       done();
-    }, 1)
+    });
   });
 
   it('findLeadByEmail:apiError', () => {
@@ -156,7 +156,7 @@ describe('ClientWrapper', () => {
       expect(sfdcClientStub.sobject).to.have.been.calledWith('Lead');
       expect(sobjectStub.delete).to.have.been.calledWith(expectedRecord.Id);
       done();
-    }, 1);
+    });
   });
 
   it('deleteLeadByEmail:noLeadFound', () => {
@@ -202,4 +202,51 @@ describe('ClientWrapper', () => {
       .to.be.rejectedWith(anError);
   });
 
+  it('findCampaignMemberByEmailAndCampaignId', (done) => {
+    const expectedEmail = 'test@example.com';
+    const expectedCampaignId = 'abc123';
+    const expectedField = 'Id';
+
+    // Set up test instance.
+    clientWrapperUnderTest = new ClientWrapper(metadata, jsForceConstructorStub);
+
+    // Call the method and make assertions.
+    clientWrapperUnderTest.findCampaignMemberByEmailAndCampaignId(expectedEmail, expectedCampaignId, [expectedField]);
+    setTimeout(() => {
+      expect(sfdcClientStub.sobject).to.have.been.calledWith('CampaignMember');
+      expect(sobjectStub.findOne).to.have.been.calledWith({ Email: expectedEmail, CampaignId: expectedCampaignId }, [expectedField]);
+      done();
+    });
+  });
+
+  it('findCampaignMemberByEmailAndCampaignId:apiError', () => {
+    const expectedEmail = 'test@example.com';
+    const expectedCampaignId = 'abc123';
+    const expectedField = 'Id';
+    const anError = new Error('An API Error');
+
+    // Set up test instance.
+    sobjectStub.findOne.callsArgWith(2, anError);
+    clientWrapperUnderTest = new ClientWrapper(metadata, jsForceConstructorStub);
+
+    // Call the method and make assertions.
+    expect(clientWrapperUnderTest.findCampaignMemberByEmailAndCampaignId(expectedEmail, expectedCampaignId, [expectedField]))
+      .to.be.rejectedWith(anError);
+  });
+
+  it('findCampaignMemberByEmailAndCampaignId: apiThrows', () => {
+    const expectedEmail = 'test@example.com';
+    const expectedCampaignId = 'abc123';
+    const expectedField = 'someField';
+    const anError = new Error('An API Error');
+
+    // Set up test instance.
+    clientWrapperUnderTest = new ClientWrapper(metadata, jsForceConstructorStub);
+    sobjectStub.findOne.throws(anError);
+    // Call the method and make assertions.
+    clientWrapperUnderTest.findCampaignMemberByEmailAndCampaignId(expectedEmail, expectedCampaignId, [expectedField]);
+
+    expect(clientWrapperUnderTest.findCampaignMemberByEmailAndCampaignId(expectedEmail, expectedCampaignId, [expectedField]))
+      .to.be.rejectedWith(anError);
+  });
 });
