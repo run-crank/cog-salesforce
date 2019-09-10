@@ -16,7 +16,7 @@ export class CampaignMemberCampaignIdEquals extends BaseStep implements StepInte
   }, {
     field: 'campaignId',
     type: FieldDefinition.Type.STRING,
-    description: "Campaign ID",
+    description: 'Campaign ID',
   }];
 
   async executeStep(step: Step): Promise<RunStepResponse> {

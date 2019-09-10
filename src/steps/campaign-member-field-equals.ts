@@ -16,7 +16,7 @@ export class CampaignMemberFieldEquals extends BaseStep implements StepInterface
   }, {
     field: 'campaignId',
     type: FieldDefinition.Type.STRING,
-    description: "Campaign ID",
+    description: 'Campaign ID',
   }, {
     field: 'field',
     type: FieldDefinition.Type.STRING,
@@ -53,6 +53,7 @@ export class CampaignMemberFieldEquals extends BaseStep implements StepInterface
     // tslint:disable-next-line:triple-equals
     } else if (campaignMember[field] == expectedValue) {
       // If the value of the field matches expectations, pass.
+      // tslint:disable-next-line:max-line-length
       return this.pass('The %s Campaign Member field was set to %s, as expected', [field, campaignMember[field]]);
     } else {
       // If the value of the field does not match expectations, fail.
