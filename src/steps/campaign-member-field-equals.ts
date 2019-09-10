@@ -5,9 +5,9 @@ import { Step, RunStepResponse, FieldDefinition, StepDefinition } from '../proto
 
 export class CampaignMemberFieldEquals extends BaseStep implements StepInterface {
 
-  protected stepName: string = 'Check a Campaign Member Field Value';
+  protected stepName: string = 'Check a CampaignMember Field Value';
   /* tslint:disable-next-line:max-line-length */
-  protected stepExpression: string = 'the salesforce lead (?<email>.+) should be a member of campaign (?<campaignId>.+) with (?<field>.+) set to (?<expectedValue>.+)';
+  protected stepExpression: string = 'the salesforce campaignmember (?<email>.+) should be a member of campaign (?<campaignId>.+) with (?<field>.+) set to (?<expectedValue>.+)';
   protected stepType: StepDefinition.Type = StepDefinition.Type.VALIDATION;
   protected expectedFields: Field[] = [{
     field: 'email',
@@ -36,23 +36,22 @@ export class CampaignMemberFieldEquals extends BaseStep implements StepInterface
     let campaignMember: Record<string, any>;
 
     try {
-      campaignMember = await this.client.findCampaignMemberByEmail(email, [field, 'CampaignId']);
+      // tslint:disable-next-line:max-line-length
+      campaignMember = await this.client.findCampaignMemberByEmailAndCampaignId(email, campaignId, [field]);
     } catch (e) {
       return this.error('There was a problem checking the CampaignMember: %s', [e.toString()]);
     }
 
     if (!campaignMember) {
       // If no results were found, return an error.
-      return this.error('No CampaignMember found with email %s', [email]);
-    } else if (campaignMember['CampaignId'] !== campaignId) {
-      // If campaignMember does not belong to Campaign, return an error.
       // tslint:disable-next-line:max-line-length
-      return this.error('CampaignMember with email %s does not belong to Campaign with id %s', [email, campaignId]);
+      return this.error('No CampaignMember found with email %s and campaignId %s', [email, campaignId]);
     } else if (!campaignMember.hasOwnProperty(field)) {
       // If the given field does not exist on the user, return an error.
       // tslint:disable-next-line:max-line-length
       return this.error('The %s field does not exist on CampaignMember with email %s', [field, email]);
-    } else if (campaignMember[field] === expectedValue) {
+    // tslint:disable-next-line:triple-equals
+    } else if (campaignMember[field] == expectedValue) {
       // If the value of the field matches expectations, pass.
       return this.pass('The %s field was set to %s, as expected', [field, campaignMember[field]]);
     } else {

@@ -13,11 +13,10 @@ describe('CampaignMemberFieldEqualsStep', () => {
   const expect = chai.expect;
   let protoStep: ProtoStep;
   let stepUnderTest: Step;
-  let clientWrapperStub: any = {};
-  let sobjectStub: any;
+  const clientWrapperStub: any = {};
 
   beforeEach(() => {
-    clientWrapperStub.findCampaignMemberByEmail = sinon.stub();
+    clientWrapperStub.findCampaignMemberByEmailAndCampaignId = sinon.stub();
     stepUnderTest = new Step(clientWrapperStub);
     protoStep = new ProtoStep();
   });
@@ -25,8 +24,8 @@ describe('CampaignMemberFieldEqualsStep', () => {
   it('should return expected step metadata', () => {
     const stepDef: StepDefinition = stepUnderTest.getDefinition();
     expect(stepDef.getStepId()).to.equal('CampaignMemberFieldEquals');
-    expect(stepDef.getName()).to.equal('Check a Campaign Member Field Value');
-    expect(stepDef.getExpression()).to.equal('the salesforce lead (?<email>.+) should be a member of campaign (?<campaignId>.+) with (?<field>.+) set to (?<expectedValue>.+)');
+    expect(stepDef.getName()).to.equal('Check a CampaignMember Field Value');
+    expect(stepDef.getExpression()).to.equal('the salesforce campaignmember (?<email>.+) should be a member of campaign (?<campaignId>.+) with (?<field>.+) set to (?<expectedValue>.+)');
     expect(stepDef.getType()).to.equal(StepDefinition.Type.VALIDATION);
   });
 
@@ -58,27 +57,28 @@ describe('CampaignMemberFieldEqualsStep', () => {
 
   it('should respond with pass if API client resolves expected data', async () => {
     // Stub a response that matches expectations.
-    const expectedUser: any = { CampaignId: 'someId', someField: 'someValue' };
-    clientWrapperStub.findCampaignMemberByEmail.resolves(expectedUser);
+    const expectedUser: any = { campaignId: 'someId', someField: 'someValue' };
+    clientWrapperStub.findCampaignMemberByEmailAndCampaignId.resolves(expectedUser);
 
     // Set step data corresponding to expectations
     const expectations: any = {
       email: 'someEmail',
-      campaignId: 'someId',
+      campaignId: expectedUser.campaignId,
       field: 'someField',
       expectedValue: expectedUser.someField,
     };
     protoStep.setData(Struct.fromJavaScript(expectations));
 
     const response: RunStepResponse = await stepUnderTest.executeStep(protoStep);
-    expect(clientWrapperStub.findCampaignMemberByEmail).to.have.been.calledWith(expectations.email, [expectations.field, 'CampaignId']);
+    // tslint:disable-next-line:max-line-length
+    expect(clientWrapperStub.findCampaignMemberByEmailAndCampaignId).to.have.been.calledWith(expectations.email, expectations.campaignId, [expectations.field]);
     expect(response.getOutcome()).to.equal(RunStepResponse.Outcome.PASSED);
   });
 
   it('should respond with error if API client does not find Lead', async () => {
     // Stub a response that matches expectations.
-    const expectedResponseMessage: string = 'No CampaignMember found with email %s';
-    clientWrapperStub.findCampaignMemberByEmail.resolves(null);
+    const expectedResponseMessage: string = 'No CampaignMember found with email %s and campaignId %s';
+    clientWrapperStub.findCampaignMemberByEmailAndCampaignId.resolves(null);
 
     // Set step data corresponding to expectations
     const expectations: any = {
@@ -98,7 +98,7 @@ describe('CampaignMemberFieldEqualsStep', () => {
     // Stub a response that matches expectations.
     const expectedResponseMessage: string = 'The %s field does not exist on CampaignMember with email %s';
     const expectedUser: any = { CampaignId: 'someId', someOtherField: 'someValue' };
-    clientWrapperStub.findCampaignMemberByEmail.resolves(expectedUser);
+    clientWrapperStub.findCampaignMemberByEmailAndCampaignId.resolves(expectedUser);
 
     // Set step data corresponding to expectations
     const expectations: any = {
@@ -114,29 +114,11 @@ describe('CampaignMemberFieldEqualsStep', () => {
     expect(response.getOutcome()).to.equal(RunStepResponse.Outcome.ERROR);
   });
 
-  it('should respond with error if API client gets the lead but does not belong to campaign', async () => {
-    // Stub a response that matches expectations.
-    const expectedResponseMessage: string = 'CampaignMember with email %s does not belong to Campaign with id %s';
-    const expectedUser: any = { CampaignId: 'someOtherId' };
-    clientWrapperStub.findCampaignMemberByEmail.resolves(expectedUser);
-
-    // Set step data corresponding to expectations
-    const expectations: any = {
-      email: 'someField',
-      campaignId: 'someId',
-    };
-    protoStep.setData(Struct.fromJavaScript(expectations));
-
-    const response: RunStepResponse = await stepUnderTest.executeStep(protoStep);
-    expect(response.getMessageFormat()).to.equal(expectedResponseMessage);
-    expect(response.getOutcome()).to.equal(RunStepResponse.Outcome.ERROR);
-  });
-
   it('should respond with fail if API client resolved unexpected data', async () => {
     // Stub a response that matches expectations.
     const expectedResponseMessage: string = 'Expected %s field to be %s, but it was actually %s';
     const expectedUser: any = { CampaignId: 'someId', someField: 'someOtherValue' };
-    clientWrapperStub.findCampaignMemberByEmail.resolves(expectedUser);
+    clientWrapperStub.findCampaignMemberByEmailAndCampaignId.resolves(expectedUser);
 
     // Set step data corresponding to expectations
     const expectations: any = {
@@ -157,7 +139,7 @@ describe('CampaignMemberFieldEqualsStep', () => {
     // Stub a response that matches expectations.
     const expectedResponseMessage: string = 'There was a problem checking the CampaignMember: %s';
     const expectedError: Error = new Error('Any Error');
-    clientWrapperStub.findCampaignMemberByEmail.rejects(expectedError);
+    clientWrapperStub.findCampaignMemberByEmailAndCampaignId.rejects(expectedError);
 
     // Set step data corresponding to expectations
     const expectations: any = {
