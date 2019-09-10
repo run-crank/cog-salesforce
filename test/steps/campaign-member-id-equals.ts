@@ -24,8 +24,8 @@ describe('CampaignMemberCampaignIdEqualsStep', () => {
   it('should return expected step metadata', () => {
     const stepDef: StepDefinition = stepUnderTest.getDefinition();
     expect(stepDef.getStepId()).to.equal('CampaignMemberCampaignIdEquals');
-    expect(stepDef.getName()).to.equal('Check CampaignMember Campaign Membership');
-    expect(stepDef.getExpression()).to.equal('the salesforce campaignmember (?<email>.+) should be a member of campaign (?<campaignId>.+)');
+    expect(stepDef.getName()).to.equal('Check Salesforce Campaign Membership');
+    expect(stepDef.getExpression()).to.equal('the salesforce lead (?<email>.+) should be a member of campaign (?<campaignId>.+)');
     expect(stepDef.getType()).to.equal(StepDefinition.Type.VALIDATION);
   });
 
@@ -65,7 +65,7 @@ describe('CampaignMemberCampaignIdEqualsStep', () => {
 
   it('should respond with fail if API client does not find Campaign Member', async () => {
     // Stub a response that matches expectations.
-    const expectedResponseMessage: string = 'No CampaignMember found with email %s and campaignId %s';
+    const expectedResponseMessage: string = 'No Campaign Membership found between %s and campaign %s';
     clientWrapperStub.findCampaignMemberByEmailAndCampaignId.resolves(null);
 
     // Set step data corresponding to expectations
@@ -82,7 +82,7 @@ describe('CampaignMemberCampaignIdEqualsStep', () => {
 
   it('should respond with error if API client throws an exception', async () => {
     // Stub a response that matches expectations.
-    const expectedResponseMessage: string = 'There was a problem checking the CampaignMember: %s';
+    const expectedResponseMessage: string = 'There was a problem checking the Campaign Member: %s';
     const expectedError: Error = new Error('Any Error');
     clientWrapperStub.findCampaignMemberByEmailAndCampaignId.rejects(expectedError);
 

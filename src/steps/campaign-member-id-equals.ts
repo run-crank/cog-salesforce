@@ -5,18 +5,18 @@ import { Step, RunStepResponse, FieldDefinition, StepDefinition } from '../proto
 
 export class CampaignMemberCampaignIdEquals extends BaseStep implements StepInterface {
 
-  protected stepName: string = 'Check CampaignMember Campaign Membership';
+  protected stepName: string = 'Check Salesforce Campaign Membership';
   /* tslint:disable-next-line:max-line-length */
-  protected stepExpression: string = 'the salesforce campaignmember (?<email>.+) should be a member of campaign (?<campaignId>.+)';
+  protected stepExpression: string = 'the salesforce lead (?<email>.+) should be a member of campaign (?<campaignId>.+)';
   protected stepType: StepDefinition.Type = StepDefinition.Type.VALIDATION;
   protected expectedFields: Field[] = [{
     field: 'email',
     type: FieldDefinition.Type.EMAIL,
-    description: "CampaignMember's email address",
+    description: "Lead's email address",
   }, {
     field: 'campaignId',
     type: FieldDefinition.Type.STRING,
-    description: "CampaignMember's CampaignId",
+    description: 'Campaign ID',
   }];
 
   async executeStep(step: Step): Promise<RunStepResponse> {
@@ -30,18 +30,18 @@ export class CampaignMemberCampaignIdEquals extends BaseStep implements StepInte
       // tslint:disable-next-line:max-line-length
       campaignMember = await this.client.findCampaignMemberByEmailAndCampaignId(email, campaignId, [field]);
     } catch (e) {
-      return this.error('There was a problem checking the CampaignMember: %s', [e.toString()]);
+      return this.error('There was a problem checking the Campaign Member: %s', [e.toString()]);
     }
 
     if (!campaignMember) {
-      // If no results were found, return an error.
+      // If no results were found, return a failure.
       // tslint:disable-next-line:max-line-length
-      return this.fail('No CampaignMember found with email %s and campaignId %s', [email, campaignId]);
+      return this.fail('No Campaign Membership found between %s and campaign %s', [email, campaignId]);
     // tslint:disable-next-line:triple-equals
     } else {
       // If the value of the field matches expectations, pass.
       // tslint:disable-next-line:max-line-length
-      return this.pass('CampaignMember belongs to Campaign with id %s, as expected', [field, campaignId]);
+      return this.pass('Lead belongs to Campaign with id %s, as expected', [campaignId]);
     }
   }
 
