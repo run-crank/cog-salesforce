@@ -7,7 +7,7 @@ export class CampaignMemberFieldEquals extends BaseStep implements StepInterface
 
   protected stepName: string = 'Check a field on a Salesforce Campaign Member';
   /* tslint:disable-next-line:max-line-length */
-  protected stepExpression: string = 'the salesforce lead (?<email>.+) should be a member of campaign (?<campaignId>.+) with (?<field>.+) set to (?<expectedValue>.+)';
+  protected stepExpression: string = 'the salesforce lead (?<email>.+) should have campaign member (?<field>.+) set to (?<expectedValue>.+) on campaign (?<campaignId>.+)';
   protected stepType: StepDefinition.Type = StepDefinition.Type.VALIDATION;
   protected expectedFields: Field[] = [{
     field: 'email',
