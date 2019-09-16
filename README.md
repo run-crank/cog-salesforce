@@ -42,6 +42,24 @@ $ crank cog:auth automatoninc/salesforce
 
 ### Steps
 <!-- stepDetails -->
+<h4 id="CampaignMemberFieldEquals">Check a field on a Salesforce Campaign Member</h4>
+
+- **Expression**: `the salesforce lead (?<email>.+) should have campaign member (?<field>.+) set to (?<expectedValue>.+) on campaign (?<campaignId>.+)`
+- **Expected Data**:
+  - `email`: Lead's email address
+  - `campaignId`: Campaign ID
+  - `field`: Field name to check
+  - `expectedValue`: Expected field value
+- **Step ID**: `CampaignMemberFieldEquals`
+
+<h4 id="CampaignMemberCampaignIdEquals">Check Salesforce Campaign Membership</h4>
+
+- **Expression**: `the salesforce lead (?<email>.+) should be a member of campaign (?<campaignId>.+)`
+- **Expected Data**:
+  - `email`: Lead's email address
+  - `campaignId`: Campaign ID
+- **Step ID**: `CampaignMemberCampaignIdEquals`
+
 <h4 id="CreateLead">Create a Salesforce Lead</h4>
 
 - **Expression**: `create a salesforce lead`
