@@ -1,5 +1,5 @@
-scenario: Creating Lead in Marketo
-description: This test thecreation and validation of field in Marketo.
+scenario: Form Test validation in SalesForce
+description: This test the creation of Lead from Web and validation of field in SalesForce.
 
 tokens:
   test:
