@@ -1,0 +1,29 @@
+scenario: Form Test validation in SalesForce
+description: This test the creation of Lead from Web and validation of field in SalesForce.
+
+tokens:
+  test:
+    email: jbaretto@ys.com
+    lastname: Baretto
+    firstname: Julia
+    company: Yeah corp
+    title: Executive
+    country: United States
+    submit: button[type=submit]
+  
+steps:
+- step: Navigate to http://go.automatoninc.com/Automatest-Live-Demo_Demo-Page-New-2019-Updated.html
+- step: Fill out input[id=Email] with {{test.email}}
+- step: Fill out input[id=Company] with {{test.company}}
+- step: Fill out input[id=LastName] with {{test.lastname}}
+- step: Fill out input[id=FirstName] with {{test.firstname}}
+- step: Fill out select[id=Title] with {{test.title}}
+- step: Fill out select[id=Country] with {{test.country}}
+- step: Submit the form by clicking {{test.submit}}
+- waitFor: 150
+  step: Validate that the Email field on salesforce lead {{test.email}} should be {{test.email}}
+- step: Validate that the FirstName field on salesforce lead {{test.email}} should be {{test.firstname}}
+- step: Validate that the Country field on salesforce lead {{test.email}} should be {{test.country}}
+- waitFor: 150 
+  step: Delete the {{test.email}} Marketo lead. 
+- step: Delete the {{test.email}} Salesforce lead.
