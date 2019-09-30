@@ -2,6 +2,7 @@ import * as grpc from 'grpc';
 import { CogServiceService as CogService } from '../proto/cog_grpc_pb';
 import { Cog } from './cog';
 import { ClientWrapper } from '../client/client-wrapper';
+import { Contact } from '../client/contact';
 
 const server = new grpc.Server();
 const port = process.env.PORT || 28866;
@@ -20,7 +21,7 @@ if (process.env.USE_SSL) {
   credentials = grpc.ServerCredentials.createInsecure();
 }
 
-server.addService(CogService, new Cog(ClientWrapper));
+server.addService(CogService, new Cog(Contact(ClientWrapper)));
 server.bind(`${host}:${port}`, credentials);
 server.start();
 console.log(`Server started, listening: ${host}:${port}`);

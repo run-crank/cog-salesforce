@@ -2,6 +2,9 @@ import * as grpc from 'grpc';
 import * as jsforce from 'jsforce';
 import { Field } from '../core/base-step';
 import { FieldDefinition } from '../proto/cog_pb';
+import { Contact } from './contact';
+
+export interface ClientWrapper extends Contact {}
 
 export class ClientWrapper {
 
@@ -28,8 +31,8 @@ export class ClientWrapper {
     description: 'Password',
   }];
 
-  private client: jsforce.Connection;
-  private clientReady: Promise<boolean>;
+  protected client: jsforce.Connection;
+  protected clientReady: Promise<boolean>;
 
   constructor (auth: grpc.Metadata, clientConstructor = jsforce) {
     // User/Password OAuth2 Resource Owner Credential Flow
