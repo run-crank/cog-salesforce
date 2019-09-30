@@ -1,43 +1,21 @@
 import * as jsforce from 'jsforce';
 
-type Constructor<T = {}> = new (...args: any[]) => T;
+type Constructor<T = {
+  clientReady?: Promise<boolean>;
+  client?: jsforce.Connection;
+}> = new (...args: any[]) => T;
 
-export interface Contact {
+export interface ContactMixin {
   createContact(contact): Promise<any>;
   deleteContactByEmail(email: string): Promise<any>;
   findContactByEmail(email: string, field: string): Promise<any>;
 }
 
 // tslint:disable-next-line:function-name
-export function Contact<TBase extends Constructor>(base: TBase) {
+export function ContactMixin<TBase extends Constructor>(base: TBase) {
   return class extends base {
-    private client: jsforce.Connection;
-    private clientReady: Promise<boolean>;
-
     constructor(...args: any[]) {
       super(...args);
-      const auth = args[0];
-      const clientConstructor = jsforce;
-
-      if (auth.get('clientSecret') && auth.get('password')) {
-        this.client = new clientConstructor.Connection({
-          oauth2: {
-            loginUrl: auth.get('instanceUrl').toString(),
-            clientId: auth.get('clientId').toString(),
-            clientSecret: auth.get('clientSecret').toString(),
-          },
-        });
-
-        this.clientReady = new Promise((resolve) => {
-          this.client.login(
-            auth.get('username').toString(),
-            auth.get('password').toString(),
-            (err, userInfo) => {
-              resolve(true);
-            },
-          );
-        });
-      }
     }
 
     public async createContact(contact) {
@@ -89,7 +67,8 @@ export function Contact<TBase extends Constructor>(base: TBase) {
 
       return new Promise((resolve, reject) => {
         try {
-          this.client.sobject('Contact').findOne({ Email: email }, [field], (err, record) => {
+          this.client.sobject('Contact')
+          .findOne({ Email: email }, [field], (err, record) => {
             if (err) {
               reject(err);
               return;
