@@ -4,6 +4,7 @@ import { default as sinon } from 'ts-sinon';
 import * as sinonChai from 'sinon-chai';
 import 'mocha';
 
+// tslint:disable-next-line:max-line-length
 import { Step as ProtoStep, StepDefinition, FieldDefinition, RunStepResponse } from '../../src/proto/cog_pb';
 import { Step } from '../../src/steps/lead-field-equals';
 
@@ -13,8 +14,7 @@ describe('LeadFieldEqualsStep', () => {
   const expect = chai.expect;
   let protoStep: ProtoStep;
   let stepUnderTest: Step;
-  let clientWrapperStub: any = {};
-  let sobjectStub: any;
+  const clientWrapperStub: any = {};
 
   beforeEach(() => {
     clientWrapperStub.findLeadByEmail = sinon.stub();
@@ -26,6 +26,7 @@ describe('LeadFieldEqualsStep', () => {
     const stepDef: StepDefinition = stepUnderTest.getDefinition();
     expect(stepDef.getStepId()).to.equal('LeadFieldEquals');
     expect(stepDef.getName()).to.equal('Check a field on a Salesforce Lead');
+    // tslint:disable-next-line:max-line-length
     expect(stepDef.getExpression()).to.equal('the (?<field>[a-zA-Z0-9_]+) field on salesforce lead (?<email>.+) should be (?<expectedValue>.+)');
     expect(stepDef.getType()).to.equal(StepDefinition.Type.VALIDATION);
   });
@@ -54,7 +55,7 @@ describe('LeadFieldEqualsStep', () => {
 
   it('should respond with pass if API client resolves expected data', async () => {
     // Stub a response that matches expectations.
-    const expectedUser: any = {someField: 'Expected Value'};
+    const expectedUser: any = { someField: 'Expected Value' };
     clientWrapperStub.findLeadByEmail.resolves(expectedUser);
 
     // Set step data corresponding to expectations
@@ -66,13 +67,14 @@ describe('LeadFieldEqualsStep', () => {
     protoStep.setData(Struct.fromJavaScript(expectations));
 
     const response: RunStepResponse = await stepUnderTest.executeStep(protoStep);
+    // tslint:disable-next-line:max-line-length
     expect(clientWrapperStub.findLeadByEmail).to.have.been.calledWith(expectations.email, expectations.field);
     expect(response.getOutcome()).to.equal(RunStepResponse.Outcome.PASSED);
   });
 
   it('should respond with fail if API client resolves unexpected data', async () => {
     // Stub a response that does not match expectations.
-    const expectedUser: any = {someField: 'Expected Value'};
+    const expectedUser: any = { someField: 'Expected Value' };
     clientWrapperStub.findLeadByEmail.resolves(expectedUser);
 
     // Set step data corresponding to expectations
@@ -102,7 +104,7 @@ describe('LeadFieldEqualsStep', () => {
 
   it('should respond with error if resolved user does not contain given field', async () => {
     // Stub a response with valid response, but no expected field.
-    const expectedUser: any = {someField: 'Expected Value'};
+    const expectedUser: any = { someField: 'Expected Value' };
     clientWrapperStub.findLeadByEmail.resolves(expectedUser);
 
     protoStep.setData(Struct.fromJavaScript({

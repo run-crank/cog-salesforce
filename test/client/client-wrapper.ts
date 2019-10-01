@@ -22,6 +22,7 @@ describe('ClientWrapper', () => {
     sobjectStub = sinon.stub();
     sobjectStub.delete = sinon.stub();
     sobjectStub.findOne = sinon.stub();
+    sobjectStub.find = sinon.stub();
     sobjectStub.create = sinon.stub();
     sfdcClientStub = {
       login: sinon.stub(),
@@ -31,7 +32,7 @@ describe('ClientWrapper', () => {
     sfdcClientStub.sobject.returns(sobjectStub);
     jsForceConstructorStub = sinon.stub();
     jsForceConstructorStub.Connection = sinon.stub();
-    jsForceConstructorStub.Connection.returns(sfdcClientStub)
+    jsForceConstructorStub.Connection.returns(sfdcClientStub);
   });
 
   it('authentication', () => {
@@ -52,13 +53,13 @@ describe('ClientWrapper', () => {
 
     // Assert that the underlying API client was authenticated correctly.
     clientWrapperUnderTest = new ClientWrapper(metadata, jsForceConstructorStub);
-    expect(jsForceConstructorStub.Connection).to.have.been.calledWith({oauth2: oauth2Args});
+    expect(jsForceConstructorStub.Connection).to.have.been.calledWith({ oauth2: oauth2Args });
     expect(sfdcClientStub.login).to.have.been.calledWith(username, password);
   });
 
   it('createLead', async () => {
     const expectedLead = { email: 'test@example.com' };
-    const expectedResult = {Id: 'xyz123'};
+    const expectedResult = { Id: 'xyz123' };
     let actualResult;
 
     // Set up test instance.
@@ -109,6 +110,7 @@ describe('ClientWrapper', () => {
     clientWrapperUnderTest.findLeadByEmail(expectedEmail, expectedField);
     setTimeout(() => {
       expect(sfdcClientStub.sobject).to.have.been.calledWith('Lead');
+      // tslint:disable-next-line:max-line-length
       expect(sobjectStub.findOne).to.have.been.calledWith({ Email: expectedEmail }, [expectedField]);
       done();
     });
@@ -144,7 +146,7 @@ describe('ClientWrapper', () => {
 
   it('deleteLeadByEmail', (done) => {
     const expectedEmail = 'test@example.com';
-    const expectedRecord = {Id: 'xyz123'};
+    const expectedRecord = { Id: 'xyz123' };
 
     // Set up the test instance.
     sobjectStub.findOne.callsArgWith(2, null, expectedRecord);
@@ -174,7 +176,7 @@ describe('ClientWrapper', () => {
 
   it('deleteLeadByEmail:apiError', () => {
     const expectedEmail = 'test@example.com';
-    const expectedRecord = {Id: 'xyz123'};
+    const expectedRecord = { Id: 'xyz123' };
     const anError = new Error('An API Error');
 
     // Set up the test instance.
@@ -189,7 +191,7 @@ describe('ClientWrapper', () => {
 
   it('deleteLeadByEmail:apiThrows', () => {
     const expectedEmail = 'test@example.com';
-    const expectedRecord = {Id: 'xyz123'};
+    const expectedRecord = { Id: 'xyz123' };
     const anError = new Error('An API Error');
 
     // Set up the test instance.
@@ -202,6 +204,408 @@ describe('ClientWrapper', () => {
       .to.be.rejectedWith(anError);
   });
 
+  it('createAccount', async () => {
+    const expectedLead = { email: 'test@example.com' };
+    const expectedResult = { Id: 'xyz123' };
+    let actualResult;
+
+    // Set up test instance.
+    sobjectStub.create.callsArgWith(1, null, expectedResult);
+    clientWrapperUnderTest = new ClientWrapper(metadata, jsForceConstructorStub);
+
+    // Call the method and make assertions.
+    actualResult = await clientWrapperUnderTest.createAccount(expectedLead);
+    expect(sfdcClientStub.sobject).to.have.been.calledWith('Account');
+    expect(sobjectStub.create).to.have.been.calledWith(expectedLead);
+    expect(actualResult).to.equal(expectedResult);
+  });
+
+  it('createAccount:apiError', () => {
+    const expectedLead = { email: 'test@example.com' };
+    const anError = new Error('An API Error');
+
+    // Set up test instance.
+    sobjectStub.create.callsArgWith(1, anError);
+    clientWrapperUnderTest = new ClientWrapper(metadata, jsForceConstructorStub);
+
+    // Call the method and make assertions.
+    expect(clientWrapperUnderTest.createAccount(expectedLead))
+      .to.be.rejectedWith(anError);
+  });
+
+  it('createAccount:apiThrows', async () => {
+    const expectedLead = { email: 'test@example.com' };
+    const anError = new Error('An API Error');
+
+    // Set up test instance.
+    sobjectStub.create.throws(anError);
+    clientWrapperUnderTest = new ClientWrapper(metadata, jsForceConstructorStub);
+
+    // Call the method and make assertions.
+    expect(clientWrapperUnderTest.createAccount(expectedLead))
+      .to.be.rejectedWith(anError);
+  });
+
+  it('findAccountByIndentifier', (done) => {
+    const sampleIdField = 'someIdField';
+    const sampleIdValue = 'someIdValue';
+    const sampleField = 'Id';
+
+    // Set up test instance.
+    clientWrapperUnderTest = new ClientWrapper(metadata, jsForceConstructorStub);
+
+    // Call the method and make assertions.
+    // tslint:disable-next-line:max-line-length
+    clientWrapperUnderTest.findAccountByIdentifier(sampleIdField, sampleIdValue, sampleField);
+    setTimeout(() => {
+      expect(sfdcClientStub.sobject).to.have.been.calledWith('Account');
+      // tslint:disable-next-line:max-line-length
+      expect(sobjectStub.find).to.have.been.calledWith({ [sampleIdField]: sampleIdValue }, [sampleField]);
+      done();
+    });
+  });
+
+  it('findAccountByIndentifier:apiError', () => {
+    const sampleIdField = 'someIdField';
+    const sampleIdValue = 'someIdValue';
+    const sampleField = 'Id';
+    const anError = new Error('An API Error');
+
+    // Set up test instance.
+    sobjectStub.findOne.callsArgWith(2, anError);
+    clientWrapperUnderTest = new ClientWrapper(metadata, jsForceConstructorStub);
+
+    // Call the method and make assertions.
+    // tslint:disable-next-line:max-line-length
+    expect(clientWrapperUnderTest.findAccountByIdentifier(sampleIdField, sampleIdValue, sampleField))
+      .to.be.rejectedWith(anError);
+  });
+
+  it('findAccountByIndentifier:apiThrows', () => {
+    const sampleIdField = 'someIdField';
+    const sampleIdValue = 'someIdValue';
+    const sampleField = 'Id';
+    const anError = new Error('An API Error');
+
+    // Set up test instance.
+    sobjectStub.findOne.throws(anError);
+    clientWrapperUnderTest = new ClientWrapper(metadata, jsForceConstructorStub);
+
+    // Call the method and make assertions.
+    // tslint:disable-next-line:max-line-length
+    expect(clientWrapperUnderTest.findAccountByIdentifier(sampleIdField, sampleIdValue, sampleField))
+      .to.be.rejectedWith(anError);
+  });
+
+  it('deleteAccountByIdentifier', (done) => {
+    const sampleIdField = 'someIdField';
+    const sampleIdValue = 'someIdValue';
+    const sampleField = 'Id';
+    const sampleRecord = [
+      {
+        Id: 'sampleId',
+        Name: 'SampleName',
+      },
+    ];
+
+    // Set up the test instance.
+    sobjectStub.find.callsArgWith(2, null, sampleRecord);
+    clientWrapperUnderTest = new ClientWrapper(metadata, jsForceConstructorStub);
+
+    // Call the method and make assertions.
+    clientWrapperUnderTest.deleteAccountByIdentifier(sampleIdField, sampleIdValue);
+    setTimeout(() => {
+      expect(sfdcClientStub.sobject).to.have.been.calledWith('Account');
+      expect(sobjectStub.delete).to.have.been.calledWith(sampleRecord[0].Id);
+      done();
+    });
+  });
+
+  it('deleteAccountByIdentifier:noAccountFound', () => {
+    const sampleIdField = 'someIdField';
+    const sampleIdValue = 'someIdValue';
+    const emptyRecord = {};
+
+    // Set up the test instance.
+    sobjectStub.find.callsArgWith(2, null, emptyRecord);
+    clientWrapperUnderTest = new ClientWrapper(metadata, jsForceConstructorStub);
+
+    // Call the method and make assertions.
+    expect(clientWrapperUnderTest.deleteAccountByIdentifier(sampleIdField, sampleIdValue))
+      .to.be.rejected;
+  });
+
+  it('deleteAccountByIdentifier:multipleAccountsFound', () => {
+    const sampleIdField = 'someIdField';
+    const sampleIdValue = 'someIdValue';
+    const multipleRecord = [
+      {
+        Id: 'sampleId',
+        Name: 'SampleName',
+      },
+      {
+        Id: 'sampleId',
+        Name: 'SampleName',
+      },
+      {
+        Id: 'sampleId',
+        Name: 'SampleName',
+      },
+    ];
+
+    // Set up the test instance.
+    sobjectStub.find.callsArgWith(2, null, multipleRecord);
+    clientWrapperUnderTest = new ClientWrapper(metadata, jsForceConstructorStub);
+
+    // Call the method and make assertions.
+    expect(clientWrapperUnderTest.deleteAccountByIdentifier(sampleIdField, sampleIdValue))
+      .to.be.rejected;
+  });
+
+  it('deleteAccountByIdentifier:apiError', () => {
+    const sampleIdField = 'someIdField';
+    const sampleIdValue = 'someIdValue';
+    const sampleRecord = [
+      {
+        Id: 'sampleId',
+        Name: 'SampleName',
+      },
+    ];
+    const anError = new Error('An API Error');
+
+    // Set up the test instance.
+    sobjectStub.find.callsArgWith(2, null, sampleRecord);
+    sobjectStub.delete.callsArgWith(1, anError);
+    clientWrapperUnderTest = new ClientWrapper(metadata, jsForceConstructorStub);
+
+    // Call the method and make assertions.
+    expect(clientWrapperUnderTest.deleteAccountByIdentifier(sampleIdField, sampleIdValue))
+      .to.be.rejectedWith(anError);
+  });
+
+  it('deleteAccountByIdentifier:apiThrows', () => {
+    const sampleIdField = 'someIdField';
+    const sampleIdValue = 'someIdValue';
+    const sampleField = 'Id';
+    const sampleRecord = [
+      {
+        Id: 'sampleId',
+        Name: 'SampleName',
+      },
+    ];
+    const anError = new Error('An API Error');
+
+    // Set up the test instance.
+    sobjectStub.findOne.callsArgWith(2, null, sampleRecord);
+    sobjectStub.delete.throws(anError);
+    clientWrapperUnderTest = new ClientWrapper(metadata, jsForceConstructorStub);
+
+    // Call the method and make assertions.
+    expect(clientWrapperUnderTest.deleteAccountByIdentifier(sampleIdField, sampleIdValue))
+      .to.be.rejectedWith(anError);
+  });
+
+  it('createOpportunity', async () => {
+    const expectedLead = { email: 'test@example.com' };
+    const expectedResult = { Id: 'xyz123' };
+    let actualResult;
+
+    // Set up test instance.
+    sobjectStub.create.callsArgWith(1, null, expectedResult);
+    clientWrapperUnderTest = new ClientWrapper(metadata, jsForceConstructorStub);
+
+    // Call the method and make assertions.
+    actualResult = await clientWrapperUnderTest.createOpportunity(expectedLead);
+    expect(sfdcClientStub.sobject).to.have.been.calledWith('Opportunity');
+    expect(sobjectStub.create).to.have.been.calledWith(expectedLead);
+    expect(actualResult).to.equal(expectedResult);
+  });
+
+  it('createOpportunity:apiError', () => {
+    const expectedLead = { email: 'test@example.com' };
+    const anError = new Error('An API Error');
+
+    // Set up test instance.
+    sobjectStub.create.callsArgWith(1, anError);
+    clientWrapperUnderTest = new ClientWrapper(metadata, jsForceConstructorStub);
+
+    // Call the method and make assertions.
+    expect(clientWrapperUnderTest.createOpportunity(expectedLead))
+      .to.be.rejectedWith(anError);
+  });
+
+  it('createOpportunity:apiThrows', async () => {
+    const expectedLead = { email: 'test@example.com' };
+    const anError = new Error('An API Error');
+
+    // Set up test instance.
+    sobjectStub.create.throws(anError);
+    clientWrapperUnderTest = new ClientWrapper(metadata, jsForceConstructorStub);
+
+    // Call the method and make assertions.
+    expect(clientWrapperUnderTest.createOpportunity(expectedLead))
+      .to.be.rejectedWith(anError);
+  });
+
+  it('findOpportunityByIndentifier', (done) => {
+    const sampleIdField = 'someIdField';
+    const sampleIdValue = 'someIdValue';
+    const sampleField = 'Id';
+
+    // Set up test instance.
+    clientWrapperUnderTest = new ClientWrapper(metadata, jsForceConstructorStub);
+
+    // Call the method and make assertions.
+    // tslint:disable-next-line:max-line-length
+    clientWrapperUnderTest.findOpportunityByIdentifier(sampleIdField, sampleIdValue, sampleField);
+    setTimeout(() => {
+      expect(sfdcClientStub.sobject).to.have.been.calledWith('Opportunity');
+      // tslint:disable-next-line:max-line-length
+      expect(sobjectStub.find).to.have.been.calledWith({ [sampleIdField]: sampleIdValue }, [sampleField]);
+      done();
+    });
+  });
+
+  it('findOpportunityByIndentifier:apiError', () => {
+    const sampleIdField = 'someIdField';
+    const sampleIdValue = 'someIdValue';
+    const sampleField = 'Id';
+    const anError = new Error('An API Error');
+
+    // Set up test instance.
+    sobjectStub.findOne.callsArgWith(2, anError);
+    clientWrapperUnderTest = new ClientWrapper(metadata, jsForceConstructorStub);
+
+    // Call the method and make assertions.
+    // tslint:disable-next-line:max-line-length
+    expect(clientWrapperUnderTest.findOpportunityByIdentifier(sampleIdField, sampleIdValue, sampleField))
+      .to.be.rejectedWith(anError);
+  });
+
+  it('findOpportunityByIndentifier:apiThrows', () => {
+    const sampleIdField = 'someIdField';
+    const sampleIdValue = 'someIdValue';
+    const sampleField = 'Id';
+    const anError = new Error('An API Error');
+
+    // Set up test instance.
+    sobjectStub.findOne.throws(anError);
+    clientWrapperUnderTest = new ClientWrapper(metadata, jsForceConstructorStub);
+
+    // Call the method and make assertions.
+    // tslint:disable-next-line:max-line-length
+    expect(clientWrapperUnderTest.findOpportunityByIdentifier(sampleIdField, sampleIdValue, sampleField))
+      .to.be.rejectedWith(anError);
+  });
+
+  it('deleteOpportunityByIdentifier', (done) => {
+    const sampleIdField = 'someIdField';
+    const sampleIdValue = 'someIdValue';
+    const sampleField = 'Id';
+    const sampleRecord = [
+      {
+        Id: 'sampleId',
+        Name: 'SampleName',
+      },
+    ];
+
+    // Set up the test instance.
+    sobjectStub.find.callsArgWith(2, null, sampleRecord);
+    clientWrapperUnderTest = new ClientWrapper(metadata, jsForceConstructorStub);
+
+    // Call the method and make assertions.
+    clientWrapperUnderTest.deleteOpportunityByIdentifier(sampleIdField, sampleIdValue);
+    setTimeout(() => {
+      expect(sfdcClientStub.sobject).to.have.been.calledWith('Opportunity');
+      expect(sobjectStub.delete).to.have.been.calledWith(sampleRecord[0].Id);
+      done();
+    });
+  });
+
+  it('deleteOpportunityByIdentifier:noAccountFound', () => {
+    const sampleIdField = 'someIdField';
+    const sampleIdValue = 'someIdValue';
+    const emptyRecord = {};
+
+    // Set up the test instance.
+    sobjectStub.find.callsArgWith(2, null, emptyRecord);
+    clientWrapperUnderTest = new ClientWrapper(metadata, jsForceConstructorStub);
+
+    // Call the method and make assertions.
+    expect(clientWrapperUnderTest.deleteOpportunityByIdentifier(sampleIdField, sampleIdValue))
+      .to.be.rejected;
+  });
+
+  it('deleteOpportunityByIdentifier:multipleAccountsFound', () => {
+    const sampleIdField = 'someIdField';
+    const sampleIdValue = 'someIdValue';
+    const multipleRecord = [
+      {
+        Id: 'sampleId',
+        Name: 'SampleName',
+      },
+      {
+        Id: 'sampleId',
+        Name: 'SampleName',
+      },
+      {
+        Id: 'sampleId',
+        Name: 'SampleName',
+      },
+    ];
+
+    // Set up the test instance.
+    sobjectStub.find.callsArgWith(2, null, multipleRecord);
+    clientWrapperUnderTest = new ClientWrapper(metadata, jsForceConstructorStub);
+
+    // Call the method and make assertions.
+    expect(clientWrapperUnderTest.deleteOpportunityByIdentifier(sampleIdField, sampleIdValue))
+      .to.be.rejected;
+  });
+
+  it('deleteOpportunityByIdentifier:apiError', () => {
+    const sampleIdField = 'someIdField';
+    const sampleIdValue = 'someIdValue';
+    const sampleRecord = [
+      {
+        Id: 'sampleId',
+        Name: 'SampleName',
+      },
+    ];
+    const anError = new Error('An API Error');
+
+    // Set up the test instance.
+    sobjectStub.find.callsArgWith(2, null, sampleRecord);
+    sobjectStub.delete.callsArgWith(1, anError);
+    clientWrapperUnderTest = new ClientWrapper(metadata, jsForceConstructorStub);
+
+    // Call the method and make assertions.
+    expect(clientWrapperUnderTest.deleteOpportunityByIdentifier(sampleIdField, sampleIdValue))
+      .to.be.rejectedWith(anError);
+  });
+
+  it('deleteOpportunityByIdentifier:apiThrows', () => {
+    const sampleIdField = 'someIdField';
+    const sampleIdValue = 'someIdValue';
+    const sampleField = 'Id';
+    const sampleRecord = [
+      {
+        Id: 'sampleId',
+        Name: 'SampleName',
+      },
+    ];
+    const anError = new Error('An API Error');
+
+    // Set up the test instance.
+    sobjectStub.findOne.callsArgWith(2, null, sampleRecord);
+    sobjectStub.delete.throws(anError);
+    clientWrapperUnderTest = new ClientWrapper(metadata, jsForceConstructorStub);
+
+    // Call the method and make assertions.
+    expect(clientWrapperUnderTest.deleteOpportunityByIdentifier(sampleIdField, sampleIdValue))
+      .to.be.rejectedWith(anError);
+  });
+
   it('findCampaignMemberByEmailAndCampaignId', (done) => {
     const expectedEmail = 'test@example.com';
     const expectedCampaignId = 'abc123';
@@ -211,9 +615,11 @@ describe('ClientWrapper', () => {
     clientWrapperUnderTest = new ClientWrapper(metadata, jsForceConstructorStub);
 
     // Call the method and make assertions.
+    // tslint:disable-next-line:max-line-length
     clientWrapperUnderTest.findCampaignMemberByEmailAndCampaignId(expectedEmail, expectedCampaignId, [expectedField]);
     setTimeout(() => {
       expect(sfdcClientStub.sobject).to.have.been.calledWith('CampaignMember');
+      // tslint:disable-next-line:max-line-length
       expect(sobjectStub.findOne).to.have.been.calledWith({ Email: expectedEmail, CampaignId: expectedCampaignId }, [expectedField]);
       done();
     });
@@ -230,6 +636,7 @@ describe('ClientWrapper', () => {
     clientWrapperUnderTest = new ClientWrapper(metadata, jsForceConstructorStub);
 
     // Call the method and make assertions.
+    // tslint:disable-next-line:max-line-length
     expect(clientWrapperUnderTest.findCampaignMemberByEmailAndCampaignId(expectedEmail, expectedCampaignId, [expectedField]))
       .to.be.rejectedWith(anError);
   });
@@ -244,8 +651,10 @@ describe('ClientWrapper', () => {
     clientWrapperUnderTest = new ClientWrapper(metadata, jsForceConstructorStub);
     sobjectStub.findOne.throws(anError);
     // Call the method and make assertions.
+    // tslint:disable-next-line:max-line-length
     clientWrapperUnderTest.findCampaignMemberByEmailAndCampaignId(expectedEmail, expectedCampaignId, [expectedField]);
 
+    // tslint:disable-next-line:max-line-length
     expect(clientWrapperUnderTest.findCampaignMemberByEmailAndCampaignId(expectedEmail, expectedCampaignId, [expectedField]))
       .to.be.rejectedWith(anError);
   });
