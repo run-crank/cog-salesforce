@@ -26,7 +26,6 @@ describe('CampaignMemberFieldEqualsStep', () => {
     const stepDef: StepDefinition = stepUnderTest.getDefinition();
     expect(stepDef.getStepId()).to.equal('CampaignMemberFieldEquals');
     expect(stepDef.getName()).to.equal('Check a field on a Salesforce Campaign Member');
-    // tslint:disable-next-line:max-line-length
     expect(stepDef.getExpression()).to.equal('the salesforce lead (?<email>.+) should have campaign member (?<field>.+) set to (?<expectedValue>.+) on campaign (?<campaignId>.+)');
     expect(stepDef.getType()).to.equal(StepDefinition.Type.VALIDATION);
   });
@@ -72,14 +71,12 @@ describe('CampaignMemberFieldEqualsStep', () => {
     protoStep.setData(Struct.fromJavaScript(expectations));
 
     const response: RunStepResponse = await stepUnderTest.executeStep(protoStep);
-    // tslint:disable-next-line:max-line-length
     expect(clientWrapperStub.findCampaignMemberByEmailAndCampaignId).to.have.been.calledWith(expectations.email, expectations.campaignId, [expectations.field]);
     expect(response.getOutcome()).to.equal(RunStepResponse.Outcome.PASSED);
   });
 
   it('should respond with fail if API client does not find campaign member', async () => {
     // Stub a response that matches expectations.
-    // tslint:disable-next-line:max-line-length
     const expectedResponseMessage: string = 'No Campaign Membership found between %s and campaign %s';
     clientWrapperStub.findCampaignMemberByEmailAndCampaignId.resolves(null);
 
@@ -97,10 +94,8 @@ describe('CampaignMemberFieldEqualsStep', () => {
     expect(response.getOutcome()).to.equal(RunStepResponse.Outcome.FAILED);
   });
 
-  // tslint:disable-next-line:max-line-length
   it('should respond with error if API client gets the campaign member without expected field', async () => {
     // Stub a response that matches expectations.
-    // tslint:disable-next-line:max-line-length
     const expectedResponseMessage: string = 'The %s field does not exist on Campaign Member with email %s and campaign id %s';
     const expectedUser: any = { CampaignId: 'someId', someOtherField: 'someValue' };
     clientWrapperStub.findCampaignMemberByEmailAndCampaignId.resolves(expectedUser);
@@ -121,7 +116,6 @@ describe('CampaignMemberFieldEqualsStep', () => {
 
   it('should respond with fail if API client resolved unexpected data', async () => {
     // Stub a response that matches expectations.
-    // tslint:disable-next-line:max-line-length
     const expectedResponseMessage: string = 'Expected Campaign Member %s field to be %s, but it was actually %s';
     const expectedUser: any = { CampaignId: 'someId', someField: 'someOtherValue' };
     clientWrapperStub.findCampaignMemberByEmailAndCampaignId.resolves(expectedUser);

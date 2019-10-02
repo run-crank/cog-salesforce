@@ -4,7 +4,6 @@ import { Step, RunStepResponse, FieldDefinition, StepDefinition } from '../proto
 export class DeleteAccount extends BaseStep implements StepInterface {
 
   protected stepName: string = 'Delete a Salesforce Account';
-  // tslint:disable-next-line:max-line-length
   protected stepExpression: string = 'delete the salesforce account with (?<field>[a-zA-Z0-9_]+) (?<identifier>.+)';
   protected stepType: StepDefinition.Type = StepDefinition.Type.ACTION;
   protected expectedFields: Field[] = [{

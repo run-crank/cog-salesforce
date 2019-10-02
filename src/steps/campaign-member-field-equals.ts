@@ -36,7 +36,6 @@ export class CampaignMemberFieldEquals extends BaseStep implements StepInterface
     let campaignMember: Record<string, any>;
 
     try {
-      // tslint:disable-next-line:max-line-length
       campaignMember = await this.client.findCampaignMemberByEmailAndCampaignId(email, campaignId, [field]);
     } catch (e) {
       return this.error('There was a problem checking the Campaign Member: %s', [e.toString()]);
@@ -44,16 +43,12 @@ export class CampaignMemberFieldEquals extends BaseStep implements StepInterface
 
     if (!campaignMember) {
       // If no results were found, return a failure.
-      // tslint:disable-next-line:max-line-length
       return this.fail('No Campaign Membership found between %s and campaign %s', [email, campaignId]);
     } else if (!campaignMember.hasOwnProperty(field)) {
       // If the given field does not exist on the user, return an error.
-      // tslint:disable-next-line:max-line-length
       return this.error('The %s field does not exist on Campaign Member with email %s and campaign id %s', [field, email, campaignId]);
-    // tslint:disable-next-line:triple-equals
     } else if (campaignMember[field] == expectedValue) {
       // If the value of the field matches expectations, pass.
-      // tslint:disable-next-line:max-line-length
       return this.pass('The %s Campaign Member field was set to %s, as expected', [field, campaignMember[field]]);
     } else {
       // If the value of the field does not match expectations, fail.
