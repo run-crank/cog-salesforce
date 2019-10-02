@@ -26,7 +26,6 @@ describe('AccountFieldEqualsStep', () => {
     const stepDef: StepDefinition = stepUnderTest.getDefinition();
     expect(stepDef.getStepId()).to.equal('AccountFieldEquals');
     expect(stepDef.getName()).to.equal('Check a field on a Salesforce Account');
-    // tslint:disable-next-line:max-line-length
     expect(stepDef.getExpression()).to.equal('the (?<field>[a-zA-Z0-9_]+) field on salesforce account with (?<idField>[a-zA-Z0-9_]+) (?<identifier>.+) should be (?<expectedValue>.+)');
     expect(stepDef.getType()).to.equal(StepDefinition.Type.VALIDATION);
   });
@@ -81,7 +80,6 @@ describe('AccountFieldEqualsStep', () => {
     protoStep.setData(Struct.fromJavaScript(expectations));
 
     const response: RunStepResponse = await stepUnderTest.executeStep(protoStep);
-    // tslint:disable-next-line:max-line-length
     expect(clientWrapperStub.findAccountByIdentifier).to.have.been.calledWith(sampleIdField, sampleIdentifier, sampleField);
     expect(response.getOutcome()).to.equal(RunStepResponse.Outcome.PASSED);
   });
@@ -112,7 +110,6 @@ describe('AccountFieldEqualsStep', () => {
     protoStep.setData(Struct.fromJavaScript(expectations));
 
     const response: RunStepResponse = await stepUnderTest.executeStep(protoStep);
-    // tslint:disable-next-line:max-line-length
     expect(clientWrapperStub.findAccountByIdentifier).to.have.been.calledWith(sampleIdField, sampleIdentifier, sampleField);
     expect(response.getOutcome()).to.equal(RunStepResponse.Outcome.FAILED);
   });
@@ -149,7 +146,6 @@ describe('AccountFieldEqualsStep', () => {
     protoStep.setData(Struct.fromJavaScript(expectations));
 
     const response: RunStepResponse = await stepUnderTest.executeStep(protoStep);
-    // tslint:disable-next-line:max-line-length
     expect(clientWrapperStub.findAccountByIdentifier).to.have.been.calledWith(sampleIdField, sampleIdentifier, sampleField);
     expect(response.getMessageFormat()).to.equal(expectedResponseMessage);
     expect(response.getOutcome()).to.equal(RunStepResponse.Outcome.ERROR);
@@ -176,7 +172,6 @@ describe('AccountFieldEqualsStep', () => {
     protoStep.setData(Struct.fromJavaScript(expectations));
 
     const response: RunStepResponse = await stepUnderTest.executeStep(protoStep);
-    // tslint:disable-next-line:max-line-length
     expect(clientWrapperStub.findAccountByIdentifier).to.have.been.calledWith(sampleIdField, sampleIdentifier, sampleField);
     expect(response.getMessageFormat()).to.equal(expectedResponseMessage);
     expect(response.getOutcome()).to.equal(RunStepResponse.Outcome.ERROR);
@@ -209,7 +204,6 @@ describe('AccountFieldEqualsStep', () => {
     protoStep.setData(Struct.fromJavaScript(expectations));
 
     const response: RunStepResponse = await stepUnderTest.executeStep(protoStep);
-    // tslint:disable-next-line:max-line-length
     expect(clientWrapperStub.findAccountByIdentifier).to.have.been.calledWith(sampleIdField, sampleIdentifier, sampleField);
     expect(response.getMessageFormat()).to.equal(expectedResponseMessage);
     expect(response.getOutcome()).to.equal(RunStepResponse.Outcome.ERROR);
@@ -221,7 +215,7 @@ describe('AccountFieldEqualsStep', () => {
     const sampleIdentifier = 'someIdentifier';
     const sampleField = 'someField';
     const sampleValue = 'someValue';
-    const expectedResponseMessage = 'There was a problem checking the Lead: %s';
+    const expectedResponseMessage = 'There was a problem checking the Account: %s';
 
     const error = new Error('An API Error');
     clientWrapperStub.findAccountByIdentifier.throws(error);
@@ -236,7 +230,6 @@ describe('AccountFieldEqualsStep', () => {
     protoStep.setData(Struct.fromJavaScript(expectations));
 
     const response: RunStepResponse = await stepUnderTest.executeStep(protoStep);
-    // tslint:disable-next-line:max-line-length
     expect(clientWrapperStub.findAccountByIdentifier).to.have.been.calledWith(sampleIdField, sampleIdentifier, sampleField);
     expect(response.getMessageFormat()).to.equal(expectedResponseMessage);
     expect(response.getOutcome()).to.equal(RunStepResponse.Outcome.ERROR);

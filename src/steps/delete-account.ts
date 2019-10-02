@@ -4,7 +4,6 @@ import { Step, RunStepResponse, FieldDefinition, StepDefinition } from '../proto
 export class DeleteAccount extends BaseStep implements StepInterface {
 
   protected stepName: string = 'Delete a Salesforce Account';
-  // tslint:disable-next-line:max-line-length
   protected stepExpression: string = 'delete the salesforce account with (?<field>[a-zA-Z0-9_]+) (?<identifier>.+)';
   protected stepType: StepDefinition.Type = StepDefinition.Type.ACTION;
   protected expectedFields: Field[] = [{
@@ -21,9 +20,7 @@ export class DeleteAccount extends BaseStep implements StepInterface {
     const stepData: any = step.getData().toJavaScript();
 
     try {
-      // tslint:disable-next-line:max-line-length
       const result = await this.client.deleteAccountByIdentifier(stepData.field, stepData.identifier);
-      // tslint:disable-next-line:max-line-length
       return this.pass('Successfully deleted Account with %s %s', [stepData.field, stepData.identifier]);
     } catch (e) {
       return this.error('There was a problem deleting the Account: %s', [e.toString()]);

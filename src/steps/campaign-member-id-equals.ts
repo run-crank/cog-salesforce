@@ -27,7 +27,6 @@ export class CampaignMemberCampaignIdEquals extends BaseStep implements StepInte
     let campaignMember: Record<string, any>;
 
     try {
-      // tslint:disable-next-line:max-line-length
       campaignMember = await this.client.findCampaignMemberByEmailAndCampaignId(email, campaignId, [field]);
     } catch (e) {
       return this.error('There was a problem checking the Campaign Member: %s', [e.toString()]);
@@ -35,12 +34,9 @@ export class CampaignMemberCampaignIdEquals extends BaseStep implements StepInte
 
     if (!campaignMember) {
       // If no results were found, return a failure.
-      // tslint:disable-next-line:max-line-length
       return this.fail('No Campaign Membership found between %s and campaign %s', [email, campaignId]);
-    // tslint:disable-next-line:triple-equals
     } else {
       // If the value of the field matches expectations, pass.
-      // tslint:disable-next-line:max-line-length
       return this.pass('Lead belongs to Campaign with id %s, as expected', [campaignId]);
     }
   }

@@ -37,28 +37,22 @@ export class OpportunityFieldEquals extends BaseStep implements StepInterface {
     let opportunity: Record<string, any>[];
 
     try {
-      // tslint:disable-next-line:max-line-length
       opportunity = await this.client.findOpportunityByIdentifier(idField, identifier, field);
     } catch (e) {
-      return this.error('There was a problem checking the Lead: %s', [e.toString()]);
+      return this.error('There was a problem checking the Opportunity: %s', [e.toString()]);
     }
 
     if (opportunity.length === 0) {
-      // If the given field does not exist on the user, return an error.
-      // tslint:disable-next-line:max-line-length
+      // If the client does not return an opportunity, return an error.
       return this.error('No opportunity matches %s %s', [field, identifier]);
     } else if (opportunity.length > 1) {
-      // If the given field does not exist on the user, return an error.
-      // tslint:disable-next-line:max-line-length
+      // If the client returns more than one opportunity, return an error.
       return this.error('More than one opportunity matches %s %s', [field, identifier]);
     } else if (!opportunity[0].hasOwnProperty(stepData.field)) {
-      // If the given field does not exist on the user, return an error.
-      // tslint:disable-next-line:max-line-length
+      // If the given field does not exist on the opportunity, return an error.
       return this.error('The %s field does not exist on Opportunity %s', [field, identifier]);
-      /* tslint:disable-next-line:triple-equals */
     } else if (opportunity[0][field] == expectedValue) {
       // If the value of the field matches expectations, pass.
-      // tslint:disable-next-line:max-line-length
       return this.pass('The %s field was set to %s, as expected', [field, expectedValue]);
     } else {
       // If the value of the field does not match expectations, fail.

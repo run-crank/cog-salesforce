@@ -26,7 +26,6 @@ describe('LeadFieldEqualsStep', () => {
     const stepDef: StepDefinition = stepUnderTest.getDefinition();
     expect(stepDef.getStepId()).to.equal('LeadFieldEquals');
     expect(stepDef.getName()).to.equal('Check a field on a Salesforce Lead');
-    // tslint:disable-next-line:max-line-length
     expect(stepDef.getExpression()).to.equal('the (?<field>[a-zA-Z0-9_]+) field on salesforce lead (?<email>.+) should be (?<expectedValue>.+)');
     expect(stepDef.getType()).to.equal(StepDefinition.Type.VALIDATION);
   });
@@ -67,7 +66,6 @@ describe('LeadFieldEqualsStep', () => {
     protoStep.setData(Struct.fromJavaScript(expectations));
 
     const response: RunStepResponse = await stepUnderTest.executeStep(protoStep);
-    // tslint:disable-next-line:max-line-length
     expect(clientWrapperStub.findLeadByEmail).to.have.been.calledWith(expectations.email, expectations.field);
     expect(response.getOutcome()).to.equal(RunStepResponse.Outcome.PASSED);
   });

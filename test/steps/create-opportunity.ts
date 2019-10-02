@@ -59,7 +59,6 @@ describe('CreateOpportunityStep', () => {
     protoStep.setData(Struct.fromJavaScript(sampleOpportunity));
 
     const response: RunStepResponse = await stepUnderTest.executeStep(protoStep);
-    // tslint:disable-next-line:max-line-length
     expect(clientWrapperStub.createOpportunity).to.have.been.calledWith(sampleOpportunity.opportunity);
     expect(response.getOutcome()).to.equal(RunStepResponse.Outcome.PASSED);
   });

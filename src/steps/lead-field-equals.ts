@@ -42,7 +42,6 @@ export class LeadFieldEquals extends BaseStep implements StepInterface {
     } else if (!lead.hasOwnProperty(field)) {
       // If the given field does not exist on the user, return an error.
       return this.error('The %s field does not exist on Lead %s', [field, email]);
-      /* tslint:disable-next-line:triple-equals */
     } else if (lead[field] == expectedValue) {
       // If the value of the field matches expectations, pass.
       return this.pass('The %s field was set to %s, as expected', [field, lead[field]]);

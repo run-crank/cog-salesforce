@@ -27,7 +27,6 @@ describe('DeleteOpportunityStep', () => {
     const stepDef: StepDefinition = stepUnderTest.getDefinition();
     expect(stepDef.getStepId()).to.equal('DeleteOpportunity');
     expect(stepDef.getName()).to.equal('Delete a Salesforce Opportunity');
-    // tslint:disable-next-line:max-line-length
     expect(stepDef.getExpression()).to.equal('delete the salesforce account with (?<field>[a-zA-Z0-9_]+) (?<identifier>.+)');
     expect(stepDef.getType()).to.equal(StepDefinition.Type.ACTION);
   });
@@ -63,7 +62,6 @@ describe('DeleteOpportunityStep', () => {
     protoStep.setData(Struct.fromJavaScript(expectations));
 
     const response: RunStepResponse = await stepUnderTest.executeStep(protoStep);
-    // tslint:disable-next-line:max-line-length
     expect(clientWrapperStub.deleteOpportunityByIdentifier).to.have.been.calledWith(expectations.field, expectations.identifier);
     expect(response.getOutcome()).to.equal(RunStepResponse.Outcome.PASSED);
   });
