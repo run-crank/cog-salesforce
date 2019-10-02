@@ -39,7 +39,7 @@ export class AccountFieldEquals extends BaseStep implements StepInterface {
     try {
       account = await this.client.findAccountByIdentifier(idField, identifier, field);
     } catch (e) {
-      return this.error('There was a problem checking the Lead: %s', [e.toString()]);
+      return this.error('There was a problem checking the Account: %s', [e.toString()]);
     }
 
     if (account.length === 0) {
