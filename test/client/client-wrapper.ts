@@ -110,7 +110,6 @@ describe('ClientWrapper', () => {
     clientWrapperUnderTest.findLeadByEmail(expectedEmail, expectedField);
     setTimeout(() => {
       expect(sfdcClientStub.sobject).to.have.been.calledWith('Lead');
-      // tslint:disable-next-line:max-line-length
       expect(sobjectStub.findOne).to.have.been.calledWith({ Email: expectedEmail }, [expectedField]);
       done();
     });
@@ -255,11 +254,9 @@ describe('ClientWrapper', () => {
     clientWrapperUnderTest = new ClientWrapper(metadata, jsForceConstructorStub);
 
     // Call the method and make assertions.
-    // tslint:disable-next-line:max-line-length
     clientWrapperUnderTest.findAccountByIdentifier(sampleIdField, sampleIdValue, sampleField);
     setTimeout(() => {
       expect(sfdcClientStub.sobject).to.have.been.calledWith('Account');
-      // tslint:disable-next-line:max-line-length
       expect(sobjectStub.find).to.have.been.calledWith({ [sampleIdField]: sampleIdValue }, [sampleField]);
       done();
     });
@@ -276,7 +273,6 @@ describe('ClientWrapper', () => {
     clientWrapperUnderTest = new ClientWrapper(metadata, jsForceConstructorStub);
 
     // Call the method and make assertions.
-    // tslint:disable-next-line:max-line-length
     expect(clientWrapperUnderTest.findAccountByIdentifier(sampleIdField, sampleIdValue, sampleField))
       .to.be.rejectedWith(anError);
   });
@@ -292,7 +288,6 @@ describe('ClientWrapper', () => {
     clientWrapperUnderTest = new ClientWrapper(metadata, jsForceConstructorStub);
 
     // Call the method and make assertions.
-    // tslint:disable-next-line:max-line-length
     expect(clientWrapperUnderTest.findAccountByIdentifier(sampleIdField, sampleIdValue, sampleField))
       .to.be.rejectedWith(anError);
   });
@@ -456,11 +451,9 @@ describe('ClientWrapper', () => {
     clientWrapperUnderTest = new ClientWrapper(metadata, jsForceConstructorStub);
 
     // Call the method and make assertions.
-    // tslint:disable-next-line:max-line-length
     clientWrapperUnderTest.findOpportunityByIdentifier(sampleIdField, sampleIdValue, sampleField);
     setTimeout(() => {
       expect(sfdcClientStub.sobject).to.have.been.calledWith('Opportunity');
-      // tslint:disable-next-line:max-line-length
       expect(sobjectStub.find).to.have.been.calledWith({ [sampleIdField]: sampleIdValue }, [sampleField]);
       done();
     });
@@ -477,7 +470,6 @@ describe('ClientWrapper', () => {
     clientWrapperUnderTest = new ClientWrapper(metadata, jsForceConstructorStub);
 
     // Call the method and make assertions.
-    // tslint:disable-next-line:max-line-length
     expect(clientWrapperUnderTest.findOpportunityByIdentifier(sampleIdField, sampleIdValue, sampleField))
       .to.be.rejectedWith(anError);
   });
@@ -493,7 +485,6 @@ describe('ClientWrapper', () => {
     clientWrapperUnderTest = new ClientWrapper(metadata, jsForceConstructorStub);
 
     // Call the method and make assertions.
-    // tslint:disable-next-line:max-line-length
     expect(clientWrapperUnderTest.findOpportunityByIdentifier(sampleIdField, sampleIdValue, sampleField))
       .to.be.rejectedWith(anError);
   });
@@ -615,11 +606,9 @@ describe('ClientWrapper', () => {
     clientWrapperUnderTest = new ClientWrapper(metadata, jsForceConstructorStub);
 
     // Call the method and make assertions.
-    // tslint:disable-next-line:max-line-length
     clientWrapperUnderTest.findCampaignMemberByEmailAndCampaignId(expectedEmail, expectedCampaignId, [expectedField]);
     setTimeout(() => {
       expect(sfdcClientStub.sobject).to.have.been.calledWith('CampaignMember');
-      // tslint:disable-next-line:max-line-length
       expect(sobjectStub.findOne).to.have.been.calledWith({ Email: expectedEmail, CampaignId: expectedCampaignId }, [expectedField]);
       done();
     });
@@ -636,7 +625,6 @@ describe('ClientWrapper', () => {
     clientWrapperUnderTest = new ClientWrapper(metadata, jsForceConstructorStub);
 
     // Call the method and make assertions.
-    // tslint:disable-next-line:max-line-length
     expect(clientWrapperUnderTest.findCampaignMemberByEmailAndCampaignId(expectedEmail, expectedCampaignId, [expectedField]))
       .to.be.rejectedWith(anError);
   });
@@ -651,10 +639,8 @@ describe('ClientWrapper', () => {
     clientWrapperUnderTest = new ClientWrapper(metadata, jsForceConstructorStub);
     sobjectStub.findOne.throws(anError);
     // Call the method and make assertions.
-    // tslint:disable-next-line:max-line-length
     clientWrapperUnderTest.findCampaignMemberByEmailAndCampaignId(expectedEmail, expectedCampaignId, [expectedField]);
 
-    // tslint:disable-next-line:max-line-length
     expect(clientWrapperUnderTest.findCampaignMemberByEmailAndCampaignId(expectedEmail, expectedCampaignId, [expectedField]))
       .to.be.rejectedWith(anError);
   });

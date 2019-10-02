@@ -166,7 +166,6 @@ export class ClientWrapper {
    * @param {String} identifier - the value of the id field to use when searching.
    * @param {String} field - the name of the field to check.
    */
-  // tslint:disable-next-line:max-line-length
   public async findAccountByIdentifier(idField: string, identifier: string, field: string): Promise<Record<string, any>[]> {
     await this.clientReady;
     return new Promise((resolve, reject) => {
@@ -191,7 +190,6 @@ export class ClientWrapper {
    * @param {String} idField - the field used to search/identify the account.
    * @param {String} identifier - the value of the id field to use when searching.
    */
-  // tslint:disable-next-line:max-line-length
   public async deleteAccountByIdentifier(idField: string, identifier: string): Promise<jsforce.SuccessResult> {
     await this.clientReady;
     return new Promise(async (resolve, reject) => {
@@ -252,12 +250,10 @@ export class ClientWrapper {
    * @param {String} identifier - the value of the id field to use when searching.
    * @param {String} field - the name of the field to check.
    */
-  // tslint:disable-next-line:max-line-length
   public async findOpportunityByIdentifier(idField: string, identifier: string, field: string): Promise<Record<string, any>[]> {
     await this.clientReady;
     return new Promise((resolve, reject) => {
       try {
-        // tslint:disable-next-line:max-line-length
         this.client.sobject('Opportunity').find({ [idField]: identifier }, [field], (err, records) => {
           if (err) {
             reject(err);
@@ -278,7 +274,6 @@ export class ClientWrapper {
    * @param {String} idField - the field used to search/identify the opportunity.
    * @param {String} identifier - the value of the id field to use when searching.
    */
-  // tslint:disable-next-line:max-line-length
   public async deleteOpportunityByIdentifier(idField: string, identifier: string): Promise<jsforce.SuccessResult> {
     await this.clientReady;
     return new Promise(async (resolve, reject) => {
@@ -315,12 +310,10 @@ export class ClientWrapper {
    * @param {String} email - Email address of the CampaignMember record to retrieve.
    * @param {String} fields - CampaignMember fields to include on the returned record.
    */
-  // tslint:disable-next-line:max-line-length
   public async findCampaignMemberByEmailAndCampaignId(email: string, campaignId: string, fields: string[]): Promise<Record<string, any>> {
     await this.clientReady;
     return new Promise((resolve, reject) => {
       try {
-        // tslint:disable-next-line:max-line-length
         this.client.sobject('CampaignMember').findOne({ Email: email, CampaignId: campaignId }, fields, (err, record) => {
           if (err) {
             reject(err);

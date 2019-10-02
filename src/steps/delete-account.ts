@@ -21,9 +21,7 @@ export class DeleteAccount extends BaseStep implements StepInterface {
     const stepData: any = step.getData().toJavaScript();
 
     try {
-      // tslint:disable-next-line:max-line-length
       const result = await this.client.deleteAccountByIdentifier(stepData.field, stepData.identifier);
-      // tslint:disable-next-line:max-line-length
       return this.pass('Successfully deleted Account with %s %s', [stepData.field, stepData.identifier]);
     } catch (e) {
       return this.error('There was a problem deleting the Account: %s', [e.toString()]);
