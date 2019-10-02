@@ -215,7 +215,7 @@ describe('AccountFieldEqualsStep', () => {
     const sampleIdentifier = 'someIdentifier';
     const sampleField = 'someField';
     const sampleValue = 'someValue';
-    const expectedResponseMessage = 'There was a problem checking the Lead: %s';
+    const expectedResponseMessage = 'There was a problem checking the Account: %s';
 
     const error = new Error('An API Error');
     clientWrapperStub.findAccountByIdentifier.throws(error);

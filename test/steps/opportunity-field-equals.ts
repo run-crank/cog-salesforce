@@ -215,7 +215,7 @@ describe('OpportunityFieldEqualsStep', () => {
     const sampleIdentifier = 'someIdentifier';
     const sampleField = 'someField';
     const sampleValue = 'someValue';
-    const expectedResponseMessage = 'There was a problem checking the Lead: %s';
+    const expectedResponseMessage = 'There was a problem checking the Opportunity: %s';
 
     const error = new Error('An API Error');
     clientWrapperStub.findOpportunityByIdentifier.throws(error);
