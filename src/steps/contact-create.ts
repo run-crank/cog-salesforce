@@ -18,7 +18,7 @@ export class ContactCreateStep extends BaseStep implements StepInterface {
 
     try {
       const result = await this.client.createContact(contact);
-      return this.pass('Successfully created Contact with ID %s', [result.id]);
+      return this.pass('Successfully created Contact with ID %s', [result['id']]);
     } catch (e) {
       return this.error('There was a problem creating the Contact: %s', [e.toString()]);
     }
