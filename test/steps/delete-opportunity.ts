@@ -27,7 +27,7 @@ describe('DeleteOpportunityStep', () => {
     const stepDef: StepDefinition = stepUnderTest.getDefinition();
     expect(stepDef.getStepId()).to.equal('DeleteOpportunity');
     expect(stepDef.getName()).to.equal('Delete a Salesforce Opportunity');
-    expect(stepDef.getExpression()).to.equal('delete the salesforce account with (?<field>[a-zA-Z0-9_]+) (?<identifier>.+)');
+    expect(stepDef.getExpression()).to.equal('delete the salesforce opportunity with (?<field>[a-zA-Z0-9_]+) (?<identifier>.+)');
     expect(stepDef.getType()).to.equal(StepDefinition.Type.ACTION);
   });
 
