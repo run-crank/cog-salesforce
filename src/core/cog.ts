@@ -14,15 +14,23 @@ export class Cog implements ICogServiceServer {
   private steps: StepInterface[];
 
   constructor (private clientWrapperClass, private stepMap: Record<string, any> = {}) {
-    this.steps = fs.readdirSync(`${__dirname}/../steps`, { withFileTypes: true })
-      .filter((file: fs.Dirent) => {
-        return file.isFile() && (file.name.endsWith('.ts') || file.name.endsWith('.js'));
-      }).map((file: fs.Dirent) => {
-        const step = require(`${__dirname}/../steps/${file.name}`).Step;
+    this.steps = [].concat(...Object.values(this.getSteps(`${__dirname}/../steps`, clientWrapperClass)));
+  }
+
+  private getSteps(dir: string, clientWrapperClass) {
+    const steps = fs.readdirSync(dir, { withFileTypes: true })
+    .map((file: fs.Dirent) => {
+      if (file.isFile() && (file.name.endsWith('.ts') || file.name.endsWith('.js'))) {
+        const step = require(`${dir}/${file.name}`).Step;
         const stepInstance: StepInterface = new step(clientWrapperClass);
         this.stepMap[stepInstance.getId()] = step;
         return stepInstance;
-      });
+      } if (file.isDirectory()) {
+        return this.getSteps(`${__dirname}/../steps/${file.name}`, clientWrapperClass);
+      }
+    });
+
+    return steps;
   }
 
   getManifest(
