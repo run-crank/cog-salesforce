@@ -7,6 +7,7 @@ import { ContactAwareMixin } from './mixins/contact-aware';
 import { Field } from '../core/base-step';
 import { FieldDefinition } from '../proto/cog_pb';
 import { OpportunityAwareMixin } from './mixins/opportunity-aware';
+import { rejects } from 'assert';
 
 class ClientWrapper {
 
@@ -50,12 +51,16 @@ class ClientWrapper {
 
       // Wraps the async login function in a way that ensures steps can wait
       // until the client is actually authenticated.
-      this.clientReady = new Promise((resolve) => {
+      this.clientReady = new Promise((resolve, reject) => {
         // Login using the username/password.
         this.client.login(
           auth.get('username').toString(),
           auth.get('password').toString(),
           (err, userInfo) => {
+            if (err) {
+              // tslint:disable-next-line:prefer-template
+              reject('Auth Error: ' + err);
+            }
             resolve(true);
           },
         );
