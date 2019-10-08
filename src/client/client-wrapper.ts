@@ -7,7 +7,6 @@ import { ContactAwareMixin } from './mixins/contact-aware';
 import { Field } from '../core/base-step';
 import { FieldDefinition } from '../proto/cog_pb';
 import { OpportunityAwareMixin } from './mixins/opportunity-aware';
-import { rejects } from 'assert';
 
 class ClientWrapper {
 
