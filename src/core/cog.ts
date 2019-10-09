@@ -30,7 +30,9 @@ export class Cog implements ICogServiceServer {
       }
     });
 
-    return steps;
+    // Note: this filters out files that do not match the above (e.g. READMEs
+    // or .js.map files in built folder, etc).
+    return steps.filter(s => s !== undefined);
   }
 
   getManifest(
