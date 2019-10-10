@@ -42,6 +42,31 @@ $ crank cog:auth automatoninc/salesforce
 
 ### Steps
 <!-- stepDetails -->
+<h4 id="CreateAccount">Create a Salesforce Account</h4>
+
+- **Expression**: `create a salesforce account`
+- **Expected Data**:
+  - `account`: A map of field names to field values
+- **Step ID**: `CreateAccount`
+
+<h4 id="DeleteAccount">Delete a Salesforce Account</h4>
+
+- **Expression**: `delete the salesforce account with (?<field>[a-zA-Z0-9_]+) (?<identifier>.+)`
+- **Expected Data**:
+  - `field`: the name of the field used to identify the account
+  - `identifier`: the value of the field
+- **Step ID**: `DeleteAccount`
+
+<h4 id="AccountFieldEquals">Check a field on a Salesforce Account</h4>
+
+- **Expression**: `the (?<field>[a-zA-Z0-9_]+) field on salesforce account with (?<idField>[a-zA-Z0-9_]+) (?<identifier>.+) should be (?<expectedValue>.+)`
+- **Expected Data**:
+  - `idField`: The field used to search/identify the account
+  - `identifier`: The value of the id field to use when searching
+  - `field`: The name of the field to check
+  - `expectedValue`: The expected value of the field
+- **Step ID**: `AccountFieldEquals`
+
 <h4 id="CampaignMemberFieldEquals">Check a field on a Salesforce Campaign Member</h4>
 
 - **Expression**: `the salesforce lead (?<email>.+) should have campaign member (?<field>.+) set to (?<expectedValue>.+) on campaign (?<campaignId>.+)`
@@ -59,6 +84,29 @@ $ crank cog:auth automatoninc/salesforce
   - `email`: Lead's email address
   - `campaignId`: Campaign ID
 - **Step ID**: `CampaignMemberCampaignIdEquals`
+
+<h4 id="ContactCreateStep">Create a Salesforce Contact</h4>
+
+- **Expression**: `create a salesforce contact`
+- **Expected Data**:
+  - `contact`: A map of field names to field values
+- **Step ID**: `ContactCreateStep`
+
+<h4 id="ContactDeleteStep">Delete a Salesforce Contact</h4>
+
+- **Expression**: `delete the (?<email>.+) salesforce contact`
+- **Expected Data**:
+  - `email`: Contact's Email Address
+- **Step ID**: `ContactDeleteStep`
+
+<h4 id="ContactFieldEqualsStep">Check a field on a Salesforce Contact</h4>
+
+- **Expression**: `the (?<field>[a-zA-Z0-9_]+) field on salesforce contact (?<email>.+) should be (?<expectedValue>.+)`
+- **Expected Data**:
+  - `email`: Contact's email address
+  - `field`: Field name to check
+  - `expectedValue`: Expected field value
+- **Step ID**: `ContactFieldEqualsStep`
 
 <h4 id="CreateLead">Create a Salesforce Lead</h4>
 
@@ -82,6 +130,31 @@ $ crank cog:auth automatoninc/salesforce
   - `field`: Field name to check
   - `expectedValue`: Expected field value
 - **Step ID**: `LeadFieldEquals`
+
+<h4 id="CreateOpportunity">Create a Salesforce Opportunity</h4>
+
+- **Expression**: `create a salesforce opportunity`
+- **Expected Data**:
+  - `opportunity`: A map of field names to field values
+- **Step ID**: `CreateOpportunity`
+
+<h4 id="DeleteOpportunity">Delete a Salesforce Opportunity</h4>
+
+- **Expression**: `delete the salesforce opportunity with (?<field>[a-zA-Z0-9_]+) (?<identifier>.+)`
+- **Expected Data**:
+  - `field`: the name of the field used to identify the opportunity
+  - `identifier`: the value of the field
+- **Step ID**: `DeleteOpportunity`
+
+<h4 id="OpportunityFieldEquals">Check a field on a Salesforce Opportunity</h4>
+
+- **Expression**: `the (?<field>[a-zA-Z0-9_]+) field on salesforce opportunity with (?<idField>[a-zA-Z0-9_]+) (?<identifier>.+) should be (?<expectedValue>.+)`
+- **Expected Data**:
+  - `idField`: The field used to search/identify the opportunity
+  - `identifier`: The value of the id field to use when searching
+  - `field`: The name of the field to check
+  - `expectedValue`: The expected value of the field
+- **Step ID**: `OpportunityFieldEquals`
 <!-- stepDetailsEnd -->
 
 ## Development and Contributing
