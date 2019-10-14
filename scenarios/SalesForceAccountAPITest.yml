@@ -1,0 +1,19 @@
+scenario: SalesForce Account API Test
+description: This test the Account creation and validation of field in SalesForce.
+
+steps:
+- step: Create a salesforce account
+  data:
+    account:
+        Name: Joshua2
+        Website: https://www.google.com/
+        Type: Prospect
+        Industry: Technology
+        NumberOfEmployees: 100
+        OwnerId: 0050b000004wMoyAAE
+- step: Validate that the Name field on salesforce account with Name Joshua2 should be Joshua2
+- step: Validate that the Website field on salesforce account with Name Joshua2 should be https://www.google.com/
+- step: Validate that the Type field on salesforce account with Name Joshua2 should be Prospect
+- step: Validate that the Industry field on salesforce account with Name Joshua2 should be Technology
+- step: Validate that the NumberOfEmployees field on salesforce account with Name Joshua2 should be 100
+- step: Delete the salesforce account with Name Joshua2
