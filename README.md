@@ -26,13 +26,15 @@ Note: you can always re-authenticate later.
 
 ### Authentication
 <!-- authenticationDetails -->
-You will be asked for the following authentication details on installation.
+You will be asked for the following authentication details on installation. To avoid prompts in a CI/CD context, you can provide the same details as environment variables.
 
-- **instanceUrl**: Login/instance URL (e.g. https://na1.salesforce.com)
-- **clientId**: OAuth2 Client ID
-- **clientSecret**: OAuth2 Client Secret
-- **username**: Username
-- **password**: Password
+| Field | Install-Time Environment Variable | Description |
+| --- | --- | --- |
+| **instanceUrl** | `CRANK_AUTOMATONINC_SALESFORCE__INSTANCEURL` | Login/instance URL (e.g. https://na1.salesforce.com) |
+| **clientId** | `CRANK_AUTOMATONINC_SALESFORCE__CLIENTID` | OAuth2 Client ID |
+| **clientSecret** | `CRANK_AUTOMATONINC_SALESFORCE__CLIENTSECRET` | OAuth2 Client Secret |
+| **username** | `CRANK_AUTOMATONINC_SALESFORCE__USERNAME` | Username |
+| **password** | `CRANK_AUTOMATONINC_SALESFORCE__PASSWORD` | Password |
 
 ```shell-session
 # Re-authenticate by running this
@@ -42,119 +44,22 @@ $ crank cog:auth automatoninc/salesforce
 
 ### Steps
 <!-- stepDetails -->
-<h4 id="CreateAccount">Create a Salesforce Account</h4>
-
-- **Expression**: `create a salesforce account`
-- **Expected Data**:
-  - `account`: A map of field names to field values
-- **Step ID**: `CreateAccount`
-
-<h4 id="DeleteAccount">Delete a Salesforce Account</h4>
-
-- **Expression**: `delete the salesforce account with (?<field>[a-zA-Z0-9_]+) (?<identifier>.+)`
-- **Expected Data**:
-  - `field`: the name of the field used to identify the account
-  - `identifier`: the value of the field
-- **Step ID**: `DeleteAccount`
-
-<h4 id="AccountFieldEquals">Check a field on a Salesforce Account</h4>
-
-- **Expression**: `the (?<field>[a-zA-Z0-9_]+) field on salesforce account with (?<idField>[a-zA-Z0-9_]+) (?<identifier>.+) should be (?<expectedValue>.+)`
-- **Expected Data**:
-  - `idField`: The field used to search/identify the account
-  - `identifier`: The value of the id field to use when searching
-  - `field`: The name of the field to check
-  - `expectedValue`: The expected value of the field
-- **Step ID**: `AccountFieldEquals`
-
-<h4 id="CampaignMemberFieldEquals">Check a field on a Salesforce Campaign Member</h4>
-
-- **Expression**: `the salesforce lead (?<email>.+) should have campaign member (?<field>.+) set to (?<expectedValue>.+) on campaign (?<campaignId>.+)`
-- **Expected Data**:
-  - `email`: Lead's email address
-  - `campaignId`: Campaign ID
-  - `field`: Field name to check
-  - `expectedValue`: Expected field value
-- **Step ID**: `CampaignMemberFieldEquals`
-
-<h4 id="CampaignMemberCampaignIdEquals">Check Salesforce Campaign Membership</h4>
-
-- **Expression**: `the salesforce lead (?<email>.+) should be a member of campaign (?<campaignId>.+)`
-- **Expected Data**:
-  - `email`: Lead's email address
-  - `campaignId`: Campaign ID
-- **Step ID**: `CampaignMemberCampaignIdEquals`
-
-<h4 id="ContactCreateStep">Create a Salesforce Contact</h4>
-
-- **Expression**: `create a salesforce contact`
-- **Expected Data**:
-  - `contact`: A map of field names to field values
-- **Step ID**: `ContactCreateStep`
-
-<h4 id="ContactDeleteStep">Delete a Salesforce Contact</h4>
-
-- **Expression**: `delete the (?<email>.+) salesforce contact`
-- **Expected Data**:
-  - `email`: Contact's Email Address
-- **Step ID**: `ContactDeleteStep`
-
-<h4 id="ContactFieldEqualsStep">Check a field on a Salesforce Contact</h4>
-
-- **Expression**: `the (?<field>[a-zA-Z0-9_]+) field on salesforce contact (?<email>.+) should be (?<expectedValue>.+)`
-- **Expected Data**:
-  - `email`: Contact's email address
-  - `field`: Field name to check
-  - `expectedValue`: Expected field value
-- **Step ID**: `ContactFieldEqualsStep`
-
-<h4 id="CreateLead">Create a Salesforce Lead</h4>
-
-- **Expression**: `create a salesforce lead`
-- **Expected Data**:
-  - `lead`: A map of field names to field values
-- **Step ID**: `CreateLead`
-
-<h4 id="DeleteLead">Delete a Salesforce Lead</h4>
-
-- **Expression**: `delete the (?<email>.+) salesforce lead`
-- **Expected Data**:
-  - `email`: Lead's email address
-- **Step ID**: `DeleteLead`
-
-<h4 id="LeadFieldEquals">Check a field on a Salesforce Lead</h4>
-
-- **Expression**: `the (?<field>[a-zA-Z0-9_]+) field on salesforce lead (?<email>.+) should be (?<expectedValue>.+)`
-- **Expected Data**:
-  - `email`: Lead's email address
-  - `field`: Field name to check
-  - `expectedValue`: Expected field value
-- **Step ID**: `LeadFieldEquals`
-
-<h4 id="CreateOpportunity">Create a Salesforce Opportunity</h4>
-
-- **Expression**: `create a salesforce opportunity`
-- **Expected Data**:
-  - `opportunity`: A map of field names to field values
-- **Step ID**: `CreateOpportunity`
-
-<h4 id="DeleteOpportunity">Delete a Salesforce Opportunity</h4>
-
-- **Expression**: `delete the salesforce opportunity with (?<field>[a-zA-Z0-9_]+) (?<identifier>.+)`
-- **Expected Data**:
-  - `field`: the name of the field used to identify the opportunity
-  - `identifier`: the value of the field
-- **Step ID**: `DeleteOpportunity`
-
-<h4 id="OpportunityFieldEquals">Check a field on a Salesforce Opportunity</h4>
-
-- **Expression**: `the (?<field>[a-zA-Z0-9_]+) field on salesforce opportunity with (?<idField>[a-zA-Z0-9_]+) (?<identifier>.+) should be (?<expectedValue>.+)`
-- **Expected Data**:
-  - `idField`: The field used to search/identify the opportunity
-  - `identifier`: The value of the id field to use when searching
-  - `field`: The name of the field to check
-  - `expectedValue`: The expected value of the field
-- **Step ID**: `OpportunityFieldEquals`
+| Name (ID) | Expression | Expected Data |
+| --- | --- | --- |
+| **Create a Salesforce Account**<br>(`CreateAccount`) | `create a salesforce account` | - `account`: A map of field names to field values |
+| **Delete a Salesforce Account**<br>(`DeleteAccount`) | `delete the salesforce account with (?<field>[a-zA-Z0-9_]+) (?<identifier>.+)` | - `field`: the name of the field used to identify the account <br><br>- `identifier`: the value of the field |
+| **Check a field on a Salesforce Account**<br>(`AccountFieldEquals`) | `the (?<field>[a-zA-Z0-9_]+) field on salesforce account with (?<idField>[a-zA-Z0-9_]+) (?<identifier>.+) should be (?<expectedValue>.+)` | - `idField`: The field used to search/identify the account <br><br>- `identifier`: The value of the id field to use when searching <br><br>- `field`: The name of the field to check <br><br>- `expectedValue`: The expected value of the field |
+| **Check a field on a Salesforce Campaign Member**<br>(`CampaignMemberFieldEquals`) | `the salesforce lead (?<email>.+) should have campaign member (?<field>.+) set to (?<expectedValue>.+) on campaign (?<campaignId>.+)` | - `email`: Lead's email address <br><br>- `campaignId`: Campaign ID <br><br>- `field`: Field name to check <br><br>- `expectedValue`: Expected field value |
+| **Check Salesforce Campaign Membership**<br>(`CampaignMemberCampaignIdEquals`) | `the salesforce lead (?<email>.+) should be a member of campaign (?<campaignId>.+)` | - `email`: Lead's email address <br><br>- `campaignId`: Campaign ID |
+| **Create a Salesforce Contact**<br>(`ContactCreateStep`) | `create a salesforce contact` | - `contact`: A map of field names to field values |
+| **Delete a Salesforce Contact**<br>(`ContactDeleteStep`) | `delete the (?<email>.+) salesforce contact` | - `email`: Contact's Email Address |
+| **Check a field on a Salesforce Contact**<br>(`ContactFieldEqualsStep`) | `the (?<field>[a-zA-Z0-9_]+) field on salesforce contact (?<email>.+) should be (?<expectedValue>.+)` | - `email`: Contact's email address <br><br>- `field`: Field name to check <br><br>- `expectedValue`: Expected field value |
+| **Create a Salesforce Lead**<br>(`CreateLead`) | `create a salesforce lead` | - `lead`: A map of field names to field values |
+| **Delete a Salesforce Lead**<br>(`DeleteLead`) | `delete the (?<email>.+) salesforce lead` | - `email`: Lead's email address |
+| **Check a field on a Salesforce Lead**<br>(`LeadFieldEquals`) | `the (?<field>[a-zA-Z0-9_]+) field on salesforce lead (?<email>.+) should be (?<expectedValue>.+)` | - `email`: Lead's email address <br><br>- `field`: Field name to check <br><br>- `expectedValue`: Expected field value |
+| **Create a Salesforce Opportunity**<br>(`CreateOpportunity`) | `create a salesforce opportunity` | - `opportunity`: A map of field names to field values |
+| **Delete a Salesforce Opportunity**<br>(`DeleteOpportunity`) | `delete the salesforce opportunity with (?<field>[a-zA-Z0-9_]+) (?<identifier>.+)` | - `field`: the name of the field used to identify the opportunity <br><br>- `identifier`: the value of the field |
+| **Check a field on a Salesforce Opportunity**<br>(`OpportunityFieldEquals`) | `the (?<field>[a-zA-Z0-9_]+) field on salesforce opportunity with (?<idField>[a-zA-Z0-9_]+) (?<identifier>.+) should be (?<expectedValue>.+)` | - `idField`: The field used to search/identify the opportunity <br><br>- `identifier`: The value of the id field to use when searching <br><br>- `field`: The name of the field to check <br><br>- `expectedValue`: The expected value of the field |
 <!-- stepDetailsEnd -->
 
 ## Development and Contributing
