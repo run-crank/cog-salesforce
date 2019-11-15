@@ -644,4 +644,165 @@ describe('ClientWrapper', () => {
     expect(clientWrapperUnderTest.findCampaignMemberByEmailAndCampaignId(expectedEmail, expectedCampaignId, [expectedField]))
       .to.be.rejectedWith(anError);
   });
+
+  it('createContact', async () => {
+    const expectedLead = { email: 'test@example.com' };
+    const expectedResult = { Id: 'xyz123' };
+    let actualResult;
+
+    // Set up test instance.
+    sobjectStub.create.callsArgWith(1, null, expectedResult);
+    clientWrapperUnderTest = new ClientWrapper(metadata, jsForceConstructorStub);
+
+    // Call the method and make assertions.
+    actualResult = await clientWrapperUnderTest.createContact(expectedLead);
+    expect(sfdcClientStub.sobject).to.have.been.calledWith('Contact');
+    expect(sobjectStub.create).to.have.been.calledWith(expectedLead);
+    expect(actualResult).to.equal(expectedResult);
+  });
+
+  it('createContact:apiError', () => {
+    const expectedLead = { email: 'test@example.com' };
+    const anError = new Error('An API Error');
+
+    // Set up test instance.
+    sobjectStub.create.callsArgWith(1, anError);
+    clientWrapperUnderTest = new ClientWrapper(metadata, jsForceConstructorStub);
+
+    // Call the method and make assertions.
+    expect(clientWrapperUnderTest.createContact(expectedLead))
+      .to.be.rejectedWith(anError);
+  });
+
+  it('createContact:apiThrows', async () => {
+    const expectedLead = { email: 'test@example.com' };
+    const anError = new Error('An API Error');
+
+    // Set up test instance.
+    sobjectStub.create.throws(anError);
+    clientWrapperUnderTest = new ClientWrapper(metadata, jsForceConstructorStub);
+
+    // Call the method and make assertions.
+    expect(clientWrapperUnderTest.createContact(expectedLead))
+      .to.be.rejectedWith(anError);
+  });
+
+  it('findContactByEmail', (done) => {
+    const sampleEmail = 'sampleEmail';
+    const sampleField = 'Id';
+
+    // Set up test instance.
+    clientWrapperUnderTest = new ClientWrapper(metadata, jsForceConstructorStub);
+
+    // Call the method and make assertions.
+    clientWrapperUnderTest.findContactByEmail(sampleEmail, sampleField);
+    setTimeout(() => {
+      expect(sfdcClientStub.sobject).to.have.been.calledWith('Contact');
+      expect(sobjectStub.findOne).to.have.been.calledWith({ Email: sampleEmail }, [sampleField]);
+      done();
+    });
+  });
+
+  it('findContactByEmail:apiError', () => {
+    const sampleEmail = 'sampleEmail';
+    const sampleField = 'Id';
+    const anError = new Error('An API Error');
+
+    // Set up test instance.
+    sobjectStub.findOne.callsArgWith(2, anError);
+    clientWrapperUnderTest = new ClientWrapper(metadata, jsForceConstructorStub);
+
+    // Call the method and make assertions.
+    expect(clientWrapperUnderTest.findContactByEmail(sampleEmail, sampleField))
+      .to.be.rejectedWith(anError);
+  });
+
+  it('findContactByEmail:apiThrows', () => {
+    const sampleEmail = 'sampleEmail';
+    const sampleField = 'Id';
+    const anError = new Error('An API Error');
+
+    // Set up test instance.
+    sobjectStub.findOne.throws(anError);
+    clientWrapperUnderTest = new ClientWrapper(metadata, jsForceConstructorStub);
+
+    // Call the method and make assertions.
+    expect(clientWrapperUnderTest.findContactByEmail(sampleEmail, sampleField))
+      .to.be.rejectedWith(anError);
+  });
+
+  it('deleteContactByEmail', (done) => {
+    const sampleEmail = 'sampleEmail';
+    const sampleRecord =
+      {
+        Id: 'sampleId',
+        Name: 'SampleName',
+      };
+
+    // Set up the test instance.
+    sobjectStub.findOne.callsArgWith(2, null, sampleRecord);
+    clientWrapperUnderTest = new ClientWrapper(metadata, jsForceConstructorStub);
+
+    // Call the method and make assertions.
+    clientWrapperUnderTest.deleteContactByEmail(sampleEmail);
+    setTimeout(() => {
+      expect(sfdcClientStub.sobject).to.have.been.calledWith('Contact');
+      expect(sobjectStub.delete).to.have.been.calledWith(sampleRecord.Id);
+      done();
+    });
+  });
+
+  it('deleteContactByEmail:noAccountFound', () => {
+    const sampleEmail = 'sampleEmail';
+    const emptyRecord = {};
+
+    // Set up the test instance.
+    sobjectStub.find.callsArgWith(2, null, emptyRecord);
+    clientWrapperUnderTest = new ClientWrapper(metadata, jsForceConstructorStub);
+
+    // Call the method and make assertions.
+    expect(clientWrapperUnderTest.deleteContactByEmail(sampleEmail))
+      .to.be.rejected;
+  });
+
+  it('deleteContactByEmail:apiError', () => {
+    const sampleEmail = 'sampleEmail';
+    const sampleRecord = [
+      {
+        Id: 'sampleId',
+        Name: 'SampleName',
+      },
+    ];
+    const anError = new Error('An API Error');
+
+    // Set up the test instance.
+    sobjectStub.find.callsArgWith(2, null, sampleRecord);
+    sobjectStub.delete.callsArgWith(1, anError);
+    clientWrapperUnderTest = new ClientWrapper(metadata, jsForceConstructorStub);
+
+    // Call the method and make assertions.
+    expect(clientWrapperUnderTest.deleteContactByEmail(sampleEmail))
+      .to.be.rejectedWith(anError);
+  });
+
+  it('deleteContactByEmail:apiThrows', () => {
+    const sampleEmail = 'sampleEmail';
+    const sampleRecord = [
+      {
+        Id: 'sampleId',
+        Name: 'SampleName',
+      },
+    ];
+    const anError = new Error('An API Error');
+
+    // Set up the test instance.
+    sobjectStub.findOne.callsArgWith(2, null, sampleRecord);
+    sobjectStub.delete.throws(anError);
+    clientWrapperUnderTest = new ClientWrapper(metadata, jsForceConstructorStub);
+
+    // Call the method and make assertions.
+    expect(clientWrapperUnderTest.deleteContactByEmail(sampleEmail))
+      .to.be.rejectedWith(anError);
+  });
+
 });
