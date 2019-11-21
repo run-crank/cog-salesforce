@@ -1,0 +1,16 @@
+scenario: SalesForce Contact
+description: This tests the creation and deletion of a salesforce contact
+
+steps:
+- step: create a salesforce contact
+  data:
+    contact:
+        FirstName: Atoma
+        LastName: Tommy
+        Title: Dev
+        AccountId: 0010b00002PwRVJAA3
+        Email: salesforce@thisisjust.atomatest.com
+- step: the FirstName field on salesforce contact salesforce@thisisjust.atomatest.com should be Atoma
+- step: the Email field on salesforce contact salesforce@thisisjust.atomatest.com should be salesforce@thisisjust.atomatest.com
+- step: the AccountId field on salesforce contact salesforce@thisisjust.atomatest.com should be 0010b00002PwRVJAA3
+- step: delete the salesforce@thisisjust.atomatest.com salesforce contact

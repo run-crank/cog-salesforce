@@ -3,7 +3,7 @@ description: This test the Contact creation and validation of field in SalesForc
 
 tokens:
   test:
-    email: sfcontact@test.com
+    email: sfcontact@thisisjust.atomatest.com
     firstname: Joe
     lastname: Sprouse
     title: QA
