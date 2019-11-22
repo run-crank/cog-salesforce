@@ -3,7 +3,7 @@ description: This test the creation of Lead from Web and validation of field in 
 
 tokens:
   test:
-    email: jbaretto@ys.com
+    email: jbaretto@thisisjust.atomatest.com
     lastname: Baretto
     firstname: Julia
     company: Yeah corp

@@ -2,7 +2,7 @@ scenario: Campaign Member Test with Success status
 description: This test the creation of Lead in Web and validation of campaign member fields in SalesForce. 
 
 tokens:
-  testEmail: jlloyd@qa.com
+  testEmail: jlloyd@thisisjust.atomatest.com
   testLastname: Lloyd
   testFirstname: John
   testCompany: YS Corp
