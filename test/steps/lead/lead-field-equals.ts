@@ -26,7 +26,7 @@ describe('LeadFieldEqualsStep', () => {
     const stepDef: StepDefinition = stepUnderTest.getDefinition();
     expect(stepDef.getStepId()).to.equal('LeadFieldEquals');
     expect(stepDef.getName()).to.equal('Check a field on a Salesforce Lead');
-    expect(stepDef.getExpression()).to.equal('the (?<field>[a-zA-Z0-9_]+) field on salesforce lead (?<email>.+) should be (?<expectedValue>.+)');
+    expect(stepDef.getExpression()).to.equal('the (?<field>[a-zA-Z0-9_]+) field on salesforce lead (?<email>.+) should (?<operator>be less than|be greater than|be|contain|not be|not contain) (?<expectedValue>.+)');
     expect(stepDef.getType()).to.equal(StepDefinition.Type.VALIDATION);
   });
 
@@ -123,6 +123,22 @@ describe('LeadFieldEqualsStep', () => {
     protoStep.setData(Struct.fromJavaScript({
       field: 'someOtherField',
       expectedValue: 'Any Value',
+      email: 'anything@example.com',
+    }));
+
+    const response: RunStepResponse = await stepUnderTest.executeStep(protoStep);
+    expect(response.getOutcome()).to.equal(RunStepResponse.Outcome.ERROR);
+  });
+
+  it('should respond with error when inputing invalid operator', async () => {
+    // Stub a response that responds with error.
+    const expectedUser: any = { someField: 'Expected Value' };
+    clientWrapperStub.findLeadByEmail.resolves(expectedUser);
+
+    protoStep.setData(Struct.fromJavaScript({
+      field: 'someField',
+      expectedValue: 'Any Value',
+      operator: 'invalidOperator',
       email: 'anything@example.com',
     }));
 

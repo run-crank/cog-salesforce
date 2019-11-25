@@ -34,7 +34,7 @@ describe('ContactFieldEqualsStep', () => {
       expect(stepDef.getStepId()).to.equal('ContactFieldEqualsStep');
       expect(stepDef.getName()).to.equal('Check a field on a Salesforce Contact');
       // tslint:disable-next-line:max-line-length
-      expect(stepDef.getExpression()).to.equal('the (?<field>[a-zA-Z0-9_]+) field on salesforce contact (?<email>.+) should be (?<expectedValue>.+)');
+      expect(stepDef.getExpression()).to.equal('the (?<field>[a-zA-Z0-9_]+) field on salesforce contact (?<email>.+) should (?<operator>be less than|be greater than|be|contain|not be|not contain) (?<expectedValue>.+)');
       expect(stepDef.getType()).to.equal(StepDefinition.Type.VALIDATION);
     });
 
@@ -66,6 +66,23 @@ describe('ContactFieldEqualsStep', () => {
         expectedValue: 'Test',
       }));
       clientWrapperStub.findContactByEmail.throws();
+    });
+
+    it('should respond with error', async () => {
+      const response = await stepUnderTest.executeStep(protoStep);
+      expect(response.getOutcome()).to.equal(RunStepResponse.Outcome.ERROR);
+    });
+  });
+
+  describe('Validation error', () => {
+    beforeEach(() => {
+      protoStep.setData(Struct.fromJavaScript({
+        email: 'salesforce@test.com',
+        field: 'FirstName',
+        operator: 'invalidOperator',
+        expectedValue: 'Test',
+      }));
+      clientWrapperStub.findContactByEmail.returns(Promise.resolve({ Email: 'salesforce@test.com', FirstName: 'Test' }));
     });
 
     it('should respond with error', async () => {

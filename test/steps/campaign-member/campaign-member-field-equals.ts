@@ -26,7 +26,7 @@ describe('CampaignMemberFieldEqualsStep', () => {
     const stepDef: StepDefinition = stepUnderTest.getDefinition();
     expect(stepDef.getStepId()).to.equal('CampaignMemberFieldEquals');
     expect(stepDef.getName()).to.equal('Check a field on a Salesforce Campaign Member');
-    expect(stepDef.getExpression()).to.equal('the salesforce lead (?<email>.+) should have campaign member (?<field>.+) set to (?<expectedValue>.+) on campaign (?<campaignId>.+)');
+    expect(stepDef.getExpression()).to.equal('the salesforce lead (?<email>.+) should (?<operator>be less than|be greater than|be|contain|not be|not contain) (?<expectedValue>.+) on campaign (?<campaignId>.+)');
     expect(stepDef.getType()).to.equal(StepDefinition.Type.VALIDATION);
   });
 
@@ -46,11 +46,17 @@ describe('CampaignMemberFieldEqualsStep', () => {
     expect(campaignId.optionality).to.equal(FieldDefinition.Optionality.REQUIRED);
     expect(campaignId.type).to.equal(FieldDefinition.Type.STRING);
 
+    // Field field
     const field: any = fields.filter(f => f.key === 'field')[0];
     expect(field.optionality).to.equal(FieldDefinition.Optionality.REQUIRED);
     expect(field.type).to.equal(FieldDefinition.Type.STRING);
 
-    // Campaign Id field
+    // Operator field
+    const operator: any = fields.filter(f => f.key === 'operator')[0];
+    expect(operator.optionality).to.equal(FieldDefinition.Optionality.OPTIONAL);
+    expect(operator.type).to.equal(FieldDefinition.Type.STRING);
+
+    // Expected Value field
     const expectedValue: any = fields.filter(f => f.key === 'expectedValue')[0];
     expect(expectedValue.optionality).to.equal(FieldDefinition.Optionality.REQUIRED);
     expect(expectedValue.type).to.equal(FieldDefinition.Type.ANYSCALAR);
@@ -116,7 +122,7 @@ describe('CampaignMemberFieldEqualsStep', () => {
 
   it('should respond with fail if API client resolved unexpected data', async () => {
     // Stub a response that matches expectations.
-    const expectedResponseMessage: string = 'Expected Campaign Member %s field to be %s, but it was actually %s';
+    const expectedResponseMessage: string = 'Expected %s field to be %s, but it was actually %s';
     const expectedUser: any = { CampaignId: 'someId', someField: 'someOtherValue' };
     clientWrapperStub.findCampaignMemberByEmailAndCampaignId.resolves(expectedUser);
 
@@ -145,6 +151,25 @@ describe('CampaignMemberFieldEqualsStep', () => {
     const expectations: any = {
       email: 'someField',
       campaignId: 'someId',
+    };
+    protoStep.setData(Struct.fromJavaScript(expectations));
+
+    const response: RunStepResponse = await stepUnderTest.executeStep(protoStep);
+    expect(response.getMessageFormat()).to.equal(expectedResponseMessage);
+    expect(response.getOutcome()).to.equal(RunStepResponse.Outcome.ERROR);
+  });
+
+  it('should respond with error when inputing invalid operator', async () => {
+    // Stub a response that matches expectations.
+    const expectedResponseMessage: string = 'There was an error during validation of campaign member field: %s';
+    const expectedUser: any = { campaignId: 'someId', someField: 'someValue' };
+    clientWrapperStub.findCampaignMemberByEmailAndCampaignId.resolves(expectedUser);
+
+    // Set step data corresponding to expectations
+    const expectations: any = {
+      email: 'someField',
+      campaignId: 'someId',
+      operator: 'invalidOperator',
     };
     protoStep.setData(Struct.fromJavaScript(expectations));
 
