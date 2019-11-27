@@ -7,7 +7,7 @@ export class ContactFieldEqualsStep extends BaseStep implements StepInterface {
 
   protected stepName: string = 'Check a field on a Salesforce Contact';
   /* tslint:disable-next-line:max-line-length */
-  protected stepExpression: string = 'the (?<field>[a-zA-Z0-9_]+) field on salesforce contact (?<email>.+) should be (?<expectedValue>.+)';
+  protected stepExpression: string = 'the (?<field>[a-zA-Z0-9_]+) field on salesforce contact (?<email>.+) should (?<operator>be less than|be greater than|be|contain|not be|not contain) (?<expectedValue>.+)';
   protected stepType: StepDefinition.Type = StepDefinition.Type.VALIDATION;
   protected expectedFields: Field[] = [{
     field: 'email',
@@ -18,6 +18,11 @@ export class ContactFieldEqualsStep extends BaseStep implements StepInterface {
     type: FieldDefinition.Type.STRING,
     description: 'Field name to check',
   }, {
+    field: 'operator',
+    type: FieldDefinition.Type.STRING,
+    optionality: FieldDefinition.Optionality.OPTIONAL,
+    description: 'Check Logic (be, not be, contain, not contain, be greater than, or be less than)',
+  }, {
     field: 'expectedValue',
     type: FieldDefinition.Type.ANYSCALAR,
     description: 'Expected field value',
@@ -27,6 +32,7 @@ export class ContactFieldEqualsStep extends BaseStep implements StepInterface {
     const stepData: any = step.getData().toJavaScript();
     const email: string = stepData.email;
     const field: string = stepData.field;
+    const operator: string = stepData.operator || 'be';
     const expectedValue: string = stepData.expectedValue;
     let contact: Record<string, any>;
 
@@ -36,19 +42,23 @@ export class ContactFieldEqualsStep extends BaseStep implements StepInterface {
       return this.error('There was a problem checking the Contact: %s', [e.toString()]);
     }
 
-    if (!contact) {
-      return this.error('No Contact found with email %s', [email]);
-    } else if (!contact.hasOwnProperty(field)) {
-      return this.error('The %s field does not exist on Contact %s', [field, email]);
-      /* tslint:disable-next-line:triple-equals */
-    } else if (contact[field] == expectedValue) {
-      return this.pass('The %s field was set to %s, as expected', [field, contact[field]]);
-    } else {
-      return this.fail('Expected %s field to be %s, but it was actually %s', [
-        field,
-        expectedValue,
-        contact[field],
-      ]);
+    try {
+      if (!contact) {
+        return this.error('No Contact found with email %s', [email]);
+      } else if (!contact.hasOwnProperty(field)) {
+        return this.error('The %s field does not exist on Contact %s', [field, email]);
+        /* tslint:disable-next-line:triple-equals */
+      } else if (this.compare(operator, contact[field], expectedValue)) {
+        return this.pass(this.operatorSuccessMessages[operator.replace(/\s/g, '').toLowerCase()], [field, expectedValue]);
+      } else {
+        return this.fail(this.operatorFailMessages[operator.replace(/\s/g, '').toLowerCase()], [
+          field,
+          expectedValue,
+          contact[field],
+        ]);
+      }
+    } catch (e) {
+      return this.error('There was an error during validation of contact field: %s', [e.message]);
     }
   }
 

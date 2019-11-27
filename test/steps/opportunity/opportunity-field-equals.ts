@@ -26,7 +26,7 @@ describe('OpportunityFieldEqualsStep', () => {
     const stepDef: StepDefinition = stepUnderTest.getDefinition();
     expect(stepDef.getStepId()).to.equal('OpportunityFieldEquals');
     expect(stepDef.getName()).to.equal('Check a field on a Salesforce Opportunity');
-    expect(stepDef.getExpression()).to.equal('the (?<field>[a-zA-Z0-9_]+) field on salesforce opportunity with (?<idField>[a-zA-Z0-9_]+) (?<identifier>.+) should be (?<expectedValue>.+)');
+    expect(stepDef.getExpression()).to.equal('the (?<field>[a-zA-Z0-9_]+) field on salesforce opportunity with (?<idField>[a-zA-Z0-9_]+) (?<identifier>.+) should (?<operator>be less than|be greater than|be|contain|not be|not contain) (?<expectedValue>.+)');
     expect(stepDef.getType()).to.equal(StepDefinition.Type.VALIDATION);
   });
 
@@ -225,6 +225,39 @@ describe('OpportunityFieldEqualsStep', () => {
       idField: sampleIdField,
       identifier: sampleIdentifier,
       field: sampleField,
+      expectedValue: sampleValue,
+    };
+    protoStep.setData(Struct.fromJavaScript(expectations));
+
+    const response: RunStepResponse = await stepUnderTest.executeStep(protoStep);
+    expect(clientWrapperStub.findOpportunityByIdentifier).to.have.been.calledWith(sampleIdField, sampleIdentifier, sampleField);
+    expect(response.getMessageFormat()).to.equal(expectedResponseMessage);
+    expect(response.getOutcome()).to.equal(RunStepResponse.Outcome.ERROR);
+  });
+
+  it('should respond with error when inputing invalid operator', async () => {
+    // Stub a response that matches expectations.
+    const sampleIdField = 'someIdField';
+    const sampleIdentifier = 'someIdentifier';
+    const sampleField = 'someField';
+    const sampleValue = 'someValue';
+    const expectedResponseMessage = 'There was an error during validation of opportunity field: %s';
+
+    const expectedOpportunity = [
+      {
+        Id: 'someId',
+        [sampleField]: sampleValue,
+        Name: 'someName',
+      },
+    ];
+    clientWrapperStub.findOpportunityByIdentifier.resolves(expectedOpportunity);
+
+    // Set step data corresponding to expectations
+    const expectations: any = {
+      idField: sampleIdField,
+      identifier: sampleIdentifier,
+      field: sampleField,
+      operator: 'invalidOperator',
       expectedValue: sampleValue,
     };
     protoStep.setData(Struct.fromJavaScript(expectations));

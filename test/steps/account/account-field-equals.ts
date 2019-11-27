@@ -26,7 +26,7 @@ describe('AccountFieldEqualsStep', () => {
     const stepDef: StepDefinition = stepUnderTest.getDefinition();
     expect(stepDef.getStepId()).to.equal('AccountFieldEquals');
     expect(stepDef.getName()).to.equal('Check a field on a Salesforce Account');
-    expect(stepDef.getExpression()).to.equal('the (?<field>[a-zA-Z0-9_]+) field on salesforce account with (?<idField>[a-zA-Z0-9_]+) (?<identifier>.+) should be (?<expectedValue>.+)');
+    expect(stepDef.getExpression()).to.equal('the (?<field>[a-zA-Z0-9_]+) field on salesforce account with (?<idField>[a-zA-Z0-9_]+) (?<identifier>.+) should (?<operator>be less than|be greater than|be|contain|not be|not contain) (?<expectedValue>.+)');
     expect(stepDef.getType()).to.equal(StepDefinition.Type.VALIDATION);
   });
 
@@ -48,6 +48,10 @@ describe('AccountFieldEqualsStep', () => {
     const field: any = fields.filter(f => f.key === 'field')[0];
     expect(field.optionality).to.equal(FieldDefinition.Optionality.REQUIRED);
     expect(field.type).to.equal(FieldDefinition.Type.STRING);
+
+    const operator: any = fields.filter(f => f.key === 'operator')[0];
+    expect(operator.optionality).to.equal(FieldDefinition.Optionality.OPTIONAL);
+    expect(operator.type).to.equal(FieldDefinition.Type.STRING);
 
     const expectedValue: any = fields.filter(f => f.key === 'expectedValue')[0];
     expect(expectedValue.optionality).to.equal(FieldDefinition.Optionality.REQUIRED);
@@ -225,6 +229,39 @@ describe('AccountFieldEqualsStep', () => {
       idField: sampleIdField,
       identifier: sampleIdentifier,
       field: sampleField,
+      expectedValue: sampleValue,
+    };
+    protoStep.setData(Struct.fromJavaScript(expectations));
+
+    const response: RunStepResponse = await stepUnderTest.executeStep(protoStep);
+    expect(clientWrapperStub.findAccountByIdentifier).to.have.been.calledWith(sampleIdField, sampleIdentifier, sampleField);
+    expect(response.getMessageFormat()).to.equal(expectedResponseMessage);
+    expect(response.getOutcome()).to.equal(RunStepResponse.Outcome.ERROR);
+  });
+
+  it('should respond with error when inputing invalid operator', async () => {
+    // Stub a response that matches expectations.
+    const sampleIdField = 'someIdField';
+    const sampleIdentifier = 'someIdentifier';
+    const sampleField = 'someField';
+    const sampleValue = 'someValue';
+    const expectedResponseMessage = 'There was an error during validation of account field: %s';
+
+    const expectedAccount = [
+      {
+        Id: 'someId',
+        [sampleField]: sampleValue,
+        Name: 'someName',
+      },
+    ];
+    clientWrapperStub.findAccountByIdentifier.resolves(expectedAccount);
+
+    // Set step data corresponding to expectations
+    const expectations: any = {
+      idField: sampleIdField,
+      identifier: sampleIdentifier,
+      field: sampleField,
+      operator: 'invalidOperator',
       expectedValue: sampleValue,
     };
     protoStep.setData(Struct.fromJavaScript(expectations));

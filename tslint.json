@@ -10,6 +10,9 @@
     ],
     "triple-equals":[
       false
+    ],
+    "no-else-after-return":[
+      false
     ]
   },
   "rulesDirectory": []
