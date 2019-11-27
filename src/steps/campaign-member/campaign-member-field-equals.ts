@@ -37,7 +37,7 @@ export class CampaignMemberFieldEquals extends BaseStep implements StepInterface
     const email: string = stepData.email;
     const campaignId: string = stepData.campaignId;
     const field: string = stepData.field;
-    const operator: string = stepData.operator || 'be';
+    let operator: string = stepData.operator || 'set to';
     const expectedValue: string = stepData.expectedValue;
     let campaignMember: Record<string, any>;
 
@@ -49,6 +49,8 @@ export class CampaignMemberFieldEquals extends BaseStep implements StepInterface
       lessthan: 'be less than',
       greaterthan: 'be greater than',
     };
+
+    operator = normalizedOperators[operator.replace(/\s/g, '').toLowerCase()];
 
     try {
       campaignMember = await this.client.findCampaignMemberByEmailAndCampaignId(email, campaignId, [field]);
@@ -63,7 +65,7 @@ export class CampaignMemberFieldEquals extends BaseStep implements StepInterface
       } else if (!campaignMember.hasOwnProperty(field)) {
         // If the given field does not exist on the user, return an error.
         return this.error('The %s field does not exist on Campaign Member with email %s and campaign id %s', [field, email, campaignId]);
-      } else if (this.compare(normalizedOperators[operator.replace(/\s/g, '').toLowerCase()], campaignMember[field], expectedValue)) {
+      } else if (this.compare(operator, campaignMember[field], expectedValue)) {
         // If the value of the field matches expectations, pass.
         return this.pass(this.operatorSuccessMessages[operator.replace(/\s/g, '').toLowerCase()], [field, expectedValue]);
       } else {
