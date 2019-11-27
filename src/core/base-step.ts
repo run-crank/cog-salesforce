@@ -73,6 +73,8 @@ export abstract class BaseStep {
 
   compare(operator: string, actualValue: string, value:string): boolean {
     const validOperators = ['be', 'not be', 'contain', 'not contain', 'be greater than', 'be less than'];
+    const dateTimeFormat = /\d{4}-\d{2}-\d{2}(?:.?\d{2}:\d{2}:\d{2})?/gi;
+
     if (validOperators.includes(operator.toLowerCase())) {
       if (operator == 'be') {
         return actualValue == value;
@@ -83,24 +85,24 @@ export abstract class BaseStep {
       } else if (operator == 'not contain') {
         return !actualValue.includes(value);
       } else if (operator == 'be greater than') {
-        if (!isNaN(Date.parse(value)) && !isNaN(Date.parse(actualValue))) {
+        if (dateTimeFormat.test(value) && dateTimeFormat.test(actualValue)) {
           return moment(actualValue).isAfter(value);
         } else if (!isNaN(Number(value)) && !isNaN(Number(actualValue))) {
           return parseFloat(value) > parseFloat(actualValue);
         } else {
-          throw new Error('Operator only supports numeric or date format values.');
+          throw new Error(`Couldn't check that ${value} > ${actualValue}. The ${operator} operator can only be used with numeric or date values.`);
         }
       } else if (operator == 'be less than') {
-        if (!isNaN(Date.parse(value)) && !isNaN(Date.parse(actualValue))) {
+        if (dateTimeFormat.test(value) && dateTimeFormat.test(actualValue)) {
           return moment(actualValue).isBefore(value);
         } else if (!isNaN(Number(value)) && !isNaN(Number(actualValue))) {
           return parseFloat(value) < parseFloat(actualValue);
         } else {
-          throw new Error('Operator only supports numeric or date format values.');
+          throw new Error(`Couldn't check that ${value} > ${actualValue}. The ${operator} operator can only be used with numeric or date values.`);
         }
       }
     } else {
-      throw new Error('Invalid operator.');
+      throw new Error(`${operator}" is an invalid operator. Please provide one of: ${validOperators.join(', ')}`);
     }
   }
 

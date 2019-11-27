@@ -9,7 +9,7 @@ export class AccountFieldEquals extends BaseStep implements StepInterface {
 
   protected stepName: string = 'Check a field on a Salesforce Account';
   /* tslint:disable-next-line:max-line-length */
-  protected stepExpression: string = 'the (?<field>[a-zA-Z0-9_]+) field on salesforce account (?<email>.+) should (?<operator>be less than|be greater than|be|contain|not be|not contain) (?<expectedValue>.+)';
+  protected stepExpression: string = 'the (?<field>[a-zA-Z0-9_]+) field on salesforce account with (?<idField>[a-zA-Z0-9_]+) (?<identifier>.+) should (?<operator>be less than|be greater than|be|contain|not be|not contain) (?<expectedValue>.+)';
   protected stepType: StepDefinition.Type = StepDefinition.Type.VALIDATION;
   protected expectedFields: Field[] = [{
     field: 'idField',
