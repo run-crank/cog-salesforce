@@ -41,8 +41,6 @@ export class CampaignMemberFieldEquals extends BaseStep implements StepInterface
     const expectedValue: string = stepData.expectedValue;
     let campaignMember: Record<string, any>;
 
-    console.log(operator);
-
     const normalizedOperators = {
       setto: 'be',
       notsetto: 'not be',
