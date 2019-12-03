@@ -7,7 +7,7 @@ export class CampaignMemberFieldEquals extends BaseStep implements StepInterface
 
   protected stepName: string = 'Check a field on a Salesforce Campaign Member';
   /* tslint:disable-next-line:max-line-length */
-  protected stepExpression: string = 'the salesforce lead (?<email>.+) should have campaign member (?<field>.+) (?<operator>set to|not set to|containing|not containing|less than|greater than) (?<expectedValue>.+) on campaign (?<campaignId>.+)';
+  protected stepExpression: string = 'the salesforce lead (?<email>.+) should have campaign member (?<field>[a-z0-9_]+) (?<operator>set to|not set to|containing|not containing|less than|greater than) (?<expectedValue>.+) on campaign (?<campaignId>.+)';
   protected stepType: StepDefinition.Type = StepDefinition.Type.VALIDATION;
   protected expectedFields: Field[] = [{
     field: 'email',
@@ -40,6 +40,8 @@ export class CampaignMemberFieldEquals extends BaseStep implements StepInterface
     let operator: string = stepData.operator || 'set to';
     const expectedValue: string = stepData.expectedValue;
     let campaignMember: Record<string, any>;
+
+    console.log(operator);
 
     const normalizedOperators = {
       setto: 'be',
