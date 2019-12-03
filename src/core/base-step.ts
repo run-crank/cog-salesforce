@@ -81,9 +81,9 @@ export abstract class BaseStep {
       } else if (operator == 'not be') {
         return actualValue != value;
       } else if (operator == 'contain') {
-        return actualValue.includes(value);
+        return actualValue.toLowerCase().includes(value.toLowerCase());
       } else if (operator == 'not contain') {
-        return !actualValue.includes(value);
+        return !actualValue.toLowerCase().includes(value.toLowerCase());
       } else if (operator == 'be greater than') {
         if (dateTimeFormat.test(actualValue) && dateTimeFormat.test(value)) {
           return moment(actualValue).isAfter(value);
