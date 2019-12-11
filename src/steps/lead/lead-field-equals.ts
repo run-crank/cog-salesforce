@@ -3,6 +3,8 @@ import { Field } from './../../core/base-step';
 
 import { BaseStep, StepInterface } from '../../core/base-step';
 import { Step, RunStepResponse, FieldDefinition, StepDefinition } from '../../proto/cog_pb';
+import * as util from '@run-crank/utilities';
+import { baseOperators } from '../../client/constants/operators';
 
 export class LeadFieldEquals extends BaseStep implements StepInterface {
 
@@ -52,16 +54,22 @@ export class LeadFieldEquals extends BaseStep implements StepInterface {
         return this.error('The %s field does not exist on Lead %s', [field, email]);
       } else if (this.compare(operator, lead[field], expectedValue)) {
         // If the value of the field matches expectations, pass.
-        return this.pass(this.operatorSuccessMessages[operator.replace(/\s/g, '').toLowerCase()], [field, expectedValue]);
+        return this.pass(this.operatorSuccessMessages[operator], [field, expectedValue]);
       } else {
         // If the value of the field does not match expectations, fail.
-        return this.fail(this.operatorFailMessages[operator.replace(/\s/g, '').toLowerCase()], [
+        return this.fail(this.operatorFailMessages[operator], [
           field,
           expectedValue,
           lead[field],
         ]);
       }
     } catch (e) {
+      if (e instanceof util.UnknownOperatorError) {
+        return this.error('%s Please provide one of: %s', [e.message, baseOperators.join(', ')]);
+      }
+      if (e instanceof util.InvalidOperandError) {
+        return this.error(e.message);
+      }
       return this.error('There was an error during validation of lead field: %s', [e.message]);
     }
   }

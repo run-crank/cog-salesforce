@@ -245,7 +245,7 @@ describe('AccountFieldEqualsStep', () => {
     const sampleIdentifier = 'someIdentifier';
     const sampleField = 'someField';
     const sampleValue = 'someValue';
-    const expectedResponseMessage = 'There was an error during validation of account field: %s';
+    const expectedResponseMessage = '%s. Please provide one of: %s';
 
     const expectedAccount = [
       {
