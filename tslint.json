@@ -13,6 +13,9 @@
     ],
     "no-else-after-return":[
       false
+    ],
+    "object-literal-key-quotes":[
+      false
     ]
   },
   "rulesDirectory": []

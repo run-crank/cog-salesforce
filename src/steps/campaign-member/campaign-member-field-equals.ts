@@ -1,7 +1,9 @@
+import { campaignMemberOperators } from './../../client/constants/operators';
 /*tslint:disable:no-else-after-return*/
 
 import { BaseStep, Field, StepInterface } from '../../core/base-step';
 import { Step, RunStepResponse, FieldDefinition, StepDefinition } from '../../proto/cog_pb';
+import * as util from '@run-crank/utilities';
 
 export class CampaignMemberFieldEquals extends BaseStep implements StepInterface {
 
@@ -42,15 +44,15 @@ export class CampaignMemberFieldEquals extends BaseStep implements StepInterface
     let campaignMember: Record<string, any>;
 
     const normalizedOperators = {
-      setto: 'be',
-      notsetto: 'not be',
-      containing: 'contain',
-      notcontaining: 'not contain',
-      lessthan: 'be less than',
-      greaterthan: 'be greater than',
+      'set to': 'be',
+      'not set to': 'not be',
+      'containing': 'contain',
+      'not containing': 'not contain',
+      'less than': 'be less than',
+      'greater than': 'be greater than',
     };
 
-    operator = normalizedOperators[operator.replace(/\s/g, '').toLowerCase()];
+    operator = normalizedOperators[operator];
 
     try {
       campaignMember = await this.client.findCampaignMemberByEmailAndCampaignId(email, campaignId, [field]);
@@ -67,16 +69,22 @@ export class CampaignMemberFieldEquals extends BaseStep implements StepInterface
         return this.error('The %s field does not exist on Campaign Member with email %s and campaign id %s', [field, email, campaignId]);
       } else if (this.compare(operator, campaignMember[field], expectedValue)) {
         // If the value of the field matches expectations, pass.
-        return this.pass(this.operatorSuccessMessages[operator.replace(/\s/g, '').toLowerCase()], [field, expectedValue]);
+        return this.pass(this.operatorSuccessMessages[operator], [field, expectedValue]);
       } else {
         // If the value of the field does not match expectations, fail.
-        return this.fail(this.operatorFailMessages[operator.replace(/\s/g, '').toLowerCase()], [
+        return this.fail(this.operatorFailMessages[operator], [
           field,
           expectedValue,
           campaignMember[field],
         ]);
       }
     } catch (e) {
+      if (e instanceof util.UnknownOperatorError) {
+        return this.error('%s Please provide one of: %s', [e.message, campaignMemberOperators.join(', ')]);
+      }
+      if (e instanceof util.InvalidOperandError) {
+        return this.error(e.message);
+      }
       return this.error('There was an error during validation of campaign member field: %s', [e.message]);
     }
   }
