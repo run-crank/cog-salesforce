@@ -245,7 +245,7 @@ describe('AccountFieldEqualsStep', () => {
     const sampleIdentifier = 'someIdentifier';
     const sampleField = 'someField';
     const sampleValue = 'someValue';
-    const expectedResponseMessage = '%s. Please provide one of: %s';
+    const expectedResponseMessage = '%s Please provide one of: %s';
 
     const expectedAccount = [
       {
