@@ -4,6 +4,8 @@ import { Field } from '../../core/base-step';
 // tslint:disable-next-line:no-duplicate-imports
 import { BaseStep, StepInterface } from '../../core/base-step';
 import { Step, RunStepResponse, FieldDefinition, StepDefinition } from '../../proto/cog_pb';
+import * as util from '@run-crank/utilities';
+import { baseOperators } from '../../client/constants/operators';
 
 export class OpportunityFieldEquals extends BaseStep implements StepInterface {
 
@@ -71,6 +73,12 @@ export class OpportunityFieldEquals extends BaseStep implements StepInterface {
         ]);
       }
     } catch (e) {
+      if (e instanceof util.UnknownOperatorError) {
+        return this.error('%s Please provide one of: %s', [e.message, baseOperators.join(', ')]);
+      }
+      if (e instanceof util.InvalidOperandError) {
+        return this.error(e.message);
+      }
       return this.error('There was an error during validation of opportunity field: %s', [e.message]);
     }
   }
