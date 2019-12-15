@@ -1,0 +1,20 @@
+scenario: Salesforce Account Test
+description: This validates the behavior of Account creation, validation, and deletion.
+
+steps:
+- step: When I create a Salesforce Account
+  data:
+    account:
+      Name: Joshua2
+      Website: https://www.google.com/
+      Type: Prospect
+      Industry: Technology
+      NumberOfEmployees: 100
+      OwnerId: 0054P000009iu8WQAQ
+
+- step: Then the Name field on Salesforce Account with Name Joshua2 should be Joshua2
+- step: And the Website field on Salesforce Account with Name Joshua2 should be https://www.google.com/
+- step: And the Type field on Salesforce Account with Name Joshua2 should be Prospect
+- step: And the Industry field on Salesforce Account with Name Joshua2 should be Technology
+- step: And the NumberOfEmployees field on Salesforce Account with Name Joshua2 should be 100
+- step: Finally, delete the Salesforce Account with Name Joshua2

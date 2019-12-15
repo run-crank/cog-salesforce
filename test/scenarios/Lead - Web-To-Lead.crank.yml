@@ -1,0 +1,25 @@
+scenario: Salesforce Web-To-Lead Test
+description: This validates the creation of Lead from a Salesforce Web-To-Lead form.
+
+tokens:
+  test:
+    email: jbaretto@thisisjust.atomatest.com
+    lastname: Baretto
+    firstname: Julia
+    city: Seattle
+    state: Washington
+    submit: input[type=submit]
+
+steps:
+- step: Given I navigate to https://www.automatoninc.com/dev-qa-sfdc-web-to-lead/
+- step: When I fill out input[name=email] with {{test.email}}
+- step: And I fill out input[name=last_name] with {{test.lastname}}
+- step: And I fill out input[name=first_name] with {{test.firstname}}
+- step: And I fill out input[name=state] with {{test.state}}
+- step: And I fill out input[name=city] with {{test.city}}
+- step: And I submit the form by clicking {{test.submit}}
+- step: Then the Email field on salesforce lead {{test.email}} should be {{test.email}}
+  failAfter: 60
+- step: And the FirstName field on salesforce lead {{test.email}} should be {{test.firstname}}
+- step: And the City field on salesforce lead {{test.email}} should be {{test.city}}
+- step: Finally, delete the {{test.email}} Salesforce Lead
