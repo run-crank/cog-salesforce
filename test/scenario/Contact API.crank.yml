@@ -1,0 +1,30 @@
+scenario: Salesforce Contact Test
+description: This validates the behavior of Contact creation, validation, and delition.
+
+tokens:
+  test:
+    email: sfcontact@thisisjust.atomatest.com
+    firstname: Joe
+    lastname: Sprouse
+    title: QA
+    contactowner: 0054P000009iu8WQAQ
+    mobilephone: 093539483948
+
+steps:
+- step: When I create a Salesforce Contact
+  data:
+    contact:
+      Email: '{{test.email}}'
+      FirstName: '{{test.firstname}}'
+      LastName: '{{test.lastname}}'
+      Title: '{{test.title}}'
+      OwnerId: '{{test.contactowner}}'
+      MobilePhone: '{{test.mobilephone}}'
+
+- step: Then the Email field on Salesforce Contact {{test.email}} should be {{test.email}}
+- step: And the FirstName field on Salesforce Contact {{test.email}} should be {{test.firstname}}
+- step: And the LastName field on Salesforce Contact {{test.email}} should be {{test.lastname}}
+- step: And the Title field on Salesforce Contact {{test.email}} should be {{test.title}}
+- step: And the OwnerId field on Salesforce Contact {{test.email}} should be {{test.contactowner}}
+- step: And the MobilePhone field on Salesforce Contact {{test.email}} should be {{test.mobilephone}}
+- step: Finally, delete the {{test.email}} Salesforce Contact

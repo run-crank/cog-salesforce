@@ -1,0 +1,25 @@
+scenario: Salesforce Campaign Member Test - Overridden Status
+description: This validates the creation of Campaign Membership from a Web-To-Lead form with an overridden status.
+
+tokens:
+  testEmail: jobelle@thisisjust.atomatest.com
+  testLastname: Garcia
+  testFirstname: Jobelle
+  testState: Washington
+  testCity: Seattle
+  testSubmit: input[type=submit]
+
+steps:
+- step: Given I navigate to https://www.automatoninc.com/dev-qa-sfdc-web-to-lead/
+- step: And I fill fill out input[name=member_status] with Sent
+- step: When I fill out input[name=email] with {{testEmail}}
+- step: And I fill out input[name=last_name] with {{testLastname}}
+- step: And I fill out input[name=first_name] with {{testFirstname}}
+- step: And I fill out input[name=state] with {{testState}}
+- step: And I fill out input[name=city] with {{testCity}}
+- step: And I submit the form by clicking {{testSubmit}}
+- step: Then the Salesforce Lead {{testEmail}} should have Campaign Member Status set to Sent on Campaign 7014P000001T3u1QAC
+  failAfter: 60
+- step: And the Salesforce Lead {{testEmail}} should have Campaign Member LastName set to {{testLastname}} on Campaign 7014P000001T3u1QAC
+- step: And the Salesforce Lead {{testEmail}} should have Campaign Member Email set to {{testEmail}} on Campaign 7014P000001T3u1QAC
+- step: Delete the {{testEmail}} Salesforce Lead

@@ -1,0 +1,27 @@
+scenario: Salesforce Opportunity Test
+description: This validates the behavior of Opportunity creation, validation, and deletion.
+
+tokens:
+  test:
+    name: TestOnly
+    closedate: 2020-09-08
+    leadsource: Other
+    stagename: Unknown
+    probability: 20
+
+steps:
+- step: When I create a Salesforce Opportunity
+  data:
+    opportunity:
+      Name: '{{test.name}}'
+      CloseDate: '{{test.closedate}}'
+      LeadSource: '{{test.leadsource}}'
+      StageName: '{{test.stagename}}'
+      Probability: '{{test.probability}}'
+
+- step: Then the Name field on Salesforce Opportunity with Name {{test.name}} should be {{test.name}}
+- step: And the StageName field on Salesforce Opportunity with Name {{test.name}} should be {{test.stagename}}
+- step: And the CloseDate field on Salesforce Opportunity with Name {{test.name}} should be {{test.closedate}}
+- step: And the LeadSource field on Salesforce Opportunity with Name {{test.name}} should be {{test.leadsource}}
+- step: And the Probability field on Salesforce Opportunity with Name {{test.name}} should be {{test.probability}}
+- step: Finally, delete the Salesforce Opportunity with Name {{test.name}}
