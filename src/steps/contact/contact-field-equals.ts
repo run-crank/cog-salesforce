@@ -51,9 +51,9 @@ export class ContactFieldEqualsStep extends BaseStep implements StepInterface {
         return this.error('The %s field does not exist on Contact %s', [field, email]);
         /* tslint:disable-next-line:triple-equals */
       } else if (this.compare(operator, contact[field], expectedValue)) {
-        return this.pass(this.operatorSuccessMessages[operator.replace(/\s/g, '').toLowerCase()], [field, expectedValue]);
+        return this.pass(this.operatorSuccessMessages[operator], [field, expectedValue]);
       } else {
-        return this.fail(this.operatorFailMessages[operator.replace(/\s/g, '').toLowerCase()], [
+        return this.fail(this.operatorFailMessages[operator], [
           field,
           expectedValue,
           contact[field],
