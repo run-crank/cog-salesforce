@@ -63,10 +63,10 @@ export class OpportunityFieldEquals extends BaseStep implements StepInterface {
         return this.error('The %s field does not exist on Opportunity %s', [field, identifier]);
       } else if (this.compare(operator, opportunity[0][field], expectedValue)) {
         // If the value of the field matches expectations, pass.
-        return this.pass(this.operatorSuccessMessages[operator.replace(/\s/g, '').toLowerCase()], [field, expectedValue]);
+        return this.pass(this.operatorSuccessMessages[operator], [field, expectedValue]);
       } else {
         // If the value of the field does not match expectations, fail.
-        return this.fail(this.operatorFailMessages[operator.replace(/\s/g, '').toLowerCase()], [
+        return this.fail(this.operatorFailMessages[operator], [
           field,
           expectedValue,
           opportunity[0][field],
