@@ -152,7 +152,6 @@ workflows:
             tags:
               ignore: /.*/
       - install-built-cog:
-          context: salesforce-cog-sandbox-env-credentials
           requires:
             - test
             - build
