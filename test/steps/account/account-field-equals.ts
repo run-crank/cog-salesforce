@@ -58,6 +58,18 @@ describe('AccountFieldEqualsStep', () => {
     expect(expectedValue.type).to.equal(FieldDefinition.Type.ANYSCALAR);
   });
 
+  it('should respond with error if any errors or exceptions are caught', async () => {
+    protoStep.setData(Struct.fromJavaScript({
+      idField: 'idField',
+      identifier: 'identifier',
+      field: 'email',
+      expectedValue: 'test@thisisjust.atomatest.com',
+    }));
+    clientWrapperStub.findAccountByIdentifier.throws();
+    const response = await stepUnderTest.executeStep(protoStep);
+    expect(response.getOutcome()).to.equal(RunStepResponse.Outcome.ERROR);
+  });
+
   it('should respond with pass if API client resolves expected data', async () => {
     // Stub a response that matches expectations.
     const sampleIdField = 'someIdField';
@@ -86,6 +98,29 @@ describe('AccountFieldEqualsStep', () => {
     const response: RunStepResponse = await stepUnderTest.executeStep(protoStep);
     expect(clientWrapperStub.findAccountByIdentifier).to.have.been.calledWith(sampleIdField, sampleIdentifier, sampleField);
     expect(response.getOutcome()).to.equal(RunStepResponse.Outcome.PASSED);
+  });
+
+  it('should respond with error when any exceptions/errors are caught', async () => {
+    // Stub a response that matches expectations.
+    const sampleIdField = 'someIdField';
+    const sampleIdentifier = 'someIdentifier';
+    const sampleField = 'someField';
+    const sampleValue = 'someValue';
+
+    const expectedAccount = undefined;
+    clientWrapperStub.findAccountByIdentifier.resolves(expectedAccount);
+
+    // Set step data corresponding to expectations
+    const expectations: any = {
+      idField: sampleIdField,
+      identifier: sampleIdentifier,
+      field: sampleField,
+      expectedValue: sampleValue,
+    };
+    protoStep.setData(Struct.fromJavaScript(expectations));
+
+    const response: RunStepResponse = await stepUnderTest.executeStep(protoStep);
+    expect(response.getOutcome()).to.equal(RunStepResponse.Outcome.ERROR);
   });
 
   it('should respond with fail if API client resolves unexpected data', async () => {
@@ -269,6 +304,36 @@ describe('AccountFieldEqualsStep', () => {
     const response: RunStepResponse = await stepUnderTest.executeStep(protoStep);
     expect(clientWrapperStub.findAccountByIdentifier).to.have.been.calledWith(sampleIdField, sampleIdentifier, sampleField);
     expect(response.getMessageFormat()).to.equal(expectedResponseMessage);
+    expect(response.getOutcome()).to.equal(RunStepResponse.Outcome.ERROR);
+  });
+
+  it('should respond with error when expected and actual values are compared having different types', async () => {
+    // Stub a response that matches expectations.
+    const sampleIdField = 'someIdField';
+    const sampleIdentifier = 'someIdentifier';
+    const sampleField = 'someField';
+    const sampleValue = 300;
+
+    const expectedAccount = [
+      {
+        Id: 'someId',
+        [sampleField]: sampleValue,
+        Name: 'someName',
+      },
+    ];
+    clientWrapperStub.findAccountByIdentifier.resolves(expectedAccount);
+
+    // Set step data corresponding to expectations
+    const expectations: any = {
+      idField: sampleIdField,
+      identifier: sampleIdentifier,
+      field: sampleField,
+      operator: 'be greater than',
+      expectedValue: 'nonNumeric',
+    };
+    protoStep.setData(Struct.fromJavaScript(expectations));
+
+    const response: RunStepResponse = await stepUnderTest.executeStep(protoStep);
     expect(response.getOutcome()).to.equal(RunStepResponse.Outcome.ERROR);
   });
 });
