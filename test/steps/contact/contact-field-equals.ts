@@ -52,6 +52,10 @@ describe('ContactFieldEqualsStep', () => {
       expect(email.optionality).to.equal(FieldDefinition.Optionality.REQUIRED);
       expect(email.type).to.equal(FieldDefinition.Type.EMAIL);
 
+      const operator: any = fields.filter(f => f.key === 'operator')[0];
+      expect(operator.optionality).to.equal(FieldDefinition.Optionality.OPTIONAL);
+      expect(operator.type).to.equal(FieldDefinition.Type.STRING);
+
       const expectedValue: any = fields.filter(f => f.key === 'expectedValue')[0];
       expect(expectedValue.optionality).to.equal(FieldDefinition.Optionality.REQUIRED);
       expect(expectedValue.type).to.equal(FieldDefinition.Type.ANYSCALAR);
@@ -134,12 +138,36 @@ describe('ContactFieldEqualsStep', () => {
       }));
 
       // tslint:disable-next-line:max-line-length
-      clientWrapperStub.findContactByEmail.returns(Promise.resolve({ Email: 'salesforce@test.com' }));
+      clientWrapperStub.findContactByEmail.returns(Promise.resolve({ Email: 'salesforce@test.com', Age: 50 }));
     });
 
     it('should respond with pass', async () => {
       const response = await stepUnderTest.executeStep(protoStep);
       expect(response.getOutcome()).to.equal(RunStepResponse.Outcome.PASSED);
+    });
+
+    describe('Util errors', () => {
+      it('should respond with error when invalid operator was passed', async () => {
+        protoStep.setData(Struct.fromJavaScript({
+          email: 'salesforce@test.com',
+          field: 'Email',
+          expectedValue: 'salesforce@test.com',
+          operator: 'unknown operator',
+        }));
+        const response = await stepUnderTest.executeStep(protoStep);
+        expect(response.getOutcome()).to.equal(RunStepResponse.Outcome.ERROR);
+      });
+
+      it('should respond with error when actual and expected values with different types are compared', async () => {
+        protoStep.setData(Struct.fromJavaScript({
+          email: 'salesforce@test.com',
+          field: 'Age',
+          expectedValue: 'nonNumeric',
+          operator: 'be greater than',
+        }));
+        const response = await stepUnderTest.executeStep(protoStep);
+        expect(response.getOutcome()).to.equal(RunStepResponse.Outcome.ERROR);
+      });
     });
   });
 

@@ -49,6 +49,10 @@ describe('OpportunityFieldEqualsStep', () => {
     expect(field.optionality).to.equal(FieldDefinition.Optionality.REQUIRED);
     expect(field.type).to.equal(FieldDefinition.Type.STRING);
 
+    const operator: any = fields.filter(f => f.key === 'operator')[0];
+    expect(operator.optionality).to.equal(FieldDefinition.Optionality.OPTIONAL);
+    expect(operator.type).to.equal(FieldDefinition.Type.STRING);
+
     const expectedValue: any = fields.filter(f => f.key === 'expectedValue')[0];
     expect(expectedValue.optionality).to.equal(FieldDefinition.Optionality.REQUIRED);
     expect(expectedValue.type).to.equal(FieldDefinition.Type.ANYSCALAR);
@@ -82,6 +86,37 @@ describe('OpportunityFieldEqualsStep', () => {
     const response: RunStepResponse = await stepUnderTest.executeStep(protoStep);
     expect(clientWrapperStub.findOpportunityByIdentifier).to.have.been.calledWith(sampleIdField, sampleIdentifier, sampleField);
     expect(response.getOutcome()).to.equal(RunStepResponse.Outcome.PASSED);
+  });
+
+  it('should respond with error when actual and expected values have different types and compared', async () => {
+    // Stub a response that matches expectations.
+    const sampleIdField = 'someIdField';
+    const sampleIdentifier = 'someIdentifier';
+    const sampleField = 'someField';
+    const sampleValue = 'someValue';
+
+    const expectedOpportunity = [
+      {
+        Id: 'someId',
+        [sampleField]: sampleValue,
+        Name: 'someName',
+      },
+    ];
+    clientWrapperStub.findOpportunityByIdentifier.resolves(expectedOpportunity);
+
+    // Set step data corresponding to expectations
+    const expectations: any = {
+      idField: sampleIdField,
+      identifier: sampleIdentifier,
+      field: sampleField,
+      expectedValue: 5000,
+      operator: 'be greater than',
+    };
+    protoStep.setData(Struct.fromJavaScript(expectations));
+
+    const response: RunStepResponse = await stepUnderTest.executeStep(protoStep);
+    expect(clientWrapperStub.findOpportunityByIdentifier).to.have.been.calledWith(sampleIdField, sampleIdentifier, sampleField);
+    expect(response.getOutcome()).to.equal(RunStepResponse.Outcome.ERROR);
   });
 
   it('should respond with fail if API client resolves unexpected data', async () => {

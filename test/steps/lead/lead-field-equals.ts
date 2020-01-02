@@ -46,6 +46,11 @@ describe('LeadFieldEqualsStep', () => {
     expect(email.optionality).to.equal(FieldDefinition.Optionality.REQUIRED);
     expect(email.type).to.equal(FieldDefinition.Type.EMAIL);
 
+    // Operator field
+    const operator: any = fields.filter(f => f.key === 'operator')[0];
+    expect(operator.optionality).to.equal(FieldDefinition.Optionality.OPTIONAL);
+    expect(operator.type).to.equal(FieldDefinition.Type.STRING);
+
     // Expected Value field
     const expectedValue: any = fields.filter(f => f.key === 'expectedValue')[0];
     expect(expectedValue.optionality).to.equal(FieldDefinition.Optionality.REQUIRED);
@@ -68,6 +73,42 @@ describe('LeadFieldEqualsStep', () => {
     const response: RunStepResponse = await stepUnderTest.executeStep(protoStep);
     expect(clientWrapperStub.findLeadByEmail).to.have.been.calledWith(expectations.email, expectations.field);
     expect(response.getOutcome()).to.equal(RunStepResponse.Outcome.PASSED);
+  });
+
+  it('should respond with error when invalid operator was passed', async () => {
+    // Stub a response that matches expectations.
+    const expectedUser: any = { someField: 'Expected Value' };
+    clientWrapperStub.findLeadByEmail.resolves(expectedUser);
+
+    // Set step data corresponding to expectations
+    const expectations: any = {
+      field: 'someField',
+      expectedValue: expectedUser.someField,
+      email: 'anything@example.com',
+      operator: 'invalid operator',
+    };
+    protoStep.setData(Struct.fromJavaScript(expectations));
+
+    const response: RunStepResponse = await stepUnderTest.executeStep(protoStep);
+    expect(response.getOutcome()).to.equal(RunStepResponse.Outcome.ERROR);
+  });
+
+  it('should respond with error when actual and expected values have different types and compared', async () => {
+    // Stub a response that matches expectations.
+    const expectedUser: any = { someField: 'Expected Value', numericField: 5000 };
+    clientWrapperStub.findLeadByEmail.resolves(expectedUser);
+
+    // Set step data corresponding to expectations
+    const expectations: any = {
+      field: 'numericField',
+      expectedValue: 'nonNumeric',
+      email: 'anything@example.com',
+      operator: 'be greater than',
+    };
+    protoStep.setData(Struct.fromJavaScript(expectations));
+
+    const response: RunStepResponse = await stepUnderTest.executeStep(protoStep);
+    expect(response.getOutcome()).to.equal(RunStepResponse.Outcome.ERROR);
   });
 
   it('should respond with fail if API client resolves unexpected data', async () => {
