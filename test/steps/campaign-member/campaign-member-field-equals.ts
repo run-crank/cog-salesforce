@@ -81,6 +81,44 @@ describe('CampaignMemberFieldEqualsStep', () => {
     expect(response.getOutcome()).to.equal(RunStepResponse.Outcome.PASSED);
   });
 
+  it('should respond with error when actual and expected values have different type and compared', async () => {
+    // Stub a response that matches expectations.
+    const expectedUser: any = { campaignId: 'someId', someField: 'someValue', age: 35 };
+    clientWrapperStub.findCampaignMemberByEmailAndCampaignId.resolves(expectedUser);
+
+    // Set step data corresponding to expectations
+    const expectations: any = {
+      email: 'someEmail',
+      campaignId: expectedUser.campaignId,
+      field: 'age',
+      expectedValue: 'nonNumeric',
+      operator: 'greater than',
+    };
+    protoStep.setData(Struct.fromJavaScript(expectations));
+
+    const response: RunStepResponse = await stepUnderTest.executeStep(protoStep);
+    expect(response.getOutcome()).to.equal(RunStepResponse.Outcome.ERROR);
+  });
+
+  it('should respond with error when invalid operator was passed', async () => {
+    // Stub a response that matches expectations.
+    const expectedUser: any = { campaignId: 'someId', someField: 'someValue' };
+    clientWrapperStub.findCampaignMemberByEmailAndCampaignId.resolves(expectedUser);
+
+    // Set step data corresponding to expectations
+    const expectations: any = {
+      email: 'someEmail',
+      campaignId: expectedUser.campaignId,
+      field: 'someField',
+      expectedValue: expectedUser.someField,
+      operator: 'unknown operator',
+    };
+    protoStep.setData(Struct.fromJavaScript(expectations));
+
+    const response: RunStepResponse = await stepUnderTest.executeStep(protoStep);
+    expect(response.getOutcome()).to.equal(RunStepResponse.Outcome.ERROR);
+  });
+
   it('should respond with fail if API client does not find campaign member', async () => {
     // Stub a response that matches expectations.
     const expectedResponseMessage: string = 'No Campaign Membership found between %s and campaign %s';
