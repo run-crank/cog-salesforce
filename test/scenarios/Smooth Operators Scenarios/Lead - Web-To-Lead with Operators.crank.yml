@@ -1,0 +1,29 @@
+scenario: Web-To-Lead with Operators Test
+description: This validates that operators are working when validating fields of a SalesForce Lead.
+
+tokens:
+  testEmail: jollo3@thisisjust.atomatest.com
+  testLastName: Romano
+  testFirstName: Jollo
+  testCompany: YS Corp
+  testCity: New York City
+  testState: New York
+  testsubmit: input[name=submit]
+  testcookie: a[id=cookie_action_close_header]
+
+steps:
+- step: Given I navigate to https://www.automatoninc.com/dev-qa-sfdc-web-to-lead/
+- step: When I click the page element {{testcookie}}
+- step: And I fill out input[id=first_name] with {{testFirstName}}
+- step: And I fill out input[id=last_name] with {{testLastName}}
+- step: And I fill out input[id=email] with {{testEmail}}
+- step: And I fill out input[id=company] with {{testCompany}}
+- step: And I fill out input[id=city] with {{testCity}}
+- step: And I fill out input[id=state] with {{testState}}
+- step: And I click the page element {{testsubmit}}
+  failAfter: 60
+- step: Then the Email field on salesforce lead {{testEmail}} should contain jollo
+- step: And the LastName field on salesforce lead {{testEmail}} should not be Roman
+- step: And the FirstName field on salesforce lead {{testEmail}} should contain llo
+- step: And the City field on salesforce lead {{testEmail}} should not be New York
+- step: Finally, delete the {{testEmail}} salesforce lead

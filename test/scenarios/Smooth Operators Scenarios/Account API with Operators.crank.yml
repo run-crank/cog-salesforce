@@ -1,0 +1,18 @@
+scenario: SalesForce Account with Operators Test
+description: This proves that operators can be used when validating fields of SalesForce Account.
+
+steps:
+- step: When I create a salesforce account
+  data:
+    account:
+        Name: Roan, Inc.
+        Website: https://www.google.com/
+        Type: Prospect
+        Industry: Technology
+        NumberOfEmployees: 300
+- step: Then the Name field on salesforce account with Name Roan, Inc. should not contain Joshua2
+- step: And the Website field on salesforce account with Name Roan, Inc. should not be http://www.google.com/
+- step: And the Type field on salesforce account with Name Roan, Inc. should be Prospect
+- step: And the Industry field on salesforce account with Name Roan, Inc. should contain Tech
+- step: And the NumberOfEmployees field on salesforce account with Name Roan, Inc. should be greater than 100.00
+- step: Finally, delete the salesforce account with Name Roan, Inc.
