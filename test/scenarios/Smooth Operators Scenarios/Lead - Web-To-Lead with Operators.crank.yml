@@ -26,4 +26,5 @@ steps:
 - step: And the LastName field on salesforce lead {{testEmail}} should not be Roman
 - step: And the FirstName field on salesforce lead {{testEmail}} should contain llo
 - step: And the City field on salesforce lead {{testEmail}} should not be New York
+- step: And the CreatedDate field on salesforce lead {{testEmail}} should be less than 2022-12-12
 - step: Finally, delete the {{testEmail}} salesforce lead

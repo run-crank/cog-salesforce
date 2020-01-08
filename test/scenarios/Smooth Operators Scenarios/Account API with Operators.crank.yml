@@ -15,4 +15,5 @@ steps:
 - step: And the Type field on salesforce account with Name Roan, Inc. should be Prospect
 - step: And the Industry field on salesforce account with Name Roan, Inc. should contain Tech
 - step: And the NumberOfEmployees field on salesforce account with Name Roan, Inc. should be greater than 100.00
+- step: And the CreatedDate field on salesforce account with Name Roan, Inc. should be greater than 2000-05-01
 - step: Finally, delete the salesforce account with Name Roan, Inc.

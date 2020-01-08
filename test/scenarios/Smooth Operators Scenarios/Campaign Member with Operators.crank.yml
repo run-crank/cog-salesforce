@@ -28,4 +28,6 @@ steps:
 - step: And the salesforce lead {{testEmail}} should have campaign member LastName containing gar on campaign 7014P000001T3u1QAC
 - step: And the salesforce lead {{testEmail}} should have campaign member FirstName not containing {{testLastname}} on campaign 7014P000001T3u1QAC
 - step: And the salesforce lead {{testEmail}} should have campaign member Email not set to le@thisisjust.a on campaign 7014P000001T3u1QAC
+- step: And the salesforce lead {{testEmail}} should have campaign member CreatedDate less than 2030-05-01 on campaign 7014P000001T3u1QAC
+- step: And the salesforce lead {{testEmail}} should have campaign member LastModifiedDate greater than 2000-05-01 on campaign 7014P000001T3u1QAC
 - step: Finally, delete the {{testEmail}} SalesForce lead

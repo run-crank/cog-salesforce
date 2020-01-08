@@ -27,4 +27,5 @@ steps:
 - step: And the LeadSource field on salesforce lead {{testEmail}} should not be --None--
 - step: And the MobilePhone field on salesforce lead {{testEmail}} should not be +639353163332
 - step: And the NumberOfEmployees field on salesforce lead {{testEmail}} should be less than 500
+- step: And the CreatedDate field on salesforce lead {{testEmail}} should be greater than 2019-12-12
 - step: Finally, delete the {{testEmail}} salesforce lead
