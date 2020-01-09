@@ -16,6 +16,9 @@
     ],
     "object-literal-key-quotes":[
       false
+    ],
+    "no-parameter-reassignment":[
+      false
     ]
   },
   "rulesDirectory": []
