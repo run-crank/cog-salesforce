@@ -52,7 +52,7 @@ export class CampaignMemberFieldEquals extends BaseStep implements StepInterface
       'greater than': 'be greater than',
     };
 
-    operator = normalizedOperators[operator];
+    operator = normalizedOperators[operator] || stepData.operator;
 
     try {
       campaignMember = await this.client.findCampaignMemberByEmailAndCampaignId(email, campaignId, [field]);
