@@ -2,6 +2,7 @@ import { ClientWrapper } from '../client/client-wrapper';
 import { StepDefinition, FieldDefinition, Step as PbStep, RunStepResponse } from '../proto/cog_pb';
 import { Value } from 'google-protobuf/google/protobuf/struct_pb';
 import * as util from '@run-crank/utilities';
+import { isObject } from 'util';
 
 export interface StepInterface {
   getId(): string;
@@ -60,6 +61,9 @@ export abstract class BaseStep {
   }
 
   compare(operator: string, actualValue: string, value:string): boolean {
+    if (isObject(actualValue)) {
+      actualValue = JSON.stringify(actualValue);
+    }
     return util.compare(operator, actualValue, value);
   }
 
