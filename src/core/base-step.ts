@@ -61,6 +61,8 @@ export abstract class BaseStep {
   }
 
   compare(operator: string, actualValue: string, value:string): boolean {
+    // Allows non-scalar API properties (e.g. BillingAddress) to be
+    // validated properly using "contains" operators.
     if (isObject(actualValue)) {
       actualValue = JSON.stringify(actualValue);
     }
