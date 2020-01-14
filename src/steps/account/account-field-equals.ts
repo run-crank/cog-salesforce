@@ -49,10 +49,6 @@ export class AccountFieldEquals extends BaseStep implements StepInterface {
 
     try {
       account = await this.client.findAccountByIdentifier(idField, identifier, field);
-      actualValue = account[0][field];
-      if (isObject(account[0][field])) {
-        actualValue = JSON.stringify(account[0][field]);
-      }
     } catch (e) {
       return this.error('There was a problem checking the Account: %s', [e.toString()]);
     }
@@ -66,7 +62,14 @@ export class AccountFieldEquals extends BaseStep implements StepInterface {
       } else if (!account[0].hasOwnProperty(stepData.field)) {
         // If the given field does not exist on the account, return an error.
         return this.error('The %s field does not exist on Account %s', [field, identifier]);
-      } else if (this.compare(operator, actualValue, expectedValue)) {
+      } else {
+        actualValue = account[0][field];
+        if (isObject(account[0][field])) {
+          actualValue = JSON.stringify(account[0][field]);
+        }
+      }
+
+      if (this.compare(operator, actualValue, expectedValue)) {
         // If the value of the field matches expectations, pass.
         return this.pass(this.operatorSuccessMessages[operator], [field, expectedValue]);
       } else {
