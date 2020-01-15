@@ -44,7 +44,6 @@ export class AccountFieldEquals extends BaseStep implements StepInterface {
     const field: string = stepData.field;
     const operator: string = stepData.operator || 'be';
     const expectedValue: string = stepData.expectedValue;
-    let actualValue;
     let account: Record<string, any>[];
 
     try {
@@ -62,14 +61,7 @@ export class AccountFieldEquals extends BaseStep implements StepInterface {
       } else if (!account[0].hasOwnProperty(stepData.field)) {
         // If the given field does not exist on the account, return an error.
         return this.error('The %s field does not exist on Account %s', [field, identifier]);
-      } else {
-        actualValue = account[0][field];
-        if (isObject(account[0][field])) {
-          actualValue = JSON.stringify(account[0][field]);
-        }
-      }
-
-      if (this.compare(operator, actualValue, expectedValue)) {
+      } else if (this.compare(operator, account[0][field], expectedValue)) {
         // If the value of the field matches expectations, pass.
         return this.pass(this.operatorSuccessMessages[operator], [field, expectedValue]);
       } else {
@@ -77,7 +69,7 @@ export class AccountFieldEquals extends BaseStep implements StepInterface {
         return this.fail(this.operatorFailMessages[operator], [
           field,
           expectedValue,
-          actualValue,
+          account[0][field],
         ]);
       }
     } catch (e) {
