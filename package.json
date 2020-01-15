@@ -58,7 +58,7 @@
     "typescript": "^3.5.1"
   },
   "dependencies": {
-    "@run-crank/utilities": "^0.1.4",
+    "@run-crank/utilities": "^0.1.5",
     "google-protobuf": "^3.8.0",
     "grpc": "^1.21.1",
     "jsforce": "^1.9.3",

@@ -6,6 +6,7 @@ import { BaseStep, StepInterface } from '../../core/base-step';
 import { Step, RunStepResponse, FieldDefinition, StepDefinition } from '../../proto/cog_pb';
 import * as util from '@run-crank/utilities';
 import { baseOperators } from '../../client/constants/operators';
+import { isObject } from 'util';
 
 export class AccountFieldEquals extends BaseStep implements StepInterface {
 

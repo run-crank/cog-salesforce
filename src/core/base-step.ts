@@ -61,8 +61,6 @@ export abstract class BaseStep {
   }
 
   compare(operator: string, actualValue: string, value:string): boolean {
-    // Allows non-scalar API properties (e.g. BillingAddress) to be
-    // validated properly using "contains" operators.
     if (isObject(actualValue)) {
       actualValue = JSON.stringify(actualValue);
     }
@@ -91,6 +89,9 @@ export abstract class BaseStep {
     const response: RunStepResponse = new RunStepResponse();
     response.setMessageFormat(message);
     messageArgs.forEach((arg) => {
+      if (isObject(arg)) {
+        arg = JSON.stringify(arg);
+      }
       response.addMessageArgs(Value.fromJavaScript(arg));
     });
     return response;
