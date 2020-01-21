@@ -1,6 +1,6 @@
 {
   "name": "cog-salesforce",
-  "version": "0.4.1",
+  "version": "0.4.2",
   "description": "Salesforce Cog for use with Crank",
   "LICENSE": "MIT",
   "cog": {
