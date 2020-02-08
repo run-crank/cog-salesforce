@@ -37,6 +37,29 @@ class ClientWrapper {
   public clientReady: Promise<boolean>;
 
   constructor (auth: grpc.Metadata, clientConstructor = jsforce) {
+    // Support non-UN/PW OAuth under the hood.
+    if (auth.get('refreshToken').toString() && auth.get('accessToken').toString()) {
+      this.client = new clientConstructor.Connection({
+        oauth2: {
+          clientId: auth.get('clientId').toString(),
+          clientSecret: auth.get('clientSecret').toString(),
+        },
+        instanceUrl: auth.get('instanceUrl').toString(),
+        accessToken: auth.get('accessToken').toString(),
+        refreshToken: auth.get('refreshToken').toString(),
+      });
+      this.clientReady = new Promise((resolve, reject) => {
+        this.client.oauth2.refreshToken(auth.get('refreshToken').toString(), (err, results) => {
+          if (err) {
+            return reject(`Auth Error: ${err.toString()}`);
+          }
+          this.client.accessToken = results.access_token;
+          resolve(true);
+        });
+      });
+      return;
+    }
+
     // User/Password OAuth2 Resource Owner Credential Flow
     if (auth.get('clientSecret') && auth.get('password')) {
       // Construct the connection.
@@ -57,8 +80,7 @@ class ClientWrapper {
           auth.get('password').toString(),
           (err, userInfo) => {
             if (err) {
-              // tslint:disable-next-line:prefer-template
-              reject('Auth Error: ' + err);
+              return reject(`Auth Error: ${err.toString()}`);
             }
             resolve(true);
           },

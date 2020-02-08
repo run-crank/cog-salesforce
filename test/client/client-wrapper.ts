@@ -27,15 +27,43 @@ describe('ClientWrapper', () => {
     sfdcClientStub = {
       login: sinon.stub(),
       sobject: sinon.stub(),
+      oauth2: {
+        refreshToken: sinon.stub(),
+      },
     };
     sfdcClientStub.login.callsArgWith(2, null, {});
+    sfdcClientStub.oauth2.refreshToken.callsArgWith(2, null, {access_token: 'anything'});
     sfdcClientStub.sobject.returns(sobjectStub);
     jsForceConstructorStub = sinon.stub();
     jsForceConstructorStub.Connection = sinon.stub();
     jsForceConstructorStub.Connection.returns(sfdcClientStub);
   });
 
-  it('authentication', () => {
+  it('authentication:oauthAccessRefresh', () => {
+    // Construct grpc metadata and assert the client was authenticated.
+    const constructorArgs = {
+      oauth2: {
+        clientId: 'some-client-id',
+        clientSecret: 'some-client-secret',
+      },
+      instanceUrl: 'https://na123.salesforce.com',
+      accessToken: 'some.access.token',
+      refreshToken: 'some.refresh.token',
+    };
+    metadata = new Metadata();
+    metadata.add('instanceUrl', constructorArgs.instanceUrl);
+    metadata.add('clientId', constructorArgs.oauth2.clientId);
+    metadata.add('clientSecret', constructorArgs.oauth2.clientSecret);
+    metadata.add('accessToken', constructorArgs.accessToken);
+    metadata.add('refreshToken', constructorArgs.refreshToken);
+
+    // Assert that the underlying API client was authenticated correctly.
+    clientWrapperUnderTest = new ClientWrapper(metadata, jsForceConstructorStub);
+    expect(jsForceConstructorStub.Connection).to.have.been.calledWith(constructorArgs);
+    expect(sfdcClientStub.oauth2.refreshToken).to.have.been.calledWith(constructorArgs.refreshToken);
+  });
+
+  it('authentication:oauthUserPass', () => {
     // Construct grpc metadata and assert the client was authenticated.
     const username = 'some.user@example.com';
     const password = 'some-user-password';
