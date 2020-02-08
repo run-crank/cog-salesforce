@@ -1,0 +1,30 @@
+scenario: Opportunity with operators Test
+description: This validates that operators are working when validating fields of a SalesForce Opportunity.
+
+tokens:
+  test:
+    name: TestOnly
+    closedate: 2020-08-09
+    leadsource: Other
+    stagename: Prospect
+    probability: 20
+
+steps:
+- step: When I create a salesforce opportunity
+  data:
+    opportunity:
+       Name: '{{test.name}}'
+       CloseDate: '{{test.closedate}}'
+       LeadSource: '{{test.leadsource}}'
+       StageName: '{{test.stagename}}'
+       Probability: '{{test.probability}}'
+
+- step: Then the Name field on salesforce opportunity with Name {{test.name}} should contain Test
+- step: And the Name field on salesforce opportunity with Name {{test.name}} should be {{test.name}}
+- step: And the StageName field on salesforce opportunity with Name {{test.name}} should not be Unknown
+- step: And the AccountId field on salesforce opportunity with Name {{test.name}} should not be 0010b00002TkPi9AAF
+- step: And the StageName field on salesforce opportunity with Name {{test.name}} should contain pect
+- step: And the CloseDate field on salesforce opportunity with Name {{test.name}} should be less than 2020-09-07
+- step: And the LeadSource field on salesforce opportunity with Name {{test.name}} should be {{test.leadsource}}
+- step: And the Probability field on salesforce opportunity with Name {{test.name}} should be greater than 10
+- step: Finally, delete the salesforce opportunity with Name {{test.name}}

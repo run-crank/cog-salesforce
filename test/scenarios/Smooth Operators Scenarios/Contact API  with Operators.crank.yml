@@ -1,0 +1,28 @@
+scenario: SalesForce Contact with operators Test
+description: This tests the operators when validating fields of a SalesForce contact.
+
+tokens:
+  test:
+    email: sfcontactTestwop@thisisjust.atomatest.com
+    firstname: Mitchell
+    lastname: Santos
+    title: QA
+    mobilephone: 093539483948
+steps:
+- step: When I create a salesforce contact
+  data:
+    contact:
+       Email: '{{test.email}}'
+       FirstName: '{{test.firstname}}'
+       LastName: '{{test.lastname}}'
+       Title: '{{test.title}}'
+       MobilePhone: '{{test.mobilephone}}'
+- step: Then the Email field on salesforce contact {{test.email}} should not contain yahoo.com
+- step: And the FirstName field on salesforce contact {{test.email}} should contain mit
+- step: And the LastName field on salesforce contact {{test.email}} should be {{test.lastname}}
+- step: And the Title field on salesforce contact {{test.email}} should not be {{test.lastname}}
+- step: And the AccountId field on salesforce contact {{test.email}} should not contain Anything
+- step: And the LastViewedDate field on salesforce contact {{test.email}} should be greater than 2019-12-12
+- step: And the CreatedDate field on salesforce contact {{test.email}} should be less than 2023-12-12
+- step: And the MobilePhone field on salesforce contact {{test.email}} should not contain 3945
+- step: Finally, delete the {{test.email}} salesforce contact

@@ -1,0 +1,31 @@
+scenario: Lead API with Operator Test
+description: This validates that operators are working when validating fields of a SalesForce Lead.
+
+tokens:
+  testEmail: rose@thisisjust.atomatest.com
+  testLastname: Love
+  testFirstName: Rose
+  testCompany: YS Corp
+  testLeadSource: Other
+  testMobilePhone: +639353163352
+  testNumberOfEmployees: 200
+
+steps:
+- step: When I create a salesforce lead
+  data:
+    lead:
+       Email: '{{testEmail}}'
+       LastName: '{{testLastname}}'
+       FirstName: '{{testFirstName}}'
+       Company: '{{testCompany}}'
+       LeadSource: '{{testLeadSource}}'
+       MobilePhone: '{{testMobilePhone}}'
+       NumberOfEmployees: '{{testNumberOfEmployees}}'
+- step: Then the Email field on salesforce lead {{testEmail}} should contain atomatest.com
+- step: And the LastName field on salesforce lead {{testEmail}} should not contain lost
+- step: And the FirstName field on salesforce lead {{testEmail}} should be {{testFirstName}}
+- step: And the LeadSource field on salesforce lead {{testEmail}} should not be --None--
+- step: And the MobilePhone field on salesforce lead {{testEmail}} should not be +639353163332
+- step: And the NumberOfEmployees field on salesforce lead {{testEmail}} should be less than 500
+- step: And the CreatedDate field on salesforce lead {{testEmail}} should be greater than 2019-12-12
+- step: Finally, delete the {{testEmail}} salesforce lead
