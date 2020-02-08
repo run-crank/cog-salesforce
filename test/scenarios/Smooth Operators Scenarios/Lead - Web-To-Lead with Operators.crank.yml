@@ -20,8 +20,7 @@ steps:
 - step: And I fill out input[id=company] with {{testCompany}}
 - step: And I fill out input[id=city] with {{testCity}}
 - step: And I fill out input[id=state] with {{testState}}
-- step: And I click the page element {{testsubmit}}
-  failAfter: 60
+- step: And I submit the form by clicking {{testsubmit}}
 - step: Then the Email field on salesforce lead {{testEmail}} should contain jollo
 - step: And the LastName field on salesforce lead {{testEmail}} should not be Roman
 - step: And the FirstName field on salesforce lead {{testEmail}} should contain llo
