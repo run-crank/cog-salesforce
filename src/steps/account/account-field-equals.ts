@@ -79,14 +79,17 @@ export class AccountFieldEquals extends BaseStep implements StepInterface {
         Object.keys(account[0]).forEach(key => headers[key] = key);
         const records = this.table('matchedAccounts', 'Matched Accounts', headers, account);
         return this.error('More than one account matches %s %s', [field, identifier], [records]);
-      } else if (!account[0].hasOwnProperty(stepData.field)) {
+      }
+
+      //// Account found
+      const record = this.keyValue('account', 'Checked Account', account[0]);
+
+      if (!account[0].hasOwnProperty(stepData.field)) {
         // If the given field does not exist on the account, return an error.
         const record = this.keyValue('account', 'Checked Account', account[0]);
         return this.error('The %s field does not exist on Account %s', [field, identifier], [record]);
       }
 
-      //// Account found
-      const record = this.keyValue('account', 'Checked Account', account[0]);
       if (this.compare(operator, account[0][field], expectedValue)) {
         // If the value of the field matches expectations, pass.
         return this.pass(this.operatorSuccessMessages[operator], [field, expectedValue], [record]);
