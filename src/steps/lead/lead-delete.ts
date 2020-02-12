@@ -1,5 +1,5 @@
-import { BaseStep, Field, StepInterface } from '../../core/base-step';
-import { Step, RunStepResponse, FieldDefinition, StepDefinition } from '../../proto/cog_pb';
+import { BaseStep, Field, StepInterface, ExpectedRecord } from '../../core/base-step';
+import { Step, RunStepResponse, FieldDefinition, StepDefinition, RecordDefinition } from '../../proto/cog_pb';
 
 export class DeleteLead extends BaseStep implements StepInterface {
 
@@ -11,6 +11,16 @@ export class DeleteLead extends BaseStep implements StepInterface {
     type: FieldDefinition.Type.EMAIL,
     description: "Lead's email address",
   }];
+  protected expectedRecords: ExpectedRecord[] = [{
+    id: 'lead',
+    type: RecordDefinition.Type.KEYVALUE,
+    fields: [{
+      field: 'Id',
+      type: FieldDefinition.Type.STRING,
+      description: "Lead's SalesForce ID",
+    }],
+    dynamicFields: false,
+  }];
 
   async executeStep(step: Step): Promise<RunStepResponse> {
     const stepData: any = step.getData().toJavaScript();
@@ -18,7 +28,8 @@ export class DeleteLead extends BaseStep implements StepInterface {
 
     try {
       const result = await this.client.deleteLeadByEmail(email);
-      return this.pass('Successfully deleted Lead %s (%s)', [email, result.id]);
+      const record = this.keyValue('lead', 'Deleted Lead', result);
+      return this.pass('Successfully deleted Lead %s (%s)', [email, result.id], [record]);
     } catch (e) {
       return this.error('There was a problem deleting the Lead: %s', [e.toString()]);
     }
