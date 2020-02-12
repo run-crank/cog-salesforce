@@ -1,8 +1,8 @@
-import { Field } from './../../core/base-step';
+import { Field, ExpectedRecord } from './../../core/base-step';
 /*tslint:disable:no-else-after-return*/
 
 import { BaseStep, StepInterface } from '../../core/base-step';
-import { Step, RunStepResponse, FieldDefinition, StepDefinition } from '../../proto/cog_pb';
+import { Step, RunStepResponse, FieldDefinition, StepDefinition, RecordDefinition } from '../../proto/cog_pb';
 import * as util from '@run-crank/utilities';
 import { baseOperators } from '../../client/constants/operators';
 
@@ -30,6 +30,24 @@ export class LeadFieldEquals extends BaseStep implements StepInterface {
     type: FieldDefinition.Type.ANYSCALAR,
     description: 'Expected field value',
   }];
+  protected expectedRecords: ExpectedRecord[] = [{
+    id: 'lead',
+    type: RecordDefinition.Type.KEYVALUE,
+    fields: [{
+      field: 'Id',
+      type: FieldDefinition.Type.NUMERIC,
+      description: "Lead's SalesForce ID",
+    }, {
+      field: 'CreatedDate',
+      type: FieldDefinition.Type.DATETIME,
+      description: "Lead's Created Date",
+    }, {
+      field: 'LastModifiedDate',
+      type: FieldDefinition.Type.DATETIME,
+      description: "Lead's Last Modified Date",
+    }],
+    dynamicFields: false,
+  }];
 
   async executeStep(step: Step): Promise<RunStepResponse> {
     const stepData: any = step.getData().toJavaScript();
@@ -40,7 +58,7 @@ export class LeadFieldEquals extends BaseStep implements StepInterface {
     let lead: Record<string, any>;
 
     try {
-      lead = await this.client.findLeadByEmail(email, field);
+      lead = await this.client.findLeadByEmail(email);
     } catch (e) {
       return this.error('There was a problem checking the Lead: %s', [e.toString()]);
     }
@@ -51,10 +69,12 @@ export class LeadFieldEquals extends BaseStep implements StepInterface {
         return this.error('No Lead found with email %s', [email]);
       } else if (!lead.hasOwnProperty(field)) {
         // If the given field does not exist on the user, return an error.
-        return this.error('The %s field does not exist on Lead %s', [field, email]);
+        const record = this.keyValue('lead', 'Checked Lead', lead);
+        return this.error('The %s field does not exist on Lead %s', [field, email], [record]);
       } else if (this.compare(operator, lead[field], expectedValue)) {
         // If the value of the field matches expectations, pass.
-        return this.pass(this.operatorSuccessMessages[operator], [field, expectedValue]);
+        const record = this.keyValue('lead', 'Checked Lead', lead);
+        return this.pass(this.operatorSuccessMessages[operator], [field, expectedValue], [record]);
       } else {
         // If the value of the field does not match expectations, fail.
         return this.fail(this.operatorFailMessages[operator], [
