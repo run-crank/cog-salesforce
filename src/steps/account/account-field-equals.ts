@@ -1,9 +1,9 @@
-import { Field } from '../../core/base-step';
+import { Field, ExpectedRecord } from '../../core/base-step';
 /*tslint:disable:no-else-after-return*/
 
 // tslint:disable-next-line:no-duplicate-imports
 import { BaseStep, StepInterface } from '../../core/base-step';
-import { Step, RunStepResponse, FieldDefinition, StepDefinition } from '../../proto/cog_pb';
+import { Step, RunStepResponse, FieldDefinition, StepDefinition, RecordDefinition } from '../../proto/cog_pb';
 import * as util from '@run-crank/utilities';
 import { baseOperators } from '../../client/constants/operators';
 import { isObject } from 'util';
@@ -36,6 +36,24 @@ export class AccountFieldEquals extends BaseStep implements StepInterface {
     type: FieldDefinition.Type.ANYSCALAR,
     description: 'The expected value of the field',
   }];
+  protected expectedRecords: ExpectedRecord[] = [{
+    id: 'account',
+    type: RecordDefinition.Type.KEYVALUE,
+    fields: [{
+      field: 'Id',
+      type: FieldDefinition.Type.STRING,
+      description: "Account's SalesForce ID",
+    }, {
+      field: 'CreatedDate',
+      type: FieldDefinition.Type.DATETIME,
+      description: "Account's Created Date",
+    }, {
+      field: 'LastModifiedDate',
+      type: FieldDefinition.Type.DATETIME,
+      description: "Account's Last Modified Date",
+    }],
+    dynamicFields: false,
+  }];
 
   async executeStep(step: Step): Promise<RunStepResponse> {
     const stepData: any = step.getData().toJavaScript();
@@ -57,20 +75,24 @@ export class AccountFieldEquals extends BaseStep implements StepInterface {
         return this.error('No Account was found with %s %s', [field, identifier]);
       } else if (account.length > 1) {
         // If the client returns more than one account, return an error.
-        return this.error('More than one account matches %s %s', [field, identifier]);
+        const headers = {};
+        Object.keys(account[0]).forEach(key => headers[key] = key);
+        const records = this.table('matchedAccounts', 'Matched Accounts', headers, account);
+        return this.error('More than one account matches %s %s', [field, identifier], [records]);
       } else if (!account[0].hasOwnProperty(stepData.field)) {
         // If the given field does not exist on the account, return an error.
-        return this.error('The %s field does not exist on Account %s', [field, identifier]);
-      } else if (this.compare(operator, account[0][field], expectedValue)) {
+        const record = this.keyValue('account', 'Checked Account', account[0]);
+        return this.error('The %s field does not exist on Account %s', [field, identifier], [record]);
+      }
+
+      //// Account found
+      const record = this.keyValue('account', 'Checked Account', account[0]);
+      if (this.compare(operator, account[0][field], expectedValue)) {
         // If the value of the field matches expectations, pass.
-        return this.pass(this.operatorSuccessMessages[operator], [field, expectedValue]);
+        return this.pass(this.operatorSuccessMessages[operator], [field, expectedValue], [record]);
       } else {
         // If the value of the field does not match expectations, fail.
-        return this.fail(this.operatorFailMessages[operator], [
-          field,
-          expectedValue,
-          account[0][field],
-        ]);
+        return this.fail(this.operatorFailMessages[operator], [field, expectedValue, account[0][field]], [record]);
       }
     } catch (e) {
       if (e instanceof util.UnknownOperatorError) {

@@ -67,9 +67,12 @@ export class LeadFieldEquals extends BaseStep implements StepInterface {
       if (!lead) {
         // If no results were found, return an error.
         return this.error('No Lead found with email %s', [email]);
-      } else if (!lead.hasOwnProperty(field)) {
+      }
+
+      const record = this.keyValue('lead', 'Checked Lead', lead);
+
+      if (!lead.hasOwnProperty(field)) {
         // If the given field does not exist on the user, return an error.
-        const record = this.keyValue('lead', 'Checked Lead', lead);
         return this.error('The %s field does not exist on Lead %s', [field, email], [record]);
       } else if (this.compare(operator, lead[field], expectedValue)) {
         // If the value of the field matches expectations, pass.
@@ -77,11 +80,7 @@ export class LeadFieldEquals extends BaseStep implements StepInterface {
         return this.pass(this.operatorSuccessMessages[operator], [field, expectedValue], [record]);
       } else {
         // If the value of the field does not match expectations, fail.
-        return this.fail(this.operatorFailMessages[operator], [
-          field,
-          expectedValue,
-          lead[field],
-        ]);
+        return this.fail(this.operatorFailMessages[operator], [field, expectedValue, lead[field]], [record]);
       }
     } catch (e) {
       if (e instanceof util.UnknownOperatorError) {
