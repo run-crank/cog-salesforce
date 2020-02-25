@@ -28,11 +28,9 @@ export class LeadAwareMixin {
   }
 
   /**
-   * Retrieves a single Lead record for a given email address, including the
-   * provided field.
+   * Retrieves a single Lead record for a given email address.
    *
    * @param {String} email - Email address of the Lead record to retrieve.
-   * @param {String} field - Lead field to include on the returned record.
    */
   public async findLeadByEmail(email: string): Promise<Record<string, any>> {
     await this.clientReady;

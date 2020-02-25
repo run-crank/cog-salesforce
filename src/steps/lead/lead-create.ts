@@ -16,24 +16,8 @@ export class CreateLead extends BaseStep implements StepInterface {
     type: RecordDefinition.Type.KEYVALUE,
     fields: [{
       field: 'Id',
-      type: FieldDefinition.Type.NUMERIC,
+      type: FieldDefinition.Type.STRING,
       description: "Lead's SalesForce ID",
-    }, {
-      field: 'Email',
-      type: FieldDefinition.Type.EMAIL,
-      description: "Lead's Email",
-    }, {
-      field: 'FirstName',
-      type: FieldDefinition.Type.STRING,
-      description: "Lead's First Name",
-    }, {
-      field: 'LastName',
-      type: FieldDefinition.Type.STRING,
-      description: "Lead's Last Name",
-    }, {
-      field: 'Company',
-      type: FieldDefinition.Type.STRING,
-      description: "Lead's Company",
     }],
     dynamicFields: true,
   }];
@@ -44,7 +28,7 @@ export class CreateLead extends BaseStep implements StepInterface {
 
     try {
       const result = await this.client.createLead(lead);
-      const record = this.keyValue('lead', 'Created Lead', lead);
+      const record = this.keyValue('lead', 'Created Lead', { Id: result.Id });
       return this.pass('Successfully created Lead with ID %s', [result.id], [record]);
     } catch (e) {
       return this.error('There was a problem creating the Lead: %s', [e.toString()]);

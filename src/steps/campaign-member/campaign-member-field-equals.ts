@@ -1,8 +1,8 @@
 import { campaignMemberOperators } from './../../client/constants/operators';
 /*tslint:disable:no-else-after-return*/
 
-import { BaseStep, Field, StepInterface } from '../../core/base-step';
-import { Step, RunStepResponse, FieldDefinition, StepDefinition } from '../../proto/cog_pb';
+import { BaseStep, Field, StepInterface, ExpectedRecord } from '../../core/base-step';
+import { Step, RunStepResponse, FieldDefinition, StepDefinition, RecordDefinition } from '../../proto/cog_pb';
 import * as util from '@run-crank/utilities';
 
 export class CampaignMemberFieldEquals extends BaseStep implements StepInterface {
@@ -33,6 +33,24 @@ export class CampaignMemberFieldEquals extends BaseStep implements StepInterface
     type: FieldDefinition.Type.ANYSCALAR,
     description: 'Expected field value',
   }];
+  protected expectedRecords: ExpectedRecord[] = [{
+    id: 'campaignMember',
+    type: RecordDefinition.Type.KEYVALUE,
+    fields: [{
+      field: 'Id',
+      type: FieldDefinition.Type.STRING,
+      description: "Campaign Member's SalesForce ID",
+    }, {
+      field: 'CreatedDate',
+      type: FieldDefinition.Type.DATETIME,
+      description: "Lead's Created Date",
+    }, {
+      field: 'LastModifiedDate',
+      type: FieldDefinition.Type.DATETIME,
+      description: "Lead's Last Modified Date",
+    }],
+    dynamicFields: true,
+  }];
 
   async executeStep(step: Step): Promise<RunStepResponse> {
     const stepData: any = step.getData().toJavaScript();
@@ -55,7 +73,7 @@ export class CampaignMemberFieldEquals extends BaseStep implements StepInterface
     operator = normalizedOperators[operator] || stepData.operator;
 
     try {
-      campaignMember = await this.client.findCampaignMemberByEmailAndCampaignId(email, campaignId, [field]);
+      campaignMember = await this.client.findCampaignMemberByEmailAndCampaignId(email, campaignId);
     } catch (e) {
       return this.error('There was a problem checking the Campaign Member: %s', [e.toString()]);
     }

@@ -28,7 +28,7 @@ export class CreateAccount extends BaseStep implements StepInterface {
 
     try {
       const result = await this.client.createAccount(account);
-      const record = this.keyValue('account', 'Created Account', account);
+      const record = this.keyValue('account', 'Created Account', { Id: result.id });
       return this.pass('Successfully created Account with ID %s', [result.id], [record]);
     } catch (e) {
       return this.error('There was a problem creating the Account: %s', [e.toString()]);

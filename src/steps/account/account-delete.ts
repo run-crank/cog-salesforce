@@ -31,7 +31,7 @@ export class DeleteAccount extends BaseStep implements StepInterface {
 
     try {
       const result = await this.client.deleteAccountByIdentifier(stepData.field, stepData.identifier);
-      const record = this.keyValue('account', 'Deleted Account', result);
+      const record = this.keyValue('account', 'Deleted Account', { Id: result.id });
       return this.pass('Successfully deleted Account with %s %s', [stepData.field, stepData.identifier], [record]);
     } catch (e) {
       return this.error('There was a problem deleting the Account: %s', [e.toString()]);

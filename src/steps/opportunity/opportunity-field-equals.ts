@@ -1,9 +1,9 @@
-import { Field } from '../../core/base-step';
+import { Field, ExpectedRecord } from '../../core/base-step';
 /*tslint:disable:no-else-after-return*/
 
 // tslint:disable-next-line:no-duplicate-imports
 import { BaseStep, StepInterface } from '../../core/base-step';
-import { Step, RunStepResponse, FieldDefinition, StepDefinition } from '../../proto/cog_pb';
+import { Step, RunStepResponse, FieldDefinition, StepDefinition, RecordDefinition } from '../../proto/cog_pb';
 import * as util from '@run-crank/utilities';
 import { baseOperators } from '../../client/constants/operators';
 
@@ -35,6 +35,24 @@ export class OpportunityFieldEquals extends BaseStep implements StepInterface {
     type: FieldDefinition.Type.ANYSCALAR,
     description: 'The expected value of the field',
   }];
+  protected expectedRecords: ExpectedRecord[] = [{
+    id: 'opportunity',
+    type: RecordDefinition.Type.KEYVALUE,
+    fields: [{
+      field: 'Id',
+      type: FieldDefinition.Type.STRING,
+      description: "Opportunity's SalesForce ID",
+    }, {
+      field: 'CreatedDate',
+      type: FieldDefinition.Type.DATETIME,
+      description: "Lead's Created Date",
+    }, {
+      field: 'LastModifiedDate',
+      type: FieldDefinition.Type.DATETIME,
+      description: "Lead's Last Modified Date",
+    }],
+    dynamicFields: true,
+  }];
 
   async executeStep(step: Step): Promise<RunStepResponse> {
     const stepData: any = step.getData().toJavaScript();
@@ -57,20 +75,27 @@ export class OpportunityFieldEquals extends BaseStep implements StepInterface {
         return this.error('No opportunity matches %s %s', [field, identifier]);
       } else if (opportunity.length > 1) {
         // If the client returns more than one opportunity, return an error.
-        return this.error('More than one opportunity matches %s %s', [field, identifier]);
-      } else if (!opportunity[0].hasOwnProperty(stepData.field)) {
+        const headers = {};
+        Object.keys(opportunity[0]).forEach(key => headers[key] = key);
+        const matchedOpportunities = this.table('matchedOpportunities', 'Matched Opportunities', headers, opportunity);
+        return this.error('More than one opportunity matches %s %s', [field, identifier], [matchedOpportunities]);
+      }
+
+      const record = this.keyValue('opportunity', 'Checked Opportunity', opportunity[0]);
+
+      if (!opportunity[0].hasOwnProperty(stepData.field)) {
         // If the given field does not exist on the opportunity, return an error.
-        return this.error('The %s field does not exist on Opportunity %s', [field, identifier]);
+        return this.error('The %s field does not exist on Opportunity %s', [field, identifier], [record]);
       } else if (this.compare(operator, opportunity[0][field], expectedValue)) {
         // If the value of the field matches expectations, pass.
-        return this.pass(this.operatorSuccessMessages[operator], [field, expectedValue]);
+        return this.pass(this.operatorSuccessMessages[operator], [field, expectedValue], [record]);
       } else {
         // If the value of the field does not match expectations, fail.
-        return this.fail(this.operatorFailMessages[operator], [
-          field,
-          expectedValue,
-          opportunity[0][field],
-        ]);
+        return this.fail(
+          this.operatorFailMessages[operator],
+          [field, expectedValue, opportunity[0][field]],
+          [record],
+        );
       }
     } catch (e) {
       if (e instanceof util.UnknownOperatorError) {

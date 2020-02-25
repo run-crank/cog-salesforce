@@ -28,7 +28,7 @@ export class ContactDeleteStep extends BaseStep implements StepInterface {
 
     try {
       const result = await this.client.deleteContactByEmail(email);
-      const record = this.keyValue('contact', 'Deleted Contact', result);
+      const record = this.keyValue('contact', 'Deleted Contact', { Id: result.id });
       return this.pass('Successfully deleted Contact with ID %s', [result['id']], [record]);
     } catch (e) {
       return this.error('There was a problem deleting the Contact: %s', [e.toString()]);

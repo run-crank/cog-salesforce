@@ -1,7 +1,7 @@
 /*tslint:disable:no-else-after-return*/
 
-import { BaseStep, Field, StepInterface } from '../../core/base-step';
-import { Step, RunStepResponse, FieldDefinition, StepDefinition } from '../../proto/cog_pb';
+import { BaseStep, Field, StepInterface, ExpectedRecord } from '../../core/base-step';
+import { Step, RunStepResponse, FieldDefinition, StepDefinition, RecordDefinition } from '../../proto/cog_pb';
 
 export class CampaignMemberCampaignIdEquals extends BaseStep implements StepInterface {
 
@@ -18,16 +18,33 @@ export class CampaignMemberCampaignIdEquals extends BaseStep implements StepInte
     type: FieldDefinition.Type.STRING,
     description: 'Campaign ID',
   }];
+  protected expectedRecords: ExpectedRecord[] = [{
+    id: 'campaignMember',
+    type: RecordDefinition.Type.KEYVALUE,
+    fields: [{
+      field: 'Id',
+      type: FieldDefinition.Type.STRING,
+      description: "Campaign Member's SalesForce ID",
+    }, {
+      field: 'CreatedDate',
+      type: FieldDefinition.Type.DATETIME,
+      description: "Lead's Created Date",
+    }, {
+      field: 'LastModifiedDate',
+      type: FieldDefinition.Type.DATETIME,
+      description: "Lead's Last Modified Date",
+    }],
+    dynamicFields: true,
+  }];
 
   async executeStep(step: Step): Promise<RunStepResponse> {
     const stepData: any = step.getData().toJavaScript();
     const email: string = stepData.email;
-    const field: string = 'CampaignId';
     const campaignId: string = stepData.campaignId;
     let campaignMember: Record<string, any>;
 
     try {
-      campaignMember = await this.client.findCampaignMemberByEmailAndCampaignId(email, campaignId, [field]);
+      campaignMember = await this.client.findCampaignMemberByEmailAndCampaignId(email, campaignId);
     } catch (e) {
       return this.error('There was a problem checking the Campaign Member: %s', [e.toString()]);
     }

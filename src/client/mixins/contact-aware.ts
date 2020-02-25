@@ -4,6 +4,11 @@ export class ContactAwareMixin {
   clientReady: Promise<boolean>;
   client: jsforce.Connection;
 
+  /**
+   * Create a Salesforce Contact.
+   *
+   * @param {Object} contact - The contact to create.
+   */
   public async createContact(contact) {
     await this.clientReady;
 
@@ -23,6 +28,11 @@ export class ContactAwareMixin {
     });
   }
 
+  /**
+   * Deletes a single Contact record for a given email address.
+   *
+   * @param {String} email - Email address of the Account record to delete.
+   */
   public async deleteContactByEmail(email: string) {
     await this.clientReady;
 
@@ -48,6 +58,11 @@ export class ContactAwareMixin {
     });
   }
 
+  /**
+   * Retrieves a single Contact record for a given email address.
+   *
+   * @param {String} email - Email address of the Account record to retrieve.
+   */
   public async findContactByEmail(email: string) {
     await this.clientReady;
 
