@@ -96,7 +96,7 @@ describe('AccountFieldEqualsStep', () => {
     protoStep.setData(Struct.fromJavaScript(expectations));
 
     const response: RunStepResponse = await stepUnderTest.executeStep(protoStep);
-    expect(clientWrapperStub.findAccountByIdentifier).to.have.been.calledWith(sampleIdField, sampleIdentifier, sampleField);
+    expect(clientWrapperStub.findAccountByIdentifier).to.have.been.calledWith(sampleIdField, sampleIdentifier);
     expect(response.getOutcome()).to.equal(RunStepResponse.Outcome.PASSED);
   });
 
@@ -149,7 +149,7 @@ describe('AccountFieldEqualsStep', () => {
     protoStep.setData(Struct.fromJavaScript(expectations));
 
     const response: RunStepResponse = await stepUnderTest.executeStep(protoStep);
-    expect(clientWrapperStub.findAccountByIdentifier).to.have.been.calledWith(sampleIdField, sampleIdentifier, sampleField);
+    expect(clientWrapperStub.findAccountByIdentifier).to.have.been.calledWith(sampleIdField, sampleIdentifier);
     expect(response.getOutcome()).to.equal(RunStepResponse.Outcome.FAILED);
   });
 
@@ -185,7 +185,7 @@ describe('AccountFieldEqualsStep', () => {
     protoStep.setData(Struct.fromJavaScript(expectations));
 
     const response: RunStepResponse = await stepUnderTest.executeStep(protoStep);
-    expect(clientWrapperStub.findAccountByIdentifier).to.have.been.calledWith(sampleIdField, sampleIdentifier, sampleField);
+    expect(clientWrapperStub.findAccountByIdentifier).to.have.been.calledWith(sampleIdField, sampleIdentifier);
     expect(response.getMessageFormat()).to.equal(expectedResponseMessage);
     expect(response.getOutcome()).to.equal(RunStepResponse.Outcome.ERROR);
   });
@@ -211,7 +211,7 @@ describe('AccountFieldEqualsStep', () => {
     protoStep.setData(Struct.fromJavaScript(expectations));
 
     const response: RunStepResponse = await stepUnderTest.executeStep(protoStep);
-    expect(clientWrapperStub.findAccountByIdentifier).to.have.been.calledWith(sampleIdField, sampleIdentifier, sampleField);
+    expect(clientWrapperStub.findAccountByIdentifier).to.have.been.calledWith(sampleIdField, sampleIdentifier);
     expect(response.getMessageFormat()).to.equal(expectedResponseMessage);
     expect(response.getOutcome()).to.equal(RunStepResponse.Outcome.ERROR);
   });
@@ -243,7 +243,7 @@ describe('AccountFieldEqualsStep', () => {
     protoStep.setData(Struct.fromJavaScript(expectations));
 
     const response: RunStepResponse = await stepUnderTest.executeStep(protoStep);
-    expect(clientWrapperStub.findAccountByIdentifier).to.have.been.calledWith(sampleIdField, sampleIdentifier, sampleField);
+    expect(clientWrapperStub.findAccountByIdentifier).to.have.been.calledWith(sampleIdField, sampleIdentifier);
     expect(response.getMessageFormat()).to.equal(expectedResponseMessage);
     expect(response.getOutcome()).to.equal(RunStepResponse.Outcome.ERROR);
   });
@@ -269,7 +269,7 @@ describe('AccountFieldEqualsStep', () => {
     protoStep.setData(Struct.fromJavaScript(expectations));
 
     const response: RunStepResponse = await stepUnderTest.executeStep(protoStep);
-    expect(clientWrapperStub.findAccountByIdentifier).to.have.been.calledWith(sampleIdField, sampleIdentifier, sampleField);
+    expect(clientWrapperStub.findAccountByIdentifier).to.have.been.calledWith(sampleIdField, sampleIdentifier);
     expect(response.getMessageFormat()).to.equal(expectedResponseMessage);
     expect(response.getOutcome()).to.equal(RunStepResponse.Outcome.ERROR);
   });
@@ -302,7 +302,7 @@ describe('AccountFieldEqualsStep', () => {
     protoStep.setData(Struct.fromJavaScript(expectations));
 
     const response: RunStepResponse = await stepUnderTest.executeStep(protoStep);
-    expect(clientWrapperStub.findAccountByIdentifier).to.have.been.calledWith(sampleIdField, sampleIdentifier, sampleField);
+    expect(clientWrapperStub.findAccountByIdentifier).to.have.been.calledWith(sampleIdField, sampleIdentifier);
     expect(response.getMessageFormat()).to.equal(expectedResponseMessage);
     expect(response.getOutcome()).to.equal(RunStepResponse.Outcome.ERROR);
   });

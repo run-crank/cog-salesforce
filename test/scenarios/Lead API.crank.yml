@@ -5,11 +5,11 @@ steps:
 - step: When I create a Salesforce Lead
   data:
     lead:
-      Email: onetwothree1@thisisjust.atomatest.com
+      Email: testlead@thisisjust.atomatest.com
       FirstName: junjun
       LastName: marquez
       Company: GY Corp
 
-- step: Then the Email field on Salesforce Lead onetwothree1@thisisjust.atomatest.com should be onetwothree1@thisisjust.atomatest.com
-- step: And the FirstName field on Salesforce Lead onetwothree1@thisisjust.atomatest.com should be junjun
-- step: Finally, delete the onetwothree1@thisisjust.atomatest.com Salesforce Lead
+- step: Then the Email field on Salesforce Lead testlead@thisisjust.atomatest.com should be testlead@thisisjust.atomatest.com
+- step: And the FirstName field on Salesforce Lead testlead@thisisjust.atomatest.com should be junjun
+- step: Finally, delete the testlead@thisisjust.atomatest.com Salesforce Lead

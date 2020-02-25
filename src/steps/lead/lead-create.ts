@@ -28,7 +28,7 @@ export class CreateLead extends BaseStep implements StepInterface {
 
     try {
       const result = await this.client.createLead(lead);
-      const record = this.keyValue('lead', 'Created Lead', { Id: result.Id });
+      const record = this.keyValue('lead', 'Created Lead', { Id: result.id });
       return this.pass('Successfully created Lead with ID %s', [result.id], [record]);
     } catch (e) {
       return this.error('There was a problem creating the Lead: %s', [e.toString()]);

@@ -59,7 +59,7 @@ describe('CampaignMemberCampaignIdEqualsStep', () => {
     protoStep.setData(Struct.fromJavaScript(expectations));
 
     const response: RunStepResponse = await stepUnderTest.executeStep(protoStep);
-    expect(clientWrapperStub.findCampaignMemberByEmailAndCampaignId).to.have.been.calledWith(expectations.email, expectations.campaignId, ['CampaignId']);
+    expect(clientWrapperStub.findCampaignMemberByEmailAndCampaignId).to.have.been.calledWith(expectations.email, expectations.campaignId);
     expect(response.getOutcome()).to.equal(RunStepResponse.Outcome.PASSED);
   });
 

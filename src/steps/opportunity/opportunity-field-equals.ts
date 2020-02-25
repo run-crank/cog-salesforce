@@ -6,6 +6,7 @@ import { BaseStep, StepInterface } from '../../core/base-step';
 import { Step, RunStepResponse, FieldDefinition, StepDefinition, RecordDefinition } from '../../proto/cog_pb';
 import * as util from '@run-crank/utilities';
 import { baseOperators } from '../../client/constants/operators';
+import { titleCase } from 'title-case';
 
 export class OpportunityFieldEquals extends BaseStep implements StepInterface {
 
@@ -52,6 +53,23 @@ export class OpportunityFieldEquals extends BaseStep implements StepInterface {
       description: "Lead's Last Modified Date",
     }],
     dynamicFields: true,
+  }, {
+    id: 'matchedOpportunities',
+    type: RecordDefinition.Type.TABLE,
+    fields: [{
+      field: 'Id',
+      type: FieldDefinition.Type.STRING,
+      description: "Opportunity's SalesForce ID",
+    }, {
+      field: 'CreatedDate',
+      type: FieldDefinition.Type.DATETIME,
+      description: "Lead's Created Date",
+    }, {
+      field: 'LastModifiedDate',
+      type: FieldDefinition.Type.DATETIME,
+      description: "Lead's Last Modified Date",
+    }],
+    dynamicFields: true,
   }];
 
   async executeStep(step: Step): Promise<RunStepResponse> {
@@ -75,10 +93,7 @@ export class OpportunityFieldEquals extends BaseStep implements StepInterface {
         return this.error('No opportunity matches %s %s', [field, identifier]);
       } else if (opportunity.length > 1) {
         // If the client returns more than one opportunity, return an error.
-        const headers = {};
-        Object.keys(opportunity[0]).forEach(key => headers[key] = key);
-        const matchedOpportunities = this.table('matchedOpportunities', 'Matched Opportunities', headers, opportunity);
-        return this.error('More than one opportunity matches %s %s', [field, identifier], [matchedOpportunities]);
+        return this.error('More than one opportunity matches %s %s', [field, identifier], [this.createRecords(opportunity)]);
       }
 
       const record = this.keyValue('opportunity', 'Checked Opportunity', opportunity[0]);
@@ -106,6 +121,18 @@ export class OpportunityFieldEquals extends BaseStep implements StepInterface {
       }
       return this.error('There was an error during validation of opportunity field: %s', [e.message]);
     }
+  }
+
+  createRecords(opportunities: Record<string, any>[]) {
+    const records = [];
+    opportunities.forEach((opportunity) => {
+      opportunity.attributes.forEach(attr => opportunity[attr.name] = attr.value);
+      records.push(opportunity);
+    });
+    const headers = { };
+    Object.keys(opportunities[0]).forEach(key => headers[key] = key);
+    opportunities[0].attributes.forEach(attr => headers[attr.name] = titleCase(attr.name));
+    return this.table('matchedOpportunities', 'Matched Opportunities', headers, records);
   }
 }
 

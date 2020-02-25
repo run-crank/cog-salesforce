@@ -49,8 +49,8 @@ describe('DeleteOpportunityStep', () => {
   it('should respond with pass if opporunity is deleted', async () => {
     // Stub a response that matches expectations.
     const sampleOpportunity: any = {
-      Name: 'sampleName',
-      Id: 'sampleId',
+      name: 'sampleName',
+      id: 'sampleId',
     };
     clientWrapperStub.deleteOpportunityByIdentifier.resolves(sampleOpportunity);
 

@@ -49,8 +49,8 @@ describe('DeleteAccountStep', () => {
   it('should respond with pass if opporunity is deleted', async () => {
     // Stub a response that matches expectations.
     const sampleAccount: any = {
-      Name: 'sampleName',
-      Id: 'sampleId',
+      name: 'sampleName',
+      id: 'sampleId',
     };
     clientWrapperStub.deleteAccountByIdentifier.resolves(sampleAccount);
 

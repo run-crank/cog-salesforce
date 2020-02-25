@@ -7,6 +7,7 @@ import { Step, RunStepResponse, FieldDefinition, StepDefinition, RecordDefinitio
 import * as util from '@run-crank/utilities';
 import { baseOperators } from '../../client/constants/operators';
 import { isObject } from 'util';
+import { titleCase } from 'title-case';
 
 export class AccountFieldEquals extends BaseStep implements StepInterface {
 
@@ -53,6 +54,23 @@ export class AccountFieldEquals extends BaseStep implements StepInterface {
       description: "Account's Last Modified Date",
     }],
     dynamicFields: false,
+  }, {
+    id: 'matchedAccounts',
+    type: RecordDefinition.Type.TABLE,
+    fields: [{
+      field: 'Id',
+      type: FieldDefinition.Type.STRING,
+      description: "Account's SalesForce ID",
+    }, {
+      field: 'CreatedDate',
+      type: FieldDefinition.Type.DATETIME,
+      description: "Account's Created Date",
+    }, {
+      field: 'LastModifiedDate',
+      type: FieldDefinition.Type.DATETIME,
+      description: "Account's Last Modified Date",
+    }],
+    dynamicFields: true,
   }];
 
   async executeStep(step: Step): Promise<RunStepResponse> {
@@ -75,10 +93,7 @@ export class AccountFieldEquals extends BaseStep implements StepInterface {
         return this.error('No Account was found with %s %s', [field, identifier]);
       } else if (account.length > 1) {
         // If the client returns more than one account, return an error.
-        const headers = {};
-        Object.keys(account[0]).forEach(key => headers[key] = key);
-        const records = this.table('matchedAccounts', 'Matched Accounts', headers, account);
-        return this.error('More than one account matches %s %s', [field, identifier], [records]);
+        return this.error('More than one account matches %s %s', [field, identifier], [this.createRecords(account)]);
       }
 
       //// Account found
@@ -106,6 +121,18 @@ export class AccountFieldEquals extends BaseStep implements StepInterface {
       }
       return this.error('There was an error during validation of account field: %s', [e.message]);
     }
+  }
+
+  createRecords(accounts: Record<string, any>[]) {
+    const records = [];
+    accounts.forEach((account) => {
+      account.attributes.forEach(attr => account[attr.name] = attr.value);
+      records.push(account);
+    });
+    const headers = { };
+    Object.keys(accounts[0]).forEach(key => headers[key] = key);
+    accounts[0].attributes.forEach(attr => headers[attr.name] = titleCase(attr.name));
+    return this.table('matchedAccounts', 'Matched Accounts', headers, records);
   }
 }
 
