@@ -82,6 +82,7 @@ describe('AccountFieldEqualsStep', () => {
         Id: 'someId',
         [sampleField]: sampleValue,
         Name: 'someName',
+        attributes: { type: 'type', url: '/test/url' },
       },
     ];
     clientWrapperStub.findAccountByIdentifier.resolves(expectedAccount);
@@ -135,6 +136,7 @@ describe('AccountFieldEqualsStep', () => {
         Id: 'someId',
         [sampleField]: 'someOtherValue',
         Name: 'someName',
+        attributes: { type: 'type', url: '/test/url' },
       },
     ];
     clientWrapperStub.findAccountByIdentifier.resolves(expectedAccount);
@@ -166,11 +168,13 @@ describe('AccountFieldEqualsStep', () => {
         Id: 'someId',
         [sampleField]: sampleValue,
         Name: 'someName',
+        attributes: { type: 'type', url: '/test/url' },
       },
       {
         Id: 'someId',
         [sampleField]: sampleValue,
         Name: 'someName',
+        attributes: { type: 'type', url: '/test/url' },
       },
     ];
     clientWrapperStub.findAccountByIdentifier.resolves(expectedAccount);
@@ -229,6 +233,7 @@ describe('AccountFieldEqualsStep', () => {
         Id: 'someId',
         someOtherField: sampleValue,
         Name: 'someName',
+        attributes: { type: 'type', url: '/test/url' },
       },
     ];
     clientWrapperStub.findAccountByIdentifier.resolves(expectedAccount);
@@ -287,6 +292,7 @@ describe('AccountFieldEqualsStep', () => {
         Id: 'someId',
         [sampleField]: sampleValue,
         Name: 'someName',
+        attributes: { type: 'type', url: '/test/url' },
       },
     ];
     clientWrapperStub.findAccountByIdentifier.resolves(expectedAccount);
@@ -319,6 +325,7 @@ describe('AccountFieldEqualsStep', () => {
         Id: 'someId',
         [sampleField]: sampleValue,
         Name: 'someName',
+        attributes: { type: 'type', url: '/test/url' },
       },
     ];
     clientWrapperStub.findAccountByIdentifier.resolves(expectedAccount);

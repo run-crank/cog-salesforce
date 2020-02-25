@@ -123,15 +123,21 @@ export class OpportunityFieldEquals extends BaseStep implements StepInterface {
     }
   }
 
+  createRecord(opportunity: Record<string, any>) {
+    Object.keys(opportunity.attributes).forEach(attr => opportunity[titleCase(attr)] = opportunity.attributes[attr]);
+    delete opportunity.attributes;
+    return this.keyValue('opportunity', 'Checked Opportunity', opportunity);
+  }
+
   createRecords(opportunities: Record<string, any>[]) {
     const records = [];
-    opportunities.forEach((opportunity) => {
-      opportunity.attributes.forEach(attr => opportunity[attr.name] = attr.value);
-      records.push(opportunity);
+    opportunities.forEach((opportunities) => {
+      Object.keys(opportunities.attributes).forEach(attr => opportunities[titleCase(attr)] = opportunities.attributes[attr]);
+      delete opportunities.attributes;
+      records.push(opportunities);
     });
-    const headers = { };
+    const headers = {};
     Object.keys(opportunities[0]).forEach(key => headers[key] = key);
-    opportunities[0].attributes.forEach(attr => headers[attr.name] = titleCase(attr.name));
     return this.table('matchedOpportunities', 'Matched Opportunities', headers, records);
   }
 }

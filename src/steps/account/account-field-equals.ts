@@ -97,11 +97,10 @@ export class AccountFieldEquals extends BaseStep implements StepInterface {
       }
 
       //// Account found
-      const record = this.keyValue('account', 'Checked Account', account[0]);
+      const record = this.createRecord(account[0]);
 
       if (!account[0].hasOwnProperty(stepData.field)) {
         // If the given field does not exist on the account, return an error.
-        const record = this.keyValue('account', 'Checked Account', account[0]);
         return this.error('The %s field does not exist on Account %s', [field, identifier], [record]);
       }
 
@@ -123,15 +122,21 @@ export class AccountFieldEquals extends BaseStep implements StepInterface {
     }
   }
 
+  createRecord(account: Record<string, any>) {
+    Object.keys(account.attributes).forEach(attr => account[titleCase(attr)] = account.attributes[attr]);
+    delete account.attributes;
+    return this.keyValue('account', 'Checked Account', account);
+  }
+
   createRecords(accounts: Record<string, any>[]) {
     const records = [];
     accounts.forEach((account) => {
-      account.attributes.forEach(attr => account[attr.name] = attr.value);
+      Object.keys(account.attributes).forEach(attr => account[titleCase(attr)] = account.attributes[attr]);
+      delete account.attributes;
       records.push(account);
     });
-    const headers = { };
+    const headers = {};
     Object.keys(accounts[0]).forEach(key => headers[key] = key);
-    accounts[0].attributes.forEach(attr => headers[attr.name] = titleCase(attr.name));
     return this.table('matchedAccounts', 'Matched Accounts', headers, records);
   }
 }
