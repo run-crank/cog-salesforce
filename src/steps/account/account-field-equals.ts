@@ -123,7 +123,7 @@ export class AccountFieldEquals extends BaseStep implements StepInterface {
   }
 
   createRecord(account: Record<string, any>) {
-    Object.keys(account.attributes).forEach(attr => account[titleCase(attr)] = account.attributes[attr]);
+    Object.keys(account.attributes).forEach(attr => account[attr] = account.attributes[attr]);
     delete account.attributes;
     return this.keyValue('account', 'Checked Account', account);
   }
@@ -131,12 +131,12 @@ export class AccountFieldEquals extends BaseStep implements StepInterface {
   createRecords(accounts: Record<string, any>[]) {
     const records = [];
     accounts.forEach((account) => {
-      Object.keys(account.attributes).forEach(attr => account[titleCase(attr)] = account.attributes[attr]);
+      Object.keys(account.attributes).forEach(attr => account[attr] = account.attributes[attr]);
       delete account.attributes;
       records.push(account);
     });
     const headers = {};
-    Object.keys(accounts[0]).forEach(key => headers[key] = key);
+    Object.keys(accounts[0]).forEach(key => headers[key] = titleCase(key));
     return this.table('matchedAccounts', 'Matched Accounts', headers, records);
   }
 }
