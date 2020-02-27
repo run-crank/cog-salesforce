@@ -54,9 +54,18 @@ export class CampaignMemberCampaignIdEquals extends BaseStep implements StepInte
       return this.fail('No Campaign Membership found between %s and campaign %s', [email, campaignId]);
     } else {
       // If the value of the field matches expectations, pass.
-      const record = this.keyValue('campaignMember', 'Checked Campaign Member', campaignMember);
+      const record = this.createRecord(campaignMember);
       return this.pass('Lead belongs to Campaign with id %s, as expected', [campaignId], [record]);
     }
+  }
+
+  createRecord(campaignMember: Record<string, any>) {
+    if (campaignMember.hasOwnProperty('attributes')) {
+      Object.keys(campaignMember.attributes).forEach(attr => campaignMember[attr] = campaignMember.attributes[attr]);
+      delete campaignMember.attributes;
+    }
+
+    return this.keyValue('campaignMember', 'Checked Campaign Member', campaignMember);
   }
 
 }

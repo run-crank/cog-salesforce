@@ -93,11 +93,9 @@ export class LeadFieldEquals extends BaseStep implements StepInterface {
   }
 
   createRecord(lead: Record<string, any>) {
-    if (lead) {
-      if (lead.hasOwnProperty('attributes')) {
-        Object.keys(lead.attributes).forEach(attr => lead[attr] = lead.attributes[attr]);
-        delete lead.attributes;
-      }
+    if (lead.hasOwnProperty('attributes')) {
+      Object.keys(lead.attributes).forEach(attr => lead[attr] = lead.attributes[attr]);
+      delete lead.attributes;
     }
 
     return this.keyValue('lead', 'Checked Lead', lead);

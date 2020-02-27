@@ -84,7 +84,7 @@ export class CampaignMemberFieldEquals extends BaseStep implements StepInterface
         return this.fail('No Campaign Membership found between %s and campaign %s', [email, campaignId]);
       }
 
-      const record = this.keyValue('campaignMember', 'Checked Campaign Member', campaignMember);
+      const record = this.createRecord(campaignMember);
 
       if (!campaignMember.hasOwnProperty(field)) {
         // If the given field does not exist on the user, return an error.
@@ -109,6 +109,14 @@ export class CampaignMemberFieldEquals extends BaseStep implements StepInterface
     }
   }
 
+  createRecord(campaignMember: Record<string, any>) {
+    if (campaignMember.hasOwnProperty('attributes')) {
+      Object.keys(campaignMember.attributes).forEach(attr => campaignMember[attr] = campaignMember.attributes[attr]);
+      delete campaignMember.attributes;
+    }
+
+    return this.keyValue('campaignMember', 'Checked Campaign Member', campaignMember);
+  }
 }
 
 export { CampaignMemberFieldEquals as Step };
