@@ -69,14 +69,13 @@ export class LeadFieldEquals extends BaseStep implements StepInterface {
         return this.error('No Lead found with email %s', [email]);
       }
 
-      const record = this.keyValue('lead', 'Checked Lead', lead);
+      const record = this.createRecord(lead);
 
       if (!lead.hasOwnProperty(field)) {
         // If the given field does not exist on the user, return an error.
         return this.error('The %s field does not exist on Lead %s', [field, email], [record]);
       } else if (this.compare(operator, lead[field], expectedValue)) {
         // If the value of the field matches expectations, pass.
-        const record = this.keyValue('lead', 'Checked Lead', lead);
         return this.pass(this.operatorSuccessMessages[operator], [field, expectedValue], [record]);
       } else {
         // If the value of the field does not match expectations, fail.
@@ -93,6 +92,16 @@ export class LeadFieldEquals extends BaseStep implements StepInterface {
     }
   }
 
+  createRecord(lead: Record<string, any>) {
+    if (lead) {
+      if (lead.hasOwnProperty('attributes')) {
+        Object.keys(lead.attributes).forEach(attr => lead[attr] = lead.attributes[attr]);
+        delete lead.attributes;
+      }
+    }
+
+    return this.keyValue('lead', 'Checked Lead', lead);
+  }
 }
 
 export { LeadFieldEquals as Step };

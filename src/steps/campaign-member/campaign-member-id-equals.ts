@@ -28,11 +28,11 @@ export class CampaignMemberCampaignIdEquals extends BaseStep implements StepInte
     }, {
       field: 'CreatedDate',
       type: FieldDefinition.Type.DATETIME,
-      description: "Lead's Created Date",
+      description: "Campaign Member's Created Date",
     }, {
       field: 'LastModifiedDate',
       type: FieldDefinition.Type.DATETIME,
-      description: "Lead's Last Modified Date",
+      description: "Campaign Member's Last Modified Date",
     }],
     dynamicFields: true,
   }];

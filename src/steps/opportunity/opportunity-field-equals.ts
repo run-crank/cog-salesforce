@@ -96,7 +96,7 @@ export class OpportunityFieldEquals extends BaseStep implements StepInterface {
         return this.error('More than one opportunity matches %s %s', [field, identifier], [this.createRecords(opportunity)]);
       }
 
-      const record = this.keyValue('opportunity', 'Checked Opportunity', opportunity[0]);
+      const record = this.createRecord(opportunity[0]);
 
       if (!opportunity[0].hasOwnProperty(stepData.field)) {
         // If the given field does not exist on the opportunity, return an error.
@@ -124,20 +124,20 @@ export class OpportunityFieldEquals extends BaseStep implements StepInterface {
   }
 
   createRecord(opportunity: Record<string, any>) {
-    Object.keys(opportunity.attributes).forEach(attr => opportunity[titleCase(attr)] = opportunity.attributes[attr]);
+    Object.keys(opportunity.attributes).forEach(attr => opportunity[attr] = opportunity.attributes[attr]);
     delete opportunity.attributes;
     return this.keyValue('opportunity', 'Checked Opportunity', opportunity);
   }
 
   createRecords(opportunities: Record<string, any>[]) {
     const records = [];
-    opportunities.forEach((opportunities) => {
-      Object.keys(opportunities.attributes).forEach(attr => opportunities[titleCase(attr)] = opportunities.attributes[attr]);
-      delete opportunities.attributes;
-      records.push(opportunities);
+    opportunities.forEach((opportunity) => {
+      Object.keys(opportunity.attributes).forEach(attr => opportunity[attr] = opportunity.attributes[attr]);
+      delete opportunity.attributes;
+      records.push(opportunity);
     });
     const headers = {};
-    Object.keys(opportunities[0]).forEach(key => headers[key] = key);
+    Object.keys(opportunities[0]).forEach(key => headers[key] = titleCase(key));
     return this.table('matchedOpportunities', 'Matched Opportunities', headers, records);
   }
 }

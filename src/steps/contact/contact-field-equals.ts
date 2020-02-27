@@ -45,7 +45,7 @@ export class ContactFieldEqualsStep extends BaseStep implements StepInterface {
       type: FieldDefinition.Type.DATETIME,
       description: "Contact's Last Modified Date",
     }],
-    dynamicFields: false,
+    dynamicFields: true,
   }];
 
   async executeStep(step: Step): Promise<RunStepResponse> {
