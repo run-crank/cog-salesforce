@@ -31,7 +31,7 @@ export class DeleteOpportunity extends BaseStep implements StepInterface {
 
     try {
       const result = await this.client.deleteOpportunityByIdentifier(stepData.field, stepData.identifier);
-      const record = this.keyValue('opportunity', 'Deleted Opportunity', { Id: result.id });
+      const record = this.keyValue('opportunity', 'Deleted Opportunity', { Id: result.Id });
       return this.pass('Successfully deleted Opportunity with %s %s', [stepData.field, stepData.identifier], [record]);
     } catch (e) {
       return this.error('There was a problem deleting the Opportunity: %s', [e.toString()]);

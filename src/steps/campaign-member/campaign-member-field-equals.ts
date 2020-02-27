@@ -43,11 +43,27 @@ export class CampaignMemberFieldEquals extends BaseStep implements StepInterface
     }, {
       field: 'CreatedDate',
       type: FieldDefinition.Type.DATETIME,
-      description: "Lead's Created Date",
+      description: "Campaign Member's Created Date",
     }, {
       field: 'LastModifiedDate',
       type: FieldDefinition.Type.DATETIME,
-      description: "Lead's Last Modified Date",
+      description: "Campaign Member's Last Modified Date",
+    }, {
+      field: 'CampaignId',
+      type: FieldDefinition.Type.STRING,
+      description: "Campaign Member's Campaign Id",
+    }, {
+      field: 'LeadId',
+      type: FieldDefinition.Type.STRING,
+      description: "Campaign Member's Lead Id",
+    }, {
+      field: 'ContactId',
+      type: FieldDefinition.Type.STRING,
+      description: "Campaign Member's Contact Id",
+    }, {
+      field: 'LeadOrContactId',
+      type: FieldDefinition.Type.STRING,
+      description: "Campaign Member's Lead or Contact Id",
     }],
     dynamicFields: true,
   }];
