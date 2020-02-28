@@ -82,6 +82,7 @@ describe('AccountFieldEqualsStep', () => {
         Id: 'someId',
         [sampleField]: sampleValue,
         Name: 'someName',
+        attributes: { type: 'type', url: '/test/url' },
       },
     ];
     clientWrapperStub.findAccountByIdentifier.resolves(expectedAccount);
@@ -96,7 +97,7 @@ describe('AccountFieldEqualsStep', () => {
     protoStep.setData(Struct.fromJavaScript(expectations));
 
     const response: RunStepResponse = await stepUnderTest.executeStep(protoStep);
-    expect(clientWrapperStub.findAccountByIdentifier).to.have.been.calledWith(sampleIdField, sampleIdentifier, sampleField);
+    expect(clientWrapperStub.findAccountByIdentifier).to.have.been.calledWith(sampleIdField, sampleIdentifier);
     expect(response.getOutcome()).to.equal(RunStepResponse.Outcome.PASSED);
   });
 
@@ -135,6 +136,7 @@ describe('AccountFieldEqualsStep', () => {
         Id: 'someId',
         [sampleField]: 'someOtherValue',
         Name: 'someName',
+        attributes: { type: 'type', url: '/test/url' },
       },
     ];
     clientWrapperStub.findAccountByIdentifier.resolves(expectedAccount);
@@ -149,7 +151,7 @@ describe('AccountFieldEqualsStep', () => {
     protoStep.setData(Struct.fromJavaScript(expectations));
 
     const response: RunStepResponse = await stepUnderTest.executeStep(protoStep);
-    expect(clientWrapperStub.findAccountByIdentifier).to.have.been.calledWith(sampleIdField, sampleIdentifier, sampleField);
+    expect(clientWrapperStub.findAccountByIdentifier).to.have.been.calledWith(sampleIdField, sampleIdentifier);
     expect(response.getOutcome()).to.equal(RunStepResponse.Outcome.FAILED);
   });
 
@@ -166,11 +168,13 @@ describe('AccountFieldEqualsStep', () => {
         Id: 'someId',
         [sampleField]: sampleValue,
         Name: 'someName',
+        attributes: { type: 'type', url: '/test/url' },
       },
       {
         Id: 'someId',
         [sampleField]: sampleValue,
         Name: 'someName',
+        attributes: { type: 'type', url: '/test/url' },
       },
     ];
     clientWrapperStub.findAccountByIdentifier.resolves(expectedAccount);
@@ -185,7 +189,7 @@ describe('AccountFieldEqualsStep', () => {
     protoStep.setData(Struct.fromJavaScript(expectations));
 
     const response: RunStepResponse = await stepUnderTest.executeStep(protoStep);
-    expect(clientWrapperStub.findAccountByIdentifier).to.have.been.calledWith(sampleIdField, sampleIdentifier, sampleField);
+    expect(clientWrapperStub.findAccountByIdentifier).to.have.been.calledWith(sampleIdField, sampleIdentifier);
     expect(response.getMessageFormat()).to.equal(expectedResponseMessage);
     expect(response.getOutcome()).to.equal(RunStepResponse.Outcome.ERROR);
   });
@@ -211,7 +215,7 @@ describe('AccountFieldEqualsStep', () => {
     protoStep.setData(Struct.fromJavaScript(expectations));
 
     const response: RunStepResponse = await stepUnderTest.executeStep(protoStep);
-    expect(clientWrapperStub.findAccountByIdentifier).to.have.been.calledWith(sampleIdField, sampleIdentifier, sampleField);
+    expect(clientWrapperStub.findAccountByIdentifier).to.have.been.calledWith(sampleIdField, sampleIdentifier);
     expect(response.getMessageFormat()).to.equal(expectedResponseMessage);
     expect(response.getOutcome()).to.equal(RunStepResponse.Outcome.ERROR);
   });
@@ -229,6 +233,7 @@ describe('AccountFieldEqualsStep', () => {
         Id: 'someId',
         someOtherField: sampleValue,
         Name: 'someName',
+        attributes: { type: 'type', url: '/test/url' },
       },
     ];
     clientWrapperStub.findAccountByIdentifier.resolves(expectedAccount);
@@ -243,7 +248,7 @@ describe('AccountFieldEqualsStep', () => {
     protoStep.setData(Struct.fromJavaScript(expectations));
 
     const response: RunStepResponse = await stepUnderTest.executeStep(protoStep);
-    expect(clientWrapperStub.findAccountByIdentifier).to.have.been.calledWith(sampleIdField, sampleIdentifier, sampleField);
+    expect(clientWrapperStub.findAccountByIdentifier).to.have.been.calledWith(sampleIdField, sampleIdentifier);
     expect(response.getMessageFormat()).to.equal(expectedResponseMessage);
     expect(response.getOutcome()).to.equal(RunStepResponse.Outcome.ERROR);
   });
@@ -269,7 +274,7 @@ describe('AccountFieldEqualsStep', () => {
     protoStep.setData(Struct.fromJavaScript(expectations));
 
     const response: RunStepResponse = await stepUnderTest.executeStep(protoStep);
-    expect(clientWrapperStub.findAccountByIdentifier).to.have.been.calledWith(sampleIdField, sampleIdentifier, sampleField);
+    expect(clientWrapperStub.findAccountByIdentifier).to.have.been.calledWith(sampleIdField, sampleIdentifier);
     expect(response.getMessageFormat()).to.equal(expectedResponseMessage);
     expect(response.getOutcome()).to.equal(RunStepResponse.Outcome.ERROR);
   });
@@ -287,6 +292,7 @@ describe('AccountFieldEqualsStep', () => {
         Id: 'someId',
         [sampleField]: sampleValue,
         Name: 'someName',
+        attributes: { type: 'type', url: '/test/url' },
       },
     ];
     clientWrapperStub.findAccountByIdentifier.resolves(expectedAccount);
@@ -302,7 +308,7 @@ describe('AccountFieldEqualsStep', () => {
     protoStep.setData(Struct.fromJavaScript(expectations));
 
     const response: RunStepResponse = await stepUnderTest.executeStep(protoStep);
-    expect(clientWrapperStub.findAccountByIdentifier).to.have.been.calledWith(sampleIdField, sampleIdentifier, sampleField);
+    expect(clientWrapperStub.findAccountByIdentifier).to.have.been.calledWith(sampleIdField, sampleIdentifier);
     expect(response.getMessageFormat()).to.equal(expectedResponseMessage);
     expect(response.getOutcome()).to.equal(RunStepResponse.Outcome.ERROR);
   });
@@ -319,6 +325,7 @@ describe('AccountFieldEqualsStep', () => {
         Id: 'someId',
         [sampleField]: sampleValue,
         Name: 'someName',
+        attributes: { type: 'type', url: '/test/url' },
       },
     ];
     clientWrapperStub.findAccountByIdentifier.resolves(expectedAccount);

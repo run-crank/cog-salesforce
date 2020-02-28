@@ -28,18 +28,16 @@ export class AccountAwareMixin {
   }
 
   /**
-   * Retrieves a single Account record for a given id field and value, including the
-   * provided field.
+   * Retrieves a single Account record for a given id field and value.
    *
    * @param {String} idField - the field used to search/identify the account.
    * @param {String} identifier - the value of the id field to use when searching.
-   * @param {String} field - the name of the field to check.
    */
-  public async findAccountByIdentifier(idField: string, identifier: string, field: string): Promise<Record<string, any>[]> {
+  public async findAccountByIdentifier(idField: string, identifier: string): Promise<Record<string, any>[]> {
     await this.clientReady;
     return new Promise((resolve, reject) => {
       try {
-        this.client.sobject('Account').find({ [idField]: identifier }, [field], (err, records) => {
+        this.client.sobject('Account').find({ [idField]: identifier }, (err, records) => {
           if (err) {
             reject(err);
             return;
@@ -63,7 +61,7 @@ export class AccountAwareMixin {
     await this.clientReady;
     return new Promise(async (resolve, reject) => {
       try {
-        const lead = await this.findAccountByIdentifier(idField, identifier, 'Id');
+        const lead = await this.findAccountByIdentifier(idField, identifier);
         if (lead.length > 1) {
           reject(new Error(`More than one account matches ${idField} ${identifier}`));
           return;

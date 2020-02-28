@@ -1,5 +1,5 @@
-import { BaseStep, Field, StepInterface } from '../../core/base-step';
-import { Step, RunStepResponse, FieldDefinition, StepDefinition } from '../../proto/cog_pb';
+import { BaseStep, Field, StepInterface, ExpectedRecord } from '../../core/base-step';
+import { Step, RunStepResponse, FieldDefinition, StepDefinition, RecordDefinition } from '../../proto/cog_pb';
 
 export class DeleteOpportunity extends BaseStep implements StepInterface {
 
@@ -15,13 +15,24 @@ export class DeleteOpportunity extends BaseStep implements StepInterface {
     type: FieldDefinition.Type.ANYSCALAR,
     description: 'the value of the field',
   }];
+  protected expectedRecords: ExpectedRecord[] = [{
+    id: 'opportunity',
+    type: RecordDefinition.Type.KEYVALUE,
+    fields: [{
+      field: 'Id',
+      type: FieldDefinition.Type.STRING,
+      description: "Opportunity's SalesForce ID",
+    }],
+    dynamicFields: true,
+  }];
 
   async executeStep(step: Step): Promise<RunStepResponse> {
     const stepData: any = step.getData().toJavaScript();
 
     try {
       const result = await this.client.deleteOpportunityByIdentifier(stepData.field, stepData.identifier);
-      return this.pass('Successfully deleted Opportunity with %s %s', [stepData.field, stepData.identifier]);
+      const record = this.keyValue('opportunity', 'Deleted Opportunity', { Id: result.Id });
+      return this.pass('Successfully deleted Opportunity with %s %s', [stepData.field, stepData.identifier], [record]);
     } catch (e) {
       return this.error('There was a problem deleting the Opportunity: %s', [e.toString()]);
     }

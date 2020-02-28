@@ -4,6 +4,11 @@ export class ContactAwareMixin {
   clientReady: Promise<boolean>;
   client: jsforce.Connection;
 
+  /**
+   * Create a Salesforce Contact.
+   *
+   * @param {Object} contact - The contact to create.
+   */
   public async createContact(contact) {
     await this.clientReady;
 
@@ -23,12 +28,17 @@ export class ContactAwareMixin {
     });
   }
 
+  /**
+   * Deletes a single Contact record for a given email address.
+   *
+   * @param {String} email - Email address of the Account record to delete.
+   */
   public async deleteContactByEmail(email: string) {
     await this.clientReady;
 
     return new Promise(async (resolve, reject) => {
       try {
-        const contact = await this.findContactByEmail(email, 'Id');
+        const contact = await this.findContactByEmail(email);
         if (!contact || !contact['Id']) {
           reject(new Error(`No Contact found with email ${email}`));
           return;
@@ -48,13 +58,18 @@ export class ContactAwareMixin {
     });
   }
 
-  public async findContactByEmail(email: string, field: string) {
+  /**
+   * Retrieves a single Contact record for a given email address.
+   *
+   * @param {String} email - Email address of the Account record to retrieve.
+   */
+  public async findContactByEmail(email: string) {
     await this.clientReady;
 
     return new Promise((resolve, reject) => {
       try {
         this.client.sobject('Contact')
-          .findOne({ Email: email }, [field], (err, record) => {
+          .findOne({ Email: email }, (err, record) => {
             if (err) {
               reject(err);
               return;

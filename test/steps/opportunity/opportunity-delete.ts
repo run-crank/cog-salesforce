@@ -46,10 +46,10 @@ describe('DeleteOpportunityStep', () => {
     expect(indentifier.type).to.equal(FieldDefinition.Type.ANYSCALAR);
   });
 
-  it('should respond with pass if opporunity is deleted', async () => {
+  it('should respond with pass if opportunity is deleted', async () => {
     // Stub a response that matches expectations.
     const sampleOpportunity: any = {
-      Name: 'sampleName',
+      name: 'sampleName',
       Id: 'sampleId',
     };
     clientWrapperStub.deleteOpportunityByIdentifier.resolves(sampleOpportunity);

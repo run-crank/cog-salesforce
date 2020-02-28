@@ -1,7 +1,7 @@
 /*tslint:disable:no-else-after-return*/
 
-import { BaseStep, Field, StepInterface } from '../../core/base-step';
-import { Step, RunStepResponse, FieldDefinition, StepDefinition } from '../../proto/cog_pb';
+import { BaseStep, Field, StepInterface, ExpectedRecord } from '../../core/base-step';
+import { Step, RunStepResponse, FieldDefinition, StepDefinition, RecordDefinition } from '../../proto/cog_pb';
 
 export class CampaignMemberCampaignIdEquals extends BaseStep implements StepInterface {
 
@@ -18,16 +18,49 @@ export class CampaignMemberCampaignIdEquals extends BaseStep implements StepInte
     type: FieldDefinition.Type.STRING,
     description: 'Campaign ID',
   }];
+  protected expectedRecords: ExpectedRecord[] = [{
+    id: 'campaignMember',
+    type: RecordDefinition.Type.KEYVALUE,
+    fields: [{
+      field: 'Id',
+      type: FieldDefinition.Type.STRING,
+      description: "Campaign Member's SalesForce ID",
+    }, {
+      field: 'CreatedDate',
+      type: FieldDefinition.Type.DATETIME,
+      description: "Campaign Member's Created Date",
+    }, {
+      field: 'LastModifiedDate',
+      type: FieldDefinition.Type.DATETIME,
+      description: "Campaign Member's Last Modified Date",
+    }, {
+      field: 'CampaignId',
+      type: FieldDefinition.Type.STRING,
+      description: "Campaign Member's Campaign Id",
+    }, {
+      field: 'LeadId',
+      type: FieldDefinition.Type.STRING,
+      description: "Campaign Member's Lead Id",
+    }, {
+      field: 'ContactId',
+      type: FieldDefinition.Type.STRING,
+      description: "Campaign Member's Contact Id",
+    }, {
+      field: 'LeadOrContactId',
+      type: FieldDefinition.Type.STRING,
+      description: "Campaign Member's Lead or Contact Id",
+    }],
+    dynamicFields: true,
+  }];
 
   async executeStep(step: Step): Promise<RunStepResponse> {
     const stepData: any = step.getData().toJavaScript();
     const email: string = stepData.email;
-    const field: string = 'CampaignId';
     const campaignId: string = stepData.campaignId;
     let campaignMember: Record<string, any>;
 
     try {
-      campaignMember = await this.client.findCampaignMemberByEmailAndCampaignId(email, campaignId, [field]);
+      campaignMember = await this.client.findCampaignMemberByEmailAndCampaignId(email, campaignId);
     } catch (e) {
       return this.error('There was a problem checking the Campaign Member: %s', [e.toString()]);
     }
@@ -37,8 +70,14 @@ export class CampaignMemberCampaignIdEquals extends BaseStep implements StepInte
       return this.fail('No Campaign Membership found between %s and campaign %s', [email, campaignId]);
     } else {
       // If the value of the field matches expectations, pass.
-      return this.pass('Lead belongs to Campaign with id %s, as expected', [campaignId]);
+      const record = this.createRecord(campaignMember);
+      return this.pass('Lead belongs to Campaign with id %s, as expected', [campaignId], [record]);
     }
+  }
+
+  createRecord(campaignMember: Record<string, any>) {
+    delete campaignMember.attributes;
+    return this.keyValue('campaignMember', 'Checked Campaign Member', campaignMember);
   }
 
 }

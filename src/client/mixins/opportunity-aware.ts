@@ -28,18 +28,16 @@ export class OpportunityAwareMixin {
   }
 
   /**
-   * Retrieves a single Opportunity record for a given id field and value, including the
-   * provided field.
+   * Retrieves a single Opportunity record for a given id field and value.
    *
    * @param {String} idField - the field used to search/identify the opportunity.
    * @param {String} identifier - the value of the id field to use when searching.
-   * @param {String} field - the name of the field to check.
    */
-  public async findOpportunityByIdentifier(idField: string, identifier: string, field: string): Promise<Record<string, any>[]> {
+  public async findOpportunityByIdentifier(idField: string, identifier: string): Promise<Record<string, any>[]> {
     await this.clientReady;
     return new Promise((resolve, reject) => {
       try {
-        this.client.sobject('Opportunity').find({ [idField]: identifier }, [field], (err, records) => {
+        this.client.sobject('Opportunity').find({ [idField]: identifier }, (err, records) => {
           if (err) {
             reject(err);
             return;
@@ -59,28 +57,28 @@ export class OpportunityAwareMixin {
    * @param {String} idField - the field used to search/identify the opportunity.
    * @param {String} identifier - the value of the id field to use when searching.
    */
-  public async deleteOpportunityByIdentifier(idField: string, identifier: string): Promise<jsforce.SuccessResult> {
+  public async deleteOpportunityByIdentifier(idField: string, identifier: string): Promise<Record<string, any>> {
     await this.clientReady;
     return new Promise(async (resolve, reject) => {
       try {
-        const lead = await this.findOpportunityByIdentifier(idField, identifier, 'Id');
-        if (lead.length > 1) {
+        const opportunity = await this.findOpportunityByIdentifier(idField, identifier);
+        if (opportunity.length > 1) {
           reject(new Error(`More than one opportunity matches ${idField} ${identifier}`));
           return;
         }
 
-        if (!lead || !lead[0].Id) {
+        if (!opportunity || !opportunity[0].Id) {
           reject(new Error(`No Account found with ${idField} ${identifier}`));
           return;
         }
 
-        this.client.sobject('Opportunity').delete(lead[0].Id, (err, result: any) => {
+        this.client.sobject('Opportunity').delete(opportunity[0].Id, (err, result: any) => {
           if (err) {
             reject(err);
             return;
           }
 
-          resolve(result);
+          resolve(opportunity[0]);
         });
       } catch (e) {
         reject(e);

@@ -28,17 +28,15 @@ export class LeadAwareMixin {
   }
 
   /**
-   * Retrieves a single Lead record for a given email address, including the
-   * provided field.
+   * Retrieves a single Lead record for a given email address.
    *
    * @param {String} email - Email address of the Lead record to retrieve.
-   * @param {String} field - Lead field to include on the returned record.
    */
-  public async findLeadByEmail(email: string, field: string): Promise<Record<string, any>> {
+  public async findLeadByEmail(email: string): Promise<Record<string, any>> {
     await this.clientReady;
     return new Promise((resolve, reject) => {
       try {
-        this.client.sobject('Lead').findOne({ Email: email }, [field], (err, record) => {
+        this.client.sobject('Lead').findOne({ Email: email }, (err, record) => {
           if (err) {
             reject(err);
             return;
@@ -61,7 +59,7 @@ export class LeadAwareMixin {
     await this.clientReady;
     return new Promise(async (resolve, reject) => {
       try {
-        const lead = await this.findLeadByEmail(email, 'Id');
+        const lead = await this.findLeadByEmail(email);
         if (!lead || !lead.Id) {
           reject(new Error(`No Lead found with email ${email}`));
           return;

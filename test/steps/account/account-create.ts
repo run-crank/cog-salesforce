@@ -72,7 +72,7 @@ describe('CreateAccountStep', () => {
     const expectedAccount: any = [
       {
         Name: 'sampleName',
-        Id: 'sampleId',
+        d: 'sampleId',
       },
     ];
     protoStep.setData(Struct.fromJavaScript(expectedAccount));

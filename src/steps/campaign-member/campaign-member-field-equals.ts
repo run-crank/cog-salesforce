@@ -1,8 +1,8 @@
 import { campaignMemberOperators } from './../../client/constants/operators';
 /*tslint:disable:no-else-after-return*/
 
-import { BaseStep, Field, StepInterface } from '../../core/base-step';
-import { Step, RunStepResponse, FieldDefinition, StepDefinition } from '../../proto/cog_pb';
+import { BaseStep, Field, StepInterface, ExpectedRecord } from '../../core/base-step';
+import { Step, RunStepResponse, FieldDefinition, StepDefinition, RecordDefinition } from '../../proto/cog_pb';
 import * as util from '@run-crank/utilities';
 
 export class CampaignMemberFieldEquals extends BaseStep implements StepInterface {
@@ -33,6 +33,40 @@ export class CampaignMemberFieldEquals extends BaseStep implements StepInterface
     type: FieldDefinition.Type.ANYSCALAR,
     description: 'Expected field value',
   }];
+  protected expectedRecords: ExpectedRecord[] = [{
+    id: 'campaignMember',
+    type: RecordDefinition.Type.KEYVALUE,
+    fields: [{
+      field: 'Id',
+      type: FieldDefinition.Type.STRING,
+      description: "Campaign Member's SalesForce ID",
+    }, {
+      field: 'CreatedDate',
+      type: FieldDefinition.Type.DATETIME,
+      description: "Campaign Member's Created Date",
+    }, {
+      field: 'LastModifiedDate',
+      type: FieldDefinition.Type.DATETIME,
+      description: "Campaign Member's Last Modified Date",
+    }, {
+      field: 'CampaignId',
+      type: FieldDefinition.Type.STRING,
+      description: "Campaign Member's Campaign Id",
+    }, {
+      field: 'LeadId',
+      type: FieldDefinition.Type.STRING,
+      description: "Campaign Member's Lead Id",
+    }, {
+      field: 'ContactId',
+      type: FieldDefinition.Type.STRING,
+      description: "Campaign Member's Contact Id",
+    }, {
+      field: 'LeadOrContactId',
+      type: FieldDefinition.Type.STRING,
+      description: "Campaign Member's Lead or Contact Id",
+    }],
+    dynamicFields: true,
+  }];
 
   async executeStep(step: Step): Promise<RunStepResponse> {
     const stepData: any = step.getData().toJavaScript();
@@ -55,7 +89,7 @@ export class CampaignMemberFieldEquals extends BaseStep implements StepInterface
     operator = normalizedOperators[operator] || stepData.operator;
 
     try {
-      campaignMember = await this.client.findCampaignMemberByEmailAndCampaignId(email, campaignId, [field]);
+      campaignMember = await this.client.findCampaignMemberByEmailAndCampaignId(email, campaignId);
     } catch (e) {
       return this.error('There was a problem checking the Campaign Member: %s', [e.toString()]);
     }
@@ -64,19 +98,21 @@ export class CampaignMemberFieldEquals extends BaseStep implements StepInterface
       if (!campaignMember) {
         // If no results were found, return a failure.
         return this.fail('No Campaign Membership found between %s and campaign %s', [email, campaignId]);
-      } else if (!campaignMember.hasOwnProperty(field)) {
+      }
+
+      const record = this.createRecord(campaignMember);
+
+      if (!campaignMember.hasOwnProperty(field)) {
         // If the given field does not exist on the user, return an error.
-        return this.error('The %s field does not exist on Campaign Member with email %s and campaign id %s', [field, email, campaignId]);
-      } else if (this.compare(operator, campaignMember[field], expectedValue)) {
+        return this.error('The %s field does not exist on Campaign Member with email %s and campaign id %s', [field, email, campaignId], [record]);
+      }
+
+      if (this.compare(operator, campaignMember[field], expectedValue)) {
         // If the value of the field matches expectations, pass.
-        return this.pass(this.operatorSuccessMessages[operator], [field, expectedValue]);
+        return this.pass(this.operatorSuccessMessages[operator], [field, expectedValue], [record]);
       } else {
         // If the value of the field does not match expectations, fail.
-        return this.fail(this.operatorFailMessages[operator], [
-          field,
-          expectedValue,
-          campaignMember[field],
-        ]);
+        return this.fail(this.operatorFailMessages[operator], [field, expectedValue, campaignMember[field]], [record]);
       }
     } catch (e) {
       if (e instanceof util.UnknownOperatorError) {
@@ -89,6 +125,10 @@ export class CampaignMemberFieldEquals extends BaseStep implements StepInterface
     }
   }
 
+  createRecord(campaignMember: Record<string, any>) {
+    delete campaignMember.attributes;
+    return this.keyValue('campaignMember', 'Checked Campaign Member', campaignMember);
+  }
 }
 
 export { CampaignMemberFieldEquals as Step };

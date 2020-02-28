@@ -71,7 +71,7 @@ describe('LeadFieldEqualsStep', () => {
     protoStep.setData(Struct.fromJavaScript(expectations));
 
     const response: RunStepResponse = await stepUnderTest.executeStep(protoStep);
-    expect(clientWrapperStub.findLeadByEmail).to.have.been.calledWith(expectations.email, expectations.field);
+    expect(clientWrapperStub.findLeadByEmail).to.have.been.calledWith(expectations.email);
     expect(response.getOutcome()).to.equal(RunStepResponse.Outcome.PASSED);
   });
 

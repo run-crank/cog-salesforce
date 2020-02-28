@@ -1,7 +1,7 @@
 /*tslint:disable:no-else-after-return*/
 
-import { BaseStep, Field, StepInterface } from '../../core/base-step';
-import { Step, RunStepResponse, FieldDefinition, StepDefinition } from '../../proto/cog_pb';
+import { BaseStep, Field, StepInterface, ExpectedRecord } from '../../core/base-step';
+import { Step, RunStepResponse, FieldDefinition, StepDefinition, RecordDefinition } from '../../proto/cog_pb';
 import * as util from '@run-crank/utilities';
 import { baseOperators } from '../../client/constants/operators';
 
@@ -29,6 +29,24 @@ export class ContactFieldEqualsStep extends BaseStep implements StepInterface {
     type: FieldDefinition.Type.ANYSCALAR,
     description: 'Expected field value',
   }];
+  protected expectedRecords: ExpectedRecord[] = [{
+    id: 'contact',
+    type: RecordDefinition.Type.KEYVALUE,
+    fields: [{
+      field: 'Id',
+      type: FieldDefinition.Type.STRING,
+      description: "Contact's SalesForce ID",
+    }, {
+      field: 'CreatedDate',
+      type: FieldDefinition.Type.DATETIME,
+      description: "Contact's Created Date",
+    }, {
+      field: 'LastModifiedDate',
+      type: FieldDefinition.Type.DATETIME,
+      description: "Contact's Last Modified Date",
+    }],
+    dynamicFields: true,
+  }];
 
   async executeStep(step: Step): Promise<RunStepResponse> {
     const stepData: any = step.getData().toJavaScript();
@@ -39,7 +57,7 @@ export class ContactFieldEqualsStep extends BaseStep implements StepInterface {
     let contact: Record<string, any>;
 
     try {
-      contact = await this.client.findContactByEmail(email, field);
+      contact = await this.client.findContactByEmail(email);
     } catch (e) {
       return this.error('There was a problem checking the Contact: %s', [e.toString()]);
     }
@@ -47,17 +65,16 @@ export class ContactFieldEqualsStep extends BaseStep implements StepInterface {
     try {
       if (!contact) {
         return this.error('No Contact found with email %s', [email]);
-      } else if (!contact.hasOwnProperty(field)) {
-        return this.error('The %s field does not exist on Contact %s', [field, email]);
-        /* tslint:disable-next-line:triple-equals */
+      }
+
+      const record = this.keyValue('contact', 'Checked Contact', contact);
+
+      if (!contact.hasOwnProperty(field)) {
+        return this.error('The %s field does not exist on Contact %s', [field, email], [record]);
       } else if (this.compare(operator, contact[field], expectedValue)) {
-        return this.pass(this.operatorSuccessMessages[operator], [field, expectedValue]);
+        return this.pass(this.operatorSuccessMessages[operator], [field, expectedValue], [record]);
       } else {
-        return this.fail(this.operatorFailMessages[operator], [
-          field,
-          expectedValue,
-          contact[field],
-        ]);
+        return this.fail(this.operatorFailMessages[operator], [field, expectedValue, contact[field]], [record]);
       }
     } catch (e) {
       if (e instanceof util.UnknownOperatorError) {
@@ -70,6 +87,10 @@ export class ContactFieldEqualsStep extends BaseStep implements StepInterface {
     }
   }
 
+  createRecord(contact: Record<string, any>) {
+    delete contact.attributes;
+    return this.keyValue('contact', 'Checked Contact', contact);
+  }
 }
 
 export { ContactFieldEqualsStep as Step };

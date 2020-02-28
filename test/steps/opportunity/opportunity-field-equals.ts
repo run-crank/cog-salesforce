@@ -162,11 +162,13 @@ describe('OpportunityFieldEqualsStep', () => {
         Id: 'someId',
         [sampleField]: sampleValue,
         Name: 'someName',
+        attributes: { type: 'type', url: '/test/url' },
       },
       {
         Id: 'someId',
         [sampleField]: sampleValue,
         Name: 'someName',
+        attributes: { type: 'type', url: '/test/url' },
       },
     ];
     clientWrapperStub.findOpportunityByIdentifier.resolves(expectedOpportunity);
