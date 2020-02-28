@@ -46,7 +46,7 @@ describe('DeleteAccountStep', () => {
     expect(indentifier.type).to.equal(FieldDefinition.Type.ANYSCALAR);
   });
 
-  it('should respond with pass if opporunity is deleted', async () => {
+  it('should respond with pass if account is deleted', async () => {
     // Stub a response that matches expectations.
     const sampleAccount: any = {
       name: 'sampleName',
