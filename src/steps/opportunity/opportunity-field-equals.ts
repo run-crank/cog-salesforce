@@ -46,11 +46,11 @@ export class OpportunityFieldEquals extends BaseStep implements StepInterface {
     }, {
       field: 'CreatedDate',
       type: FieldDefinition.Type.DATETIME,
-      description: "Lead's Created Date",
+      description: "Opportunity's Created Date",
     }, {
       field: 'LastModifiedDate',
       type: FieldDefinition.Type.DATETIME,
-      description: "Lead's Last Modified Date",
+      description: "Opportunity's Last Modified Date",
     }],
     dynamicFields: true,
   }, {
@@ -63,11 +63,11 @@ export class OpportunityFieldEquals extends BaseStep implements StepInterface {
     }, {
       field: 'CreatedDate',
       type: FieldDefinition.Type.DATETIME,
-      description: "Lead's Created Date",
+      description: "Opportunity's Created Date",
     }, {
       field: 'LastModifiedDate',
       type: FieldDefinition.Type.DATETIME,
-      description: "Lead's Last Modified Date",
+      description: "Opportunity's Last Modified Date",
     }],
     dynamicFields: true,
   }];
@@ -124,7 +124,6 @@ export class OpportunityFieldEquals extends BaseStep implements StepInterface {
   }
 
   createRecord(opportunity: Record<string, any>) {
-    Object.keys(opportunity.attributes).forEach(attr => opportunity[attr] = opportunity.attributes[attr]);
     delete opportunity.attributes;
     return this.keyValue('opportunity', 'Checked Opportunity', opportunity);
   }
@@ -132,7 +131,6 @@ export class OpportunityFieldEquals extends BaseStep implements StepInterface {
   createRecords(opportunities: Record<string, any>[]) {
     const records = [];
     opportunities.forEach((opportunity) => {
-      Object.keys(opportunity.attributes).forEach(attr => opportunity[attr] = opportunity.attributes[attr]);
       delete opportunity.attributes;
       records.push(opportunity);
     });

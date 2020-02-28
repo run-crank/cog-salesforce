@@ -46,7 +46,7 @@ export class LeadFieldEquals extends BaseStep implements StepInterface {
       type: FieldDefinition.Type.DATETIME,
       description: "Lead's Last Modified Date",
     }],
-    dynamicFields: false,
+    dynamicFields: true,
   }];
 
   async executeStep(step: Step): Promise<RunStepResponse> {
@@ -93,11 +93,7 @@ export class LeadFieldEquals extends BaseStep implements StepInterface {
   }
 
   createRecord(lead: Record<string, any>) {
-    if (lead.hasOwnProperty('attributes')) {
-      Object.keys(lead.attributes).forEach(attr => lead[attr] = lead.attributes[attr]);
-      delete lead.attributes;
-    }
-
+    delete lead.attributes;
     return this.keyValue('lead', 'Checked Lead', lead);
   }
 }

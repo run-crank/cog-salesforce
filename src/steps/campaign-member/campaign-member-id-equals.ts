@@ -33,6 +33,22 @@ export class CampaignMemberCampaignIdEquals extends BaseStep implements StepInte
       field: 'LastModifiedDate',
       type: FieldDefinition.Type.DATETIME,
       description: "Campaign Member's Last Modified Date",
+    }, {
+      field: 'CampaignId',
+      type: FieldDefinition.Type.STRING,
+      description: "Campaign Member's Campaign Id",
+    }, {
+      field: 'LeadId',
+      type: FieldDefinition.Type.STRING,
+      description: "Campaign Member's Lead Id",
+    }, {
+      field: 'ContactId',
+      type: FieldDefinition.Type.STRING,
+      description: "Campaign Member's Contact Id",
+    }, {
+      field: 'LeadOrContactId',
+      type: FieldDefinition.Type.STRING,
+      description: "Campaign Member's Lead or Contact Id",
     }],
     dynamicFields: true,
   }];
@@ -60,11 +76,7 @@ export class CampaignMemberCampaignIdEquals extends BaseStep implements StepInte
   }
 
   createRecord(campaignMember: Record<string, any>) {
-    if (campaignMember.hasOwnProperty('attributes')) {
-      Object.keys(campaignMember.attributes).forEach(attr => campaignMember[attr] = campaignMember.attributes[attr]);
-      delete campaignMember.attributes;
-    }
-
+    delete campaignMember.attributes;
     return this.keyValue('campaignMember', 'Checked Campaign Member', campaignMember);
   }
 

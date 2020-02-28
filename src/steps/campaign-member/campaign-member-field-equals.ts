@@ -126,11 +126,7 @@ export class CampaignMemberFieldEquals extends BaseStep implements StepInterface
   }
 
   createRecord(campaignMember: Record<string, any>) {
-    if (campaignMember.hasOwnProperty('attributes')) {
-      Object.keys(campaignMember.attributes).forEach(attr => campaignMember[attr] = campaignMember.attributes[attr]);
-      delete campaignMember.attributes;
-    }
-
+    delete campaignMember.attributes;
     return this.keyValue('campaignMember', 'Checked Campaign Member', campaignMember);
   }
 }

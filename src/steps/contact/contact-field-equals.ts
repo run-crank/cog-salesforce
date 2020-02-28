@@ -88,11 +88,7 @@ export class ContactFieldEqualsStep extends BaseStep implements StepInterface {
   }
 
   createRecord(contact: Record<string, any>) {
-    if (contact.hasOwnProperty('attributes')) {
-      Object.keys(contact.attributes).forEach(attr => contact[attr] = contact.attributes[attr]);
-      delete contact.attributes;
-    }
-
+    delete contact.attributes;
     return this.keyValue('contact', 'Checked Contact', contact);
   }
 }
