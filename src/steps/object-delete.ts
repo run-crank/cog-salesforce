@@ -33,10 +33,10 @@ export class DeleteObject extends BaseStep implements StepInterface {
 
     try {
       const result = await this.client.deleteObjectById(objName, id);
-      const record = this.keyValue('object', 'Deleted Object', { Id: result.id });
-      return this.pass('Successfully deleted Object %s', [result.id], [record]);
+      const record = this.keyValue('salesforceObject', 'Deleted Object', { Id: result.id });
+      return this.pass('Successfully deleted %s Object %s', [objName, result.id], [record]);
     } catch (e) {
-      return this.error('There was a problem deleting the Object: %s', [e.toString()]);
+      return this.error('There was a problem deleting the %s Object: %s', [objName, e.toString()]);
     }
   }
 

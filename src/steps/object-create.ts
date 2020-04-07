@@ -33,10 +33,10 @@ export class CreateObject extends BaseStep implements StepInterface {
     console.log(stepData);
     try {
       const result = await this.client.createObject(objName, salesforceObject);
-      const record = this.keyValue('account', 'Created Object', { Id: result.id });
-      return this.pass('Successfully created Object with ID %s', [result.id], [record]);
+      const record = this.keyValue('salesforceObject', 'Created Object', { Id: result.id });
+      return this.pass('Successfully created %s Object with ID %s', [objName, result.id], [record]);
     } catch (e) {
-      return this.error('There was a problem creating the Object: %s', [e.toString()]);
+      return this.error('There was a problem creating the %s Object: %s', [objName, e.toString()]);
     }
   }
 

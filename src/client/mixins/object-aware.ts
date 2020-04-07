@@ -62,7 +62,7 @@ export class ObjectAwareMixin {
     await this.clientReady;
     return new Promise((resolve, reject) => {
       try {
-        this.client.sobject(objName).update(object, (err, result: any) => {
+        this.client.sobject(objName.toLowerCase()).update(object, (err, result: any) => {
           if (err) {
             reject(err);
             return;

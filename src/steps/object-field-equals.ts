@@ -67,20 +67,20 @@ export class ObjectFieldEquals extends BaseStep implements StepInterface {
     try {
       object = await this.client.findObjectById(objName, id);
     } catch (e) {
-      return this.error('There was a problem checking the Object: %s', [e.toString()]);
+      return this.error('There was a problem checking the %s Object: %s', [objName, e.toString()]);
     }
 
     try {
       if (!object) {
         // If no results were found, return an error.
-        return this.error('No Object found with id %s', [id]);
+        return this.error('No %s Object found with id %s', [objName, id]);
       }
 
       const record = this.createRecord(object);
 
       if (!object.hasOwnProperty(field)) {
         // If the given field does not exist on the user, return an error.
-        return this.error('The %s field does not exist on Object %s', [field, id], [record]);
+        return this.error('The %s field does not exist on %s Object %s', [objName, field, id], [record]);
       } else if (this.compare(operator, object[field], expectedValue)) {
         // If the value of the field matches expectations, pass.
         return this.pass(this.operatorSuccessMessages[operator], [field, expectedValue], [record]);
@@ -95,13 +95,13 @@ export class ObjectFieldEquals extends BaseStep implements StepInterface {
       if (e instanceof util.InvalidOperandError) {
         return this.error(e.message);
       }
-      return this.error('There was an error during validation of object field: %s', [e.message]);
+      return this.error('There was an error during validation of %s object field: %s', [objName, e.message]);
     }
   }
 
   createRecord(object: Record<string, any>) {
     delete object.attributes;
-    return this.keyValue('object', 'Checked Object', object);
+    return this.keyValue('salesforceObject', 'Checked Object', object);
   }
 }
 
