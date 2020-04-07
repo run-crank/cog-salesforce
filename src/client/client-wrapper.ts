@@ -1,3 +1,4 @@
+import { ObjectAwareMixin } from './mixins/object-aware';
 import { LeadAwareMixin } from './mixins/lead-aware';
 import { CampaignMemberAwareMixin } from './mixins/campaign-member-aware';
 import { AccountAwareMixin } from './mixins/account-aware';
@@ -90,8 +91,8 @@ class ClientWrapper {
   }
 }
 
-interface ClientWrapper extends ContactAwareMixin, AccountAwareMixin, OpportunityAwareMixin, CampaignMemberAwareMixin, LeadAwareMixin {}
-applyMixins(ClientWrapper, [ContactAwareMixin, AccountAwareMixin, OpportunityAwareMixin, CampaignMemberAwareMixin, LeadAwareMixin]);
+interface ClientWrapper extends ContactAwareMixin, AccountAwareMixin, OpportunityAwareMixin, CampaignMemberAwareMixin, LeadAwareMixin, ObjectAwareMixin {}
+applyMixins(ClientWrapper, [ContactAwareMixin, AccountAwareMixin, OpportunityAwareMixin, CampaignMemberAwareMixin, LeadAwareMixin, ObjectAwareMixin]);
 
 function applyMixins(derivedCtor: any, baseCtors: any[]) {
   baseCtors.forEach((baseCtor) => {
