@@ -80,7 +80,7 @@ export class ObjectFieldEquals extends BaseStep implements StepInterface {
 
       if (!object.hasOwnProperty(field)) {
         // If the given field does not exist on the user, return an error.
-        return this.error('The %s field does not exist on %s Object %s', [objName, field, id], [record]);
+        return this.error('The %s field does not exist on %s Object %s', [field, objName, id], [record]);
       } else if (this.compare(operator, object[field], expectedValue)) {
         // If the value of the field matches expectations, pass.
         return this.pass(this.operatorSuccessMessages[operator], [field, expectedValue], [record]);

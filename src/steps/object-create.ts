@@ -23,7 +23,7 @@ export class CreateObject extends BaseStep implements StepInterface {
       type: FieldDefinition.Type.STRING,
       description: "Object's SalesForce ID",
     }],
-    dynamicFields: true,
+    dynamicFields: false,
   }];
 
   async executeStep(step: Step): Promise<RunStepResponse> {
