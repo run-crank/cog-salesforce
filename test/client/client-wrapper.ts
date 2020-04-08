@@ -32,7 +32,7 @@ describe('ClientWrapper', () => {
       },
     };
     sfdcClientStub.login.callsArgWith(2, null, {});
-    sfdcClientStub.oauth2.refreshToken.callsArgWith(2, null, {access_token: 'anything'});
+    sfdcClientStub.oauth2.refreshToken.callsArgWith(2, null, { access_token: 'anything' });
     sfdcClientStub.sobject.returns(sobjectStub);
     jsForceConstructorStub = sinon.stub();
     jsForceConstructorStub.Connection = sinon.stub();
@@ -830,6 +830,151 @@ describe('ClientWrapper', () => {
 
     // Call the method and make assertions.
     expect(clientWrapperUnderTest.deleteContactByEmail(sampleEmail))
+      .to.be.rejectedWith(anError);
+  });
+
+  it('createObject', async () => {
+    const expectedLead = { email: 'test@example.com' };
+    const expectedResult = { Id: 'xyz123' };
+    const sampleObjectName = 'anyObject';
+    let actualResult;
+
+    // Set up test instance.
+    sobjectStub.create.callsArgWith(1, null, expectedResult);
+    clientWrapperUnderTest = new ClientWrapper(metadata, jsForceConstructorStub);
+
+    // Call the method and make assertions.
+    actualResult = await clientWrapperUnderTest.createObject(sampleObjectName, expectedLead);
+    expect(sfdcClientStub.sobject).to.have.been.calledWith(sampleObjectName);
+    expect(sobjectStub.create).to.have.been.calledWith(expectedLead);
+    expect(actualResult).to.equal(expectedResult);
+  });
+
+  it('createAccount:apiError', () => {
+    const expectedLead = { email: 'test@example.com' };
+    const sampleObjectName = 'anyObject';
+    const anError = new Error('An API Error');
+
+    // Set up test instance.
+    sobjectStub.create.callsArgWith(1, anError);
+    clientWrapperUnderTest = new ClientWrapper(metadata, jsForceConstructorStub);
+
+    // Call the method and make assertions.
+    expect(clientWrapperUnderTest.createObject(sampleObjectName, expectedLead))
+      .to.be.rejectedWith(anError);
+  });
+
+  it('createObject:apiThrows', async () => {
+    const expectedLead = { email: 'test@example.com' };
+    const sampleObjectName = 'anyObject';
+    const anError = new Error('An API Error');
+
+    // Set up test instance.
+    sobjectStub.create.throws(anError);
+    clientWrapperUnderTest = new ClientWrapper(metadata, jsForceConstructorStub);
+
+    // Call the method and make assertions.
+    expect(clientWrapperUnderTest.createObject(sampleObjectName, expectedLead))
+      .to.be.rejectedWith(anError);
+  });
+
+  it('findObjectById', (done) => {
+    const sampleIdValue = 'someIdValue';
+    const sampleObjectName = 'anyObject';
+
+    // Set up test instance.
+    clientWrapperUnderTest = new ClientWrapper(metadata, jsForceConstructorStub);
+
+    // Call the method and make assertions.
+    clientWrapperUnderTest.findObjectById(sampleObjectName, sampleIdValue);
+    setTimeout(() => {
+      expect(sfdcClientStub.sobject).to.have.been.calledWith(sampleObjectName);
+      expect(sobjectStub.findOne).to.have.been.calledWith({ Id: sampleIdValue });
+      done();
+    });
+  });
+
+  it('findObjectById:apiError', () => {
+    const sampleIdValue = 'someIdValue';
+    const sampleObjectName = 'anyObject';
+    const anError = new Error('An API Error');
+
+    // Set up test instance.
+    sobjectStub.findOne.callsArgWith(2, anError);
+    clientWrapperUnderTest = new ClientWrapper(metadata, jsForceConstructorStub);
+
+    // Call the method and make assertions.
+    expect(clientWrapperUnderTest.findObjectById(sampleObjectName, sampleIdValue))
+      .to.be.rejectedWith(anError);
+  });
+
+  it('findObjectById:apiThrows', () => {
+    const sampleIdValue = 'someIdValue';
+    const sampleObjectName = 'anyObject';
+    const anError = new Error('An API Error');
+
+    // Set up test instance.
+    sobjectStub.findOne.throws(anError);
+    clientWrapperUnderTest = new ClientWrapper(metadata, jsForceConstructorStub);
+
+    // Call the method and make assertions.
+    expect(clientWrapperUnderTest.findObjectById(sampleObjectName, sampleIdValue))
+      .to.be.rejectedWith(anError);
+  });
+
+  it('deleteObjectById', (done) => {
+    const sampleObjectName = 'anyObject';
+    const sampleIdValue = 'someIdValue';
+
+    // Set up the test instance.
+    clientWrapperUnderTest = new ClientWrapper(metadata, jsForceConstructorStub);
+
+    // Call the method and make assertions.
+    clientWrapperUnderTest.deleteObjectById(sampleObjectName, sampleIdValue);
+    setTimeout(() => {
+      expect(sfdcClientStub.sobject).to.have.been.calledWith(sampleObjectName);
+      expect(sobjectStub.delete).to.have.been.calledWith(sampleIdValue);
+      done();
+    });
+  });
+
+  it('deleteAccountByIdentifier:noAccountFound', () => {
+    const sampleObjectName = 'anyObject';
+    const sampleIdValue = 'someIdValue';
+
+    // Set up the test instance.
+    clientWrapperUnderTest = new ClientWrapper(metadata, jsForceConstructorStub);
+
+    // Call the method and make assertions.
+    expect(clientWrapperUnderTest.deleteObjectById(sampleObjectName, sampleIdValue))
+      .to.be.rejected;
+  });
+
+  it('deleteAccountByIdentifier:apiError', () => {
+    const sampleObjectName = 'anyObject';
+    const sampleIdValue = 'someIdValue';
+    const anError = new Error('An API Error');
+
+    // Set up the test instance.
+    sobjectStub.delete.callsArgWith(1, anError);
+    clientWrapperUnderTest = new ClientWrapper(metadata, jsForceConstructorStub);
+
+    // Call the method and make assertions.
+    expect(clientWrapperUnderTest.deleteObjectById(sampleObjectName, sampleIdValue))
+      .to.be.rejectedWith(anError);
+  });
+
+  it('deleteAccountByIdentifier:apiThrows', () => {
+    const sampleObjectName = 'anyObject';
+    const sampleIdValue = 'someIdValue';
+    const anError = new Error('An API Error');
+
+    // Set up the test instance.
+    sobjectStub.delete.throws(anError);
+    clientWrapperUnderTest = new ClientWrapper(metadata, jsForceConstructorStub);
+
+    // Call the method and make assertions.
+    expect(clientWrapperUnderTest.deleteObjectById(sampleObjectName, sampleIdValue))
       .to.be.rejectedWith(anError);
   });
 

@@ -19,12 +19,10 @@ export class ObjectFieldEquals extends BaseStep implements StepInterface {
   }, {
     field: 'objName',
     type: FieldDefinition.Type.STRING,
-    optionality: FieldDefinition.Optionality.OPTIONAL,
     description: 'Salesforce object name',
   }, {
     field: 'id',
     type: FieldDefinition.Type.STRING,
-    optionality: FieldDefinition.Optionality.OPTIONAL,
     description: 'Object ID',
   }, {
     field: 'operator',
