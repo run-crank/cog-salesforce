@@ -16,7 +16,7 @@ export class DeleteObject extends BaseStep implements StepInterface {
     description: 'Object ID',
   }];
   protected expectedRecords: ExpectedRecord[] = [{
-    id: 'salesforceObject ',
+    id: 'salesforceObject',
     type: RecordDefinition.Type.KEYVALUE,
     fields: [{
       field: 'Id',

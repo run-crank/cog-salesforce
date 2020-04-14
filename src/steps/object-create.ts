@@ -16,7 +16,7 @@ export class CreateObject extends BaseStep implements StepInterface {
     description: 'where keys represent object field names as represented in the SFDC API',
   }];
   protected expectedRecords: ExpectedRecord[] = [{
-    id: 'salesforceObject ',
+    id: 'salesforceObject',
     type: RecordDefinition.Type.KEYVALUE,
     fields: [{
       field: 'Id',
@@ -30,7 +30,7 @@ export class CreateObject extends BaseStep implements StepInterface {
     const stepData: any = step.getData().toJavaScript();
     const objName: any = stepData.objName;
     const salesforceObject: any = stepData.salesforceObject;
-    console.log(stepData);
+
     try {
       const result = await this.client.createObject(objName, salesforceObject);
       const record = this.keyValue('salesforceObject', 'Created Object', { Id: result.id });
