@@ -16,7 +16,7 @@ export class UpdateObject extends BaseStep implements StepInterface {
     description: 'where keys represent object field names as represented in the SFDC API',
   }];
   protected expectedRecords: ExpectedRecord[] = [{
-    id: 'salesforceObject ',
+    id: 'salesforceObject',
     type: RecordDefinition.Type.KEYVALUE,
     fields: [{
       field: 'Id',
