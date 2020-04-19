@@ -10,7 +10,7 @@ import { Step } from '../../src/steps/object-update';
 
 chai.use(sinonChai);
 
-describe('CreateObjectStep', () => {
+describe('UpdateObjectStep', () => {
   const expect = chai.expect;
   let protoStep: ProtoStep;
   let stepUnderTest: Step;
@@ -26,7 +26,7 @@ describe('CreateObjectStep', () => {
     const stepDef: StepDefinition = stepUnderTest.getDefinition();
     expect(stepDef.getStepId()).to.equal('UpdateObject');
     expect(stepDef.getName()).to.equal('Update a Salesforce Object');
-    expect(stepDef.getExpression()).to.equal('update a salesforce (?<objName>[a-zA-Z0-9]+) object');
+    expect(stepDef.getExpression()).to.equal('update the salesforce (?<objName>[a-zA-Z0-9]+) object identified by id (?<identifier>[^\s]+)');
     expect(stepDef.getType()).to.equal(StepDefinition.Type.ACTION);
   });
 
@@ -41,6 +41,10 @@ describe('CreateObjectStep', () => {
     expect(objName.optionality).to.equal(FieldDefinition.Optionality.REQUIRED);
     expect(objName.type).to.equal(FieldDefinition.Type.STRING);
 
+    const identifier: any = fields.filter(f => f.key === 'identifier')[0];
+    expect(identifier.optionality).to.equal(FieldDefinition.Optionality.REQUIRED);
+    expect(identifier.type).to.equal(FieldDefinition.Type.STRING);
+
     const salesforceObject: any = fields.filter(f => f.key === 'salesforceObject')[0];
     expect(salesforceObject.optionality).to.equal(FieldDefinition.Optionality.REQUIRED);
     expect(salesforceObject.type).to.equal(FieldDefinition.Type.MAP);
@@ -50,24 +54,28 @@ describe('CreateObjectStep', () => {
     // Stub a response that matches expectations.
     const expectedResponse: any = { id: 'abcxyz' };
     const sampleObject: any = 'sampleObject';
+    const sampleId: any = 'sampeleId';
+    const expectedObject: any = { Email: 'anything@example.com', Id: sampleId };
+
     clientWrapperStub.updateObject.resolves(expectedResponse);
 
     // Set step data corresponding to expectations
-    const expectedObject: any = { objName: sampleObject, salesforceObject: { Email: 'anything@example.com' } };
-    protoStep.setData(Struct.fromJavaScript(expectedObject));
+    const stepInput: any = { objName: sampleObject, identifier: sampleId, salesforceObject: { Email: 'anything@example.com' } };
+    protoStep.setData(Struct.fromJavaScript(stepInput));
 
     const response: RunStepResponse = await stepUnderTest.executeStep(protoStep);
-    expect(clientWrapperStub.updateObject).to.have.been.calledWith(sampleObject, expectedObject.salesforceObject);
+    expect(clientWrapperStub.updateObject).to.have.been.calledWith(sampleObject, expectedObject);
     expect(response.getOutcome()).to.equal(RunStepResponse.Outcome.PASSED);
   });
 
   it('should respond with error if update method returns an error.', async () => {
     // Stub a response that matches expectations.
     const expectedError: Error = new Error('Any Error');
+    const sampleId: any = 'sampeleId';
     clientWrapperStub.updateObject.rejects(expectedError);
 
     // Set step data corresponding to expectations
-    const expectedObject: any = { objName: 'sampleObject', salesforceObject: { Email: 'anything@example.com' } };
+    const expectedObject: any = { objName: 'sampleObject', identifier: sampleId, salesforceObject: { Email: 'anything@example.com' } };
     protoStep.setData(Struct.fromJavaScript(expectedObject));
 
     const response: RunStepResponse = await stepUnderTest.executeStep(protoStep);

@@ -53,7 +53,7 @@ describe('ObjectFieldEqualsStep', () => {
 
     // Operator field
     const operator: any = fields.filter(f => f.key === 'operator')[0];
-    expect(operator.optionality).to.equal(FieldDefinition.Optionality.OPTIONAL);
+    expect(operator.optionality).to.equal(FieldDefinition.Optionality.REQUIRED);
     expect(operator.type).to.equal(FieldDefinition.Type.STRING);
 
     // Expected Value field
