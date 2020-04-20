@@ -10,7 +10,7 @@ import { Step } from '../../src/steps/object-delete';
 
 chai.use(sinonChai);
 
-describe('CreateObjectStep', () => {
+describe('DeleteObjectStep', () => {
   const expect = chai.expect;
   let protoStep: ProtoStep;
   let stepUnderTest: Step;

@@ -4,12 +4,16 @@ import { Step, RunStepResponse, FieldDefinition, StepDefinition, RecordDefinitio
 export class UpdateObject extends BaseStep implements StepInterface {
 
   protected stepName: string = 'Update a Salesforce Object';
-  protected stepExpression: string = 'update a salesforce (?<objName>[a-zA-Z0-9]+) object';
+  protected stepExpression: string = 'update the salesforce (?<objName>[a-zA-Z0-9]+) object identified by id (?<identifier>[^\s]+)';
   protected stepType: StepDefinition.Type = StepDefinition.Type.ACTION;
   protected expectedFields: Field[] = [{
     field: 'objName',
     type: FieldDefinition.Type.STRING,
     description: 'Salesforce object name',
+  }, {
+    field: 'identifier',
+    type: FieldDefinition.Type.STRING,
+    description: 'Salesforce object ID',
   }, {
     field: 'salesforceObject',
     type: FieldDefinition.Type.MAP,
@@ -37,9 +41,11 @@ export class UpdateObject extends BaseStep implements StepInterface {
   async executeStep(step: Step): Promise<RunStepResponse> {
     const stepData: any = step.getData().toJavaScript();
     const objName: any = stepData.objName;
+    const id: any = stepData.identifier;
     const salesforceObject: any = stepData.salesforceObject;
 
     try {
+      salesforceObject['Id'] = id;
       const result = await this.client.updateObject(objName, salesforceObject);
       const record = this.keyValue('salesforceObject', 'Updated Object', { Id: result.id });
 
