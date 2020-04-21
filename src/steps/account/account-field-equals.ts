@@ -53,23 +53,6 @@ export class AccountFieldEquals extends BaseStep implements StepInterface {
       type: FieldDefinition.Type.DATETIME,
       description: "Account's Last Modified Date",
     }],
-    dynamicFields: false,
-  }, {
-    id: 'matchedAccounts',
-    type: RecordDefinition.Type.TABLE,
-    fields: [{
-      field: 'Id',
-      type: FieldDefinition.Type.STRING,
-      description: "Account's SalesForce ID",
-    }, {
-      field: 'CreatedDate',
-      type: FieldDefinition.Type.DATETIME,
-      description: "Account's Created Date",
-    }, {
-      field: 'LastModifiedDate',
-      type: FieldDefinition.Type.DATETIME,
-      description: "Account's Last Modified Date",
-    }],
     dynamicFields: true,
   }];
 

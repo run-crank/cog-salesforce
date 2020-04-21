@@ -53,23 +53,6 @@ export class OpportunityFieldEquals extends BaseStep implements StepInterface {
       description: "Opportunity's Last Modified Date",
     }],
     dynamicFields: true,
-  }, {
-    id: 'matchedOpportunities',
-    type: RecordDefinition.Type.TABLE,
-    fields: [{
-      field: 'Id',
-      type: FieldDefinition.Type.STRING,
-      description: "Opportunity's SalesForce ID",
-    }, {
-      field: 'CreatedDate',
-      type: FieldDefinition.Type.DATETIME,
-      description: "Opportunity's Created Date",
-    }, {
-      field: 'LastModifiedDate',
-      type: FieldDefinition.Type.DATETIME,
-      description: "Opportunity's Last Modified Date",
-    }],
-    dynamicFields: true,
   }];
 
   async executeStep(step: Step): Promise<RunStepResponse> {

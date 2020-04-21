@@ -19,7 +19,7 @@ export class ContactCreateStep extends BaseStep implements StepInterface {
       type: FieldDefinition.Type.STRING,
       description: "Contact's SalesForce ID",
     }],
-    dynamicFields: true,
+    dynamicFields: false,
   }];
 
   async executeStep(step: Step): Promise<RunStepResponse> {

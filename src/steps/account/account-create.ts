@@ -19,7 +19,7 @@ export class CreateAccount extends BaseStep implements StepInterface {
       type: FieldDefinition.Type.STRING,
       description: "Account's SalesForce ID",
     }],
-    dynamicFields: true,
+    dynamicFields: false,
   }];
 
   async executeStep(step: Step): Promise<RunStepResponse> {
