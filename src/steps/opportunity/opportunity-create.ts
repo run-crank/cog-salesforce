@@ -19,7 +19,7 @@ export class CreateOpportunity extends BaseStep implements StepInterface {
       type: FieldDefinition.Type.STRING,
       description: "Opportunity's SalesForce ID",
     }],
-    dynamicFields: true,
+    dynamicFields: false,
   }];
 
   async executeStep(step: Step): Promise<RunStepResponse> {

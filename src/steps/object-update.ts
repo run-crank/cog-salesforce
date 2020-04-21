@@ -26,16 +26,8 @@ export class UpdateObject extends BaseStep implements StepInterface {
       field: 'Id',
       type: FieldDefinition.Type.STRING,
       description: "Object's SalesForce ID",
-    }, {
-      field: 'CreatedDate',
-      type: FieldDefinition.Type.DATETIME,
-      description: "Object's Created Date",
-    }, {
-      field: 'LastModifiedDate',
-      type: FieldDefinition.Type.DATETIME,
-      description: "Object's Last Modified Date",
     }],
-    dynamicFields: true,
+    dynamicFields: false,
   }];
 
   async executeStep(step: Step): Promise<RunStepResponse> {

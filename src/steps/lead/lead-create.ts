@@ -19,7 +19,7 @@ export class CreateLead extends BaseStep implements StepInterface {
       type: FieldDefinition.Type.STRING,
       description: "Lead's SalesForce ID",
     }],
-    dynamicFields: true,
+    dynamicFields: false,
   }];
 
   async executeStep(step: Step): Promise<RunStepResponse> {
