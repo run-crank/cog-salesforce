@@ -1,8 +1,7 @@
 import * as jsforce from 'jsforce';
+import { ObjectAwareMixin } from './object-aware';
 
-export class AccountAwareMixin {
-  clientReady: Promise<boolean>;
-  client: jsforce.Connection;
+export class AccountAwareMixin extends ObjectAwareMixin {
 
   /**
    * Creates a Salesforce Account.
@@ -10,21 +9,7 @@ export class AccountAwareMixin {
    * @param {Record<string, any>} account - The Account record to create.
    */
   public async createAccount(account: Record<string, any>): Promise<jsforce.SuccessResult> {
-    await this.clientReady;
-    return new Promise((resolve, reject) => {
-      try {
-        this.client.sobject('Account').create(account, (err, result: any) => {
-          if (err) {
-            reject(err);
-            return;
-          }
-
-          resolve(result);
-        });
-      } catch (e) {
-        reject(e);
-      }
-    });
+    return this.createObject('Account', account);
   }
 
   /**
@@ -34,20 +19,8 @@ export class AccountAwareMixin {
    * @param {String} identifier - the value of the id field to use when searching.
    */
   public async findAccountByIdentifier(idField: string, identifier: string): Promise<Record<string, any>[]> {
-    await this.clientReady;
-    return new Promise((resolve, reject) => {
-      try {
-        this.client.sobject('Account').find({ [idField]: identifier }, (err, records) => {
-          if (err) {
-            reject(err);
-            return;
-          }
-
-          resolve(records);
-        });
-      } catch (e) {
-        reject(e);
-      }
+    return this.findObjectsbyFields('Account', {
+      [idField]: identifier,
     });
   }
 
@@ -58,28 +31,20 @@ export class AccountAwareMixin {
    * @param {String} identifier - the value of the id field to use when searching.
    */
   public async deleteAccountByIdentifier(idField: string, identifier: string): Promise<jsforce.SuccessResult> {
-    await this.clientReady;
     return new Promise(async (resolve, reject) => {
       try {
-        const lead = await this.findAccountByIdentifier(idField, identifier);
-        if (lead.length > 1) {
+        const accounts = await this.findAccountByIdentifier(idField, identifier);
+        if (accounts.length > 1) {
           reject(new Error(`More than one account matches ${idField} ${identifier}`));
           return;
         }
 
-        if (!lead || !lead[0].Id) {
+        if (!accounts || !accounts[0].Id) {
           reject(new Error(`No Account found with ${idField} ${identifier}`));
           return;
         }
 
-        this.client.sobject('Account').delete(lead[0].Id, (err, result: any) => {
-          if (err) {
-            reject(err);
-            return;
-          }
-
-          resolve(result);
-        });
+        resolve(await this.deleteObjectById('Account', accounts[0].Id));
       } catch (e) {
         reject(e);
       }

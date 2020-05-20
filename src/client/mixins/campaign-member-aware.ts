@@ -1,8 +1,6 @@
-import * as jsforce from 'jsforce';
+import { ObjectAwareMixin } from './object-aware';
 
-export class CampaignMemberAwareMixin {
-  clientReady: Promise<boolean>;
-  client: jsforce.Connection;
+export class CampaignMemberAwareMixin extends ObjectAwareMixin {
 
   /**
    * Retrieves a single CampaignMember record for a given email address.
@@ -10,19 +8,9 @@ export class CampaignMemberAwareMixin {
    * @param {String} email - Email address of the CampaignMember record to retrieve.
    */
   public async findCampaignMemberByEmailAndCampaignId(email: string, campaignId: string): Promise<Record<string, any>> {
-    await this.clientReady;
-    return new Promise((resolve, reject) => {
-      try {
-        this.client.sobject('CampaignMember').findOne({ Email: email, CampaignId: campaignId }, (err, record) => {
-          if (err) {
-            reject(err);
-            return;
-          }
-          resolve(record);
-        });
-      } catch (e) {
-        reject(e);
-      }
+    return this.findObjectByFields('CampaignMember', {
+      Email: email,
+      CampaignId: campaignId,
     });
   }
 }
