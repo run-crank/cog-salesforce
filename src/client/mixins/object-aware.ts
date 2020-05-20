@@ -49,11 +49,41 @@ export class ObjectAwareMixin {
     return this.findObjectByFields(objName, { [field]: value });
   }
 
+  /**
+   * Retrieves a single Object record based on a given map of fields/values.
+   *
+   * @param objName - Salesforce object name.
+   * @param fieldMap - A map of Salesforce object fields to values.
+   */
   public async findObjectByFields(objName: string, fieldMap: Record<string, any>): Promise<Record<string, any>> {
     await this.clientReady;
     return new Promise((resolve, reject) => {
       try {
         this.client.sobject(objName).findOne(fieldMap, (err, record) => {
+          if (err) {
+            reject(err);
+            return;
+          }
+
+          resolve(record);
+        });
+      } catch (e) {
+        reject(e);
+      }
+    });
+  }
+
+  /**
+   * Retrieves a list of Object records based on a given map of fields/values.
+   *
+   * @param objName - Salesforce object name.
+   * @param fieldMap - A map of Salesforce object fields to values.
+   */
+  public async findObjectsbyFields(objName: string, fieldMap: Record<string, any>): Promise<Record<string, any>[]> {
+    await this.clientReady;
+    return new Promise((resolve, reject) => {
+      try {
+        this.client.sobject(objName).find(fieldMap, (err, record) => {
           if (err) {
             reject(err);
             return;
