@@ -46,10 +46,14 @@ export class ObjectAwareMixin {
    * @param value - Value of the Salesforce object field to query by.
    */
   public async findObjectByField(objName: string, field: string, value: string): Promise<Record<string, any>> {
+    return this.findObjectByFields(objName, { [field]: value });
+  }
+
+  public async findObjectByFields(objName: string, fieldMap: Record<string, any>): Promise<Record<string, any>> {
     await this.clientReady;
     return new Promise((resolve, reject) => {
       try {
-        this.client.sobject(objName).findOne({ [field]: value }, (err, record) => {
+        this.client.sobject(objName).findOne(fieldMap, (err, record) => {
           if (err) {
             reject(err);
             return;
