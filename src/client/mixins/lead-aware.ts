@@ -1,8 +1,7 @@
 import * as jsforce from 'jsforce';
+import { ObjectAwareMixin } from './object-aware';
 
-export class LeadAwareMixin {
-  clientReady: Promise<boolean>;
-  client: jsforce.Connection;
+export class LeadAwareMixin extends ObjectAwareMixin {
 
   /**
    * Creates a Salesforce Lead.
@@ -10,21 +9,7 @@ export class LeadAwareMixin {
    * @param {Record<string, any>} lead - The Lead record to create.
    */
   public async createLead(lead: Record<string, any>): Promise<jsforce.SuccessResult> {
-    await this.clientReady;
-    return new Promise((resolve, reject) => {
-      try {
-        this.client.sobject('Lead').create(lead, (err, result: any) => {
-          if (err) {
-            reject(err);
-            return;
-          }
-
-          resolve(result);
-        });
-      } catch (e) {
-        reject(e);
-      }
-    });
+    return this.createObject('Lead', lead);
   }
 
   /**
@@ -33,21 +18,7 @@ export class LeadAwareMixin {
    * @param {String} email - Email address of the Lead record to retrieve.
    */
   public async findLeadByEmail(email: string): Promise<Record<string, any>> {
-    await this.clientReady;
-    return new Promise((resolve, reject) => {
-      try {
-        this.client.sobject('Lead').findOne({ Email: email }, (err, record) => {
-          if (err) {
-            reject(err);
-            return;
-          }
-
-          resolve(record);
-        });
-      } catch (e) {
-        reject(e);
-      }
-    });
+    return this.findObjectByField('Lead', 'Email', email);
   }
 
   /**
@@ -56,7 +27,6 @@ export class LeadAwareMixin {
    * @param {String} email - The email address of the Lead to be deleted.
    */
   public async deleteLeadByEmail(email: string): Promise<jsforce.SuccessResult> {
-    await this.clientReady;
     return new Promise(async (resolve, reject) => {
       try {
         const lead = await this.findLeadByEmail(email);
@@ -65,14 +35,7 @@ export class LeadAwareMixin {
           return;
         }
 
-        this.client.sobject('Lead').delete(lead.Id, (err, result: any) => {
-          if (err) {
-            reject(err);
-            return;
-          }
-
-          resolve(result);
-        });
+        resolve(await this.deleteObjectById('Lead', lead.Id));
       } catch (e) {
         reject(e);
       }

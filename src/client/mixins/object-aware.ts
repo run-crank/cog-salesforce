@@ -31,14 +31,25 @@ export class ObjectAwareMixin {
   /**
    * Retrieves a single Object record for a given email address.
    *
-   * @param {String} objName -  Salesforce object name.
+   * @param {String} objName - Salesforce object name.
    * @param {String} id - id of the Object record to retrieve.
    */
   public async findObjectById(objName: string, id: string): Promise<Record<string, any>> {
+    return this.findObjectByField(objName, 'Id', id);
+  }
+
+  /**
+   * Retrieves a single Object record based on a given field/value.
+   *
+   * @param objName - Salesforce object name.
+   * @param field - Salesforce object field used to query for the object.
+   * @param value - Value of the Salesforce object field to query by.
+   */
+  public async findObjectByField(objName: string, field: string, value: string): Promise<Record<string, any>> {
     await this.clientReady;
     return new Promise((resolve, reject) => {
       try {
-        this.client.sobject(objName).findOne({ Id: id }, (err, record) => {
+        this.client.sobject(objName).findOne({ [field]: value }, (err, record) => {
           if (err) {
             reject(err);
             return;
