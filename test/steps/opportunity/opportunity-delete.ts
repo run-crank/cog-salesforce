@@ -50,7 +50,7 @@ describe('DeleteOpportunityStep', () => {
     // Stub a response that matches expectations.
     const sampleOpportunity: any = {
       name: 'sampleName',
-      Id: 'sampleId',
+      id: 'sampleId',
     };
     clientWrapperStub.deleteOpportunityByIdentifier.resolves(sampleOpportunity);
 
