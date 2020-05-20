@@ -42,7 +42,7 @@ export class OpportunityAwareMixin extends ObjectAwareMixin {
         }
 
         if (!opps || !opps[0].Id) {
-          reject(new Error(`No Account found with ${idField} ${identifier}`));
+          reject(new Error(`No Opportunity found with ${idField} ${identifier}`));
           return;
         }
 
