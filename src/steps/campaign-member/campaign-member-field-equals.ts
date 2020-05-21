@@ -89,7 +89,7 @@ export class CampaignMemberFieldEquals extends BaseStep implements StepInterface
     operator = normalizedOperators[operator] || stepData.operator;
 
     try {
-      campaignMember = await this.client.findCampaignMemberByEmailAndCampaignId(email, campaignId);
+      campaignMember = await this.client.findCampaignMemberByEmailAndCampaignId(email, campaignId, [field]);
     } catch (e) {
       return this.error('There was a problem checking the Campaign Member: %s', [e.toString()]);
     }
