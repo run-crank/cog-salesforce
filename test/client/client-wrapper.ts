@@ -24,6 +24,8 @@ describe('ClientWrapper', () => {
     sobjectStub.findOne = sinon.stub();
     sobjectStub.find = sinon.stub();
     sobjectStub.create = sinon.stub();
+    sobjectStub.describe = sinon.stub();
+    sobjectStub.describe.callsArgWith(0, null, {fields: []});
     sfdcClientStub = {
       login: sinon.stub(),
       sobject: sinon.stub(),

@@ -65,7 +65,7 @@ export class OpportunityFieldEquals extends BaseStep implements StepInterface {
     let opportunity: Record<string, any>[];
 
     try {
-      opportunity = await this.client.findOpportunityByIdentifier(idField, identifier, field);
+      opportunity = await this.client.findOpportunityByIdentifier(idField, identifier, [field]);
     } catch (e) {
       return this.error('There was a problem checking the Opportunity: %s', [e.toString()]);
     }

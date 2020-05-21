@@ -17,11 +17,11 @@ export class AccountAwareMixin extends ObjectAwareMixin {
    *
    * @param {String} idField - the field used to search/identify the account.
    * @param {String} identifier - the value of the id field to use when searching.
+   * @param {String[]} alwaysRetrieve - an optional list of fields that should
+   *   always be retrieved when finding accounts.
    */
-  public async findAccountByIdentifier(idField: string, identifier: string): Promise<Record<string, any>[]> {
-    return this.findObjectsbyFields('Account', {
-      [idField]: identifier,
-    });
+  public async findAccountByIdentifier(idField: string, identifier: string, alwaysRetrieve: string[] = []): Promise<Record<string, any>[]> {
+    return this.findObjectsbyFields('Account', { [idField]: identifier }, alwaysRetrieve);
   }
 
   /**

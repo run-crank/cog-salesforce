@@ -19,11 +19,11 @@ export class OpportunityAwareMixin extends ObjectAwareMixin {
    *
    * @param {String} idField - the field used to search/identify the opportunity.
    * @param {String} identifier - the value of the id field to use when searching.
+   * @param {String} alwaysRetrieve - an optional list of fields that should
+   *   always be retrieved when finding opportunities.
    */
-  public async findOpportunityByIdentifier(idField: string, identifier: string): Promise<Record<string, any>[]> {
-    return this.findObjectsbyFields('Opportunity', {
-      [idField]: identifier,
-    });
+  public async findOpportunityByIdentifier(idField: string, identifier: string, alwaysRetrieve: string[] = []): Promise<Record<string, any>[]> {
+    return this.findObjectsbyFields('Opportunity', { [idField]: identifier }, alwaysRetrieve);
   }
 
   /**

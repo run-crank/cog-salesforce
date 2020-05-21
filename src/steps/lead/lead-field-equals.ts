@@ -58,7 +58,7 @@ export class LeadFieldEquals extends BaseStep implements StepInterface {
     let lead: Record<string, any>;
 
     try {
-      lead = await this.client.findLeadByEmail(email);
+      lead = await this.client.findLeadByEmail(email, [field]);
     } catch (e) {
       return this.error('There was a problem checking the Lead: %s', [e.toString()]);
     }
