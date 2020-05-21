@@ -96,12 +96,25 @@ export class ObjectAwareMixin {
    *
    * @param objName - Salesforce object name.
    * @param fieldMap - A map of Salesforce object fields to values.
+   * @param alwaysRetrieve - An optional list of fields that should always be
+   *   retrieved when finding objects of this type (only ever used if the
+   *   underlying object type has an unexpectedly large number of fields).
    */
-  public async findObjectsbyFields(objName: string, fieldMap: Record<string, any>): Promise<Record<string, any>[]> {
-    await this.clientReady;
+  public async findObjectsbyFields(objName: string, fieldMap: Record<string, any>, alwaysRetrieve: string[] = []): Promise<Record<string, any>[]> {
+    const mayGenerateBadRequest = await this.soqlSelectAllMayBeTooBig(objName);
+    let retrieveFields = null;
+
+    // If the request generated may be too large, only pull standard fields, as
+    // well as any additional fields that were specified.
+    if (mayGenerateBadRequest) {
+      const description = await this.describeObject(objName);
+      // Apply any fields provided in alwaysRetrieve and dedupe.
+      retrieveFields = Array.from(new Set(alwaysRetrieve.concat(description.fields.filter(f => !f.custom).map(f => f.name))));
+    }
+
     return new Promise((resolve, reject) => {
       try {
-        this.client.sobject(objName).find(fieldMap, (err, record) => {
+        this.client.sobject(objName).find(fieldMap, retrieveFields, (err, record) => {
           if (err) {
             reject(err);
             return;
