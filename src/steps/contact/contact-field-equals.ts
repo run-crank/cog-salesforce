@@ -57,7 +57,7 @@ export class ContactFieldEqualsStep extends BaseStep implements StepInterface {
     let contact: Record<string, any>;
 
     try {
-      contact = await this.client.findContactByEmail(email);
+      contact = await this.client.findContactByEmail(email, [field]);
     } catch (e) {
       return this.error('There was a problem checking the Contact: %s', [e.toString()]);
     }

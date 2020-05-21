@@ -36,8 +36,10 @@ export class ContactAwareMixin extends ObjectAwareMixin {
    * Retrieves a single Contact record for a given email address.
    *
    * @param {String} email - Email address of the Account record to retrieve.
+   * @param {String[]} alwaysRetrieve - An optional list of fields that should
+   *   always be retrieved when finding this contact.
    */
-  public async findContactByEmail(email: string) {
-    return this.findObjectByField('Contact', 'Email', email);
+  public async findContactByEmail(email: string, alwaysRetrieve: string[] = []) {
+    return this.findObjectByField('Contact', 'Email', email, alwaysRetrieve);
   }
 }
