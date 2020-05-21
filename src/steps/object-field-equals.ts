@@ -62,7 +62,7 @@ export class ObjectFieldEquals extends BaseStep implements StepInterface {
     let object: Record<string, any>;
 
     try {
-      object = await this.client.findObjectById(objName, id);
+      object = await this.client.findObjectById(objName, id, [field]);
     } catch (e) {
       return this.error('There was a problem checking the %s Object: %s', [objName, e.toString()]);
     }

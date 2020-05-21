@@ -34,9 +34,11 @@ export class ObjectAwareMixin {
    *
    * @param {String} objName - Salesforce object name.
    * @param {String} id - id of the Object record to retrieve.
+   * @param {String[]} alwaysRetrieve - An optional list of fields that should
+   *   always be retrieved for the given object.
    */
-  public async findObjectById(objName: string, id: string): Promise<Record<string, any>> {
-    return this.findObjectByField(objName, 'Id', id);
+  public async findObjectById(objName: string, id: string, alwaysRetrieve: string[] = []): Promise<Record<string, any>> {
+    return this.findObjectByField(objName, 'Id', id, alwaysRetrieve);
   }
 
   /**
