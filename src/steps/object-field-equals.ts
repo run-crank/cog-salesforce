@@ -10,7 +10,7 @@ export class ObjectFieldEquals extends BaseStep implements StepInterface {
 
   protected stepName: string = 'Check a field on a Salesforce Object';
   /* tslint:disable-next-line:max-line-length */
-  protected stepExpression: string = 'the (?<field>[a-zA-Z0-9_]+) field on salesforce (?<objName>[a-zA-Z0-9]+) object with id (?<id>[^\s]+) should (?<operator>be less than|be greater than|be|contain|not be|not contain) (?<expectedValue>.+)';
+  protected stepExpression: string = 'the (?<field>[a-zA-Z0-9_]+) field on salesforce (?<objName>[a-zA-Z0-9]+) object with id (?<id>[^\s]+) should (?<operator>be less than|be greater than|be|contain|not be|not contain|be set|not be set) (?<expectedValue>.+)';
   protected stepType: StepDefinition.Type = StepDefinition.Type.VALIDATION;
   protected expectedFields: Field[] = [{
     field: 'objName',
@@ -27,7 +27,7 @@ export class ObjectFieldEquals extends BaseStep implements StepInterface {
   }, {
     field: 'operator',
     type: FieldDefinition.Type.STRING,
-    description: 'Check Logic (be, not be, contain, not contain, be greater than, or be less than)',
+    description: 'Check Logic (set to, not set to, containing, not containing, greater than, less than, be set, or not be set)',
   }, {
     field: 'expectedValue',
     type: FieldDefinition.Type.ANYSCALAR,
