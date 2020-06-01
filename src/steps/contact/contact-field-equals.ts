@@ -9,7 +9,7 @@ export class ContactFieldEqualsStep extends BaseStep implements StepInterface {
 
   protected stepName: string = 'Check a field on a Salesforce Contact';
   /* tslint:disable-next-line:max-line-length */
-  protected stepExpression: string = 'the (?<field>[a-zA-Z0-9_]+) field on salesforce contact (?<email>.+) should (?<operator>be less than|be greater than|be|contain|not be|not contain|be set|not be set) (?<expectedValue>.+)';
+  protected stepExpression: string = 'the (?<field>[a-zA-Z0-9_]+) field on salesforce contact (?<email>.+) should (?<operator>be set|not be set|be less than|be greater than|be|contain|not be|not contain) ?(?<expectedValue>.+)?';
   protected stepType: StepDefinition.Type = StepDefinition.Type.VALIDATION;
   protected expectedFields: Field[] = [{
     field: 'email',
@@ -23,10 +23,11 @@ export class ContactFieldEqualsStep extends BaseStep implements StepInterface {
     field: 'operator',
     type: FieldDefinition.Type.STRING,
     optionality: FieldDefinition.Optionality.OPTIONAL,
-    description: 'Check Logic (be, not be, contain, not contain, be greater than, or be less than)',
+    description: 'Check Logic (set to, not set to, containing, not containing, greater than, less than, be set, or not be set)',
   }, {
     field: 'expectedValue',
     type: FieldDefinition.Type.ANYSCALAR,
+    optionality: FieldDefinition.Optionality.OPTIONAL,
     description: 'Expected field value',
   }];
   protected expectedRecords: ExpectedRecord[] = [{

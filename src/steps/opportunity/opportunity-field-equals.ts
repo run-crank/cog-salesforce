@@ -12,7 +12,7 @@ export class OpportunityFieldEquals extends BaseStep implements StepInterface {
 
   protected stepName: string = 'Check a field on a Salesforce Opportunity';
   /* tslint:disable-next-line:max-line-length */
-  protected stepExpression: string = 'the (?<field>[a-zA-Z0-9_]+) field on salesforce opportunity with (?<idField>[a-zA-Z0-9_]+) (?<identifier>.+) should (?<operator>be less than|be greater than|be|contain|not be|not contain|be set|not be set) (?<expectedValue>.+)';
+  protected stepExpression: string = 'the (?<field>[a-zA-Z0-9_]+) field on salesforce opportunity with (?<idField>[a-zA-Z0-9_]+) (?<identifier>.+) should (?<operator>be set|not be set|be less than|be greater than|be|contain|not be|not contain) ?(?<expectedValue>.+)?';
   protected stepType: StepDefinition.Type = StepDefinition.Type.VALIDATION;
   protected expectedFields: Field[] = [{
     field: 'idField',
@@ -34,6 +34,7 @@ export class OpportunityFieldEquals extends BaseStep implements StepInterface {
   }, {
     field: 'expectedValue',
     type: FieldDefinition.Type.ANYSCALAR,
+    optionality: FieldDefinition.Optionality.OPTIONAL,
     description: 'The expected value of the field',
   }];
   protected expectedRecords: ExpectedRecord[] = [{
