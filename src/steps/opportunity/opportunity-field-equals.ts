@@ -7,6 +7,7 @@ import { Step, RunStepResponse, FieldDefinition, StepDefinition, RecordDefinitio
 import * as util from '@run-crank/utilities';
 import { baseOperators } from '../../client/constants/operators';
 import { titleCase } from 'title-case';
+import { isNullOrUndefined } from 'util';
 
 export class OpportunityFieldEquals extends BaseStep implements StepInterface {
 
@@ -30,7 +31,7 @@ export class OpportunityFieldEquals extends BaseStep implements StepInterface {
     field: 'operator',
     type: FieldDefinition.Type.STRING,
     optionality: FieldDefinition.Optionality.OPTIONAL,
-    description: 'Check Logic (set to, not set to, containing, not containing, greater than, less than, be set, or not be set)',
+    description: 'Check Logic (be, not be, contain, not contain, be greater than, be less than, be set, or not be set))',
   }, {
     field: 'expectedValue',
     type: FieldDefinition.Type.ANYSCALAR,
@@ -64,6 +65,10 @@ export class OpportunityFieldEquals extends BaseStep implements StepInterface {
     const operator: string = stepData.operator || 'be';
     const expectedValue: string = stepData.expectedValue;
     let opportunity: Record<string, any>[];
+
+    if (isNullOrUndefined(expectedValue) && !(operator == 'be set' || operator == 'not be set')) {
+      return this.error("The operator '%s' requires an expected value. Please provide one.", [operator]);
+    }
 
     try {
       opportunity = await this.client.findOpportunityByIdentifier(idField, identifier, [field]);

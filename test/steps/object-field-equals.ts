@@ -195,4 +195,41 @@ describe('ObjectFieldEqualsStep', () => {
     const response: RunStepResponse = await stepUnderTest.executeStep(protoStep);
     expect(response.getOutcome()).to.equal(RunStepResponse.Outcome.ERROR);
   });
+
+  it("should respond with error when expectedValue is null when operator is not 'be set' or 'not be set'", async () => {
+    // Stub a response that matches expectations.
+    const expectedResponseMessage: string = "The operator '%s' requires an expected value. Please provide one.";
+
+    // Set step data corresponding to expectations
+    const expectations: any = {
+      field: 'anyField',
+      objName: 'anyObject',
+      id: 'anyId',
+      operator: 'anyOperator',
+      expectedValue: null,
+    };
+    protoStep.setData(Struct.fromJavaScript(expectations));
+
+    const response: RunStepResponse = await stepUnderTest.executeStep(protoStep);
+    expect(response.getMessageFormat()).to.equal(expectedResponseMessage);
+    expect(response.getOutcome()).to.equal(RunStepResponse.Outcome.ERROR);
+  });
+
+  it("should respond with error when expectedValue is not provided when operator is not 'be set' or 'not be set'", async () => {
+    // Stub a response that matches expectations.
+    const expectedResponseMessage: string = "The operator '%s' requires an expected value. Please provide one.";
+
+    // Set step data corresponding to expectations
+    const expectations: any = {
+      field: 'anyField',
+      objName: 'anyObject',
+      id: 'anyId',
+      operator: 'anyOperator',
+    };
+    protoStep.setData(Struct.fromJavaScript(expectations));
+
+    const response: RunStepResponse = await stepUnderTest.executeStep(protoStep);
+    expect(response.getMessageFormat()).to.equal(expectedResponseMessage);
+    expect(response.getOutcome()).to.equal(RunStepResponse.Outcome.ERROR);
+  });
 });

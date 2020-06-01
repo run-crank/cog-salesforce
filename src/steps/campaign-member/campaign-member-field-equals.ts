@@ -4,6 +4,7 @@ import { campaignMemberOperators } from './../../client/constants/operators';
 import { BaseStep, Field, StepInterface, ExpectedRecord } from '../../core/base-step';
 import { Step, RunStepResponse, FieldDefinition, StepDefinition, RecordDefinition } from '../../proto/cog_pb';
 import * as util from '@run-crank/utilities';
+import { isNullOrUndefined } from 'util';
 
 export class CampaignMemberFieldEquals extends BaseStep implements StepInterface {
 
@@ -90,6 +91,10 @@ export class CampaignMemberFieldEquals extends BaseStep implements StepInterface
     };
 
     operator = normalizedOperators[operator] || stepData.operator;
+
+    if (isNullOrUndefined(expectedValue) && !(operator == 'be set' || operator == 'not be set')) {
+      return this.error("The operator '%s' requires an expected value. Please provide one.", [operator]);
+    }
 
     try {
       campaignMember = await this.client.findCampaignMemberByEmailAndCampaignId(email, campaignId, [field]);
