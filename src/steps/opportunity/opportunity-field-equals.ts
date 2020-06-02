@@ -7,12 +7,13 @@ import { Step, RunStepResponse, FieldDefinition, StepDefinition, RecordDefinitio
 import * as util from '@run-crank/utilities';
 import { baseOperators } from '../../client/constants/operators';
 import { titleCase } from 'title-case';
+import { isNullOrUndefined } from 'util';
 
 export class OpportunityFieldEquals extends BaseStep implements StepInterface {
 
   protected stepName: string = 'Check a field on a Salesforce Opportunity';
   /* tslint:disable-next-line:max-line-length */
-  protected stepExpression: string = 'the (?<field>[a-zA-Z0-9_]+) field on salesforce opportunity with (?<idField>[a-zA-Z0-9_]+) (?<identifier>.+) should (?<operator>be less than|be greater than|be|contain|not be|not contain) (?<expectedValue>.+)';
+  protected stepExpression: string = 'the (?<field>[a-zA-Z0-9_]+) field on salesforce opportunity with (?<idField>[a-zA-Z0-9_]+) (?<identifier>.+) should (?<operator>be set|not be set|be less than|be greater than|be|contain|not be|not contain) ?(?<expectedValue>.+)?';
   protected stepType: StepDefinition.Type = StepDefinition.Type.VALIDATION;
   protected expectedFields: Field[] = [{
     field: 'idField',
@@ -30,10 +31,11 @@ export class OpportunityFieldEquals extends BaseStep implements StepInterface {
     field: 'operator',
     type: FieldDefinition.Type.STRING,
     optionality: FieldDefinition.Optionality.OPTIONAL,
-    description: 'Check Logic (be, not be, contain, not contain, be greater than, or be less than)',
+    description: 'Check Logic (be, not be, contain, not contain, be greater than, be less than, be set, or not be set))',
   }, {
     field: 'expectedValue',
     type: FieldDefinition.Type.ANYSCALAR,
+    optionality: FieldDefinition.Optionality.OPTIONAL,
     description: 'The expected value of the field',
   }];
   protected expectedRecords: ExpectedRecord[] = [{
@@ -63,6 +65,10 @@ export class OpportunityFieldEquals extends BaseStep implements StepInterface {
     const operator: string = stepData.operator || 'be';
     const expectedValue: string = stepData.expectedValue;
     let opportunity: Record<string, any>[];
+
+    if (isNullOrUndefined(expectedValue) && !(operator == 'be set' || operator == 'not be set')) {
+      return this.error("The operator '%s' requires an expected value. Please provide one.", [operator]);
+    }
 
     try {
       opportunity = await this.client.findOpportunityByIdentifier(idField, identifier, [field]);

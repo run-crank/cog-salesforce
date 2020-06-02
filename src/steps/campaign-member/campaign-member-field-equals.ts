@@ -4,12 +4,13 @@ import { campaignMemberOperators } from './../../client/constants/operators';
 import { BaseStep, Field, StepInterface, ExpectedRecord } from '../../core/base-step';
 import { Step, RunStepResponse, FieldDefinition, StepDefinition, RecordDefinition } from '../../proto/cog_pb';
 import * as util from '@run-crank/utilities';
+import { isNullOrUndefined } from 'util';
 
 export class CampaignMemberFieldEquals extends BaseStep implements StepInterface {
 
   protected stepName: string = 'Check a field on a Salesforce Campaign Member';
   /* tslint:disable-next-line:max-line-length */
-  protected stepExpression: string = 'the salesforce lead (?<email>.+) should have campaign member (?<field>[a-z0-9_]+) (?<operator>set to|not set to|containing|not containing|less than|greater than) (?<expectedValue>.+) on campaign (?<campaignId>.+)';
+  protected stepExpression: string = 'the salesforce lead (?<email>.+) should have campaign member (?<field>[a-z0-9_]+) (?<operator>set|not set|set to|not set to|containing|not containing|less than|greater than) ?(?<expectedValue>.+)? on campaign (?<campaignId>.+)';
   protected stepType: StepDefinition.Type = StepDefinition.Type.VALIDATION;
   protected expectedFields: Field[] = [{
     field: 'email',
@@ -27,10 +28,11 @@ export class CampaignMemberFieldEquals extends BaseStep implements StepInterface
     field: 'operator',
     type: FieldDefinition.Type.STRING,
     optionality: FieldDefinition.Optionality.OPTIONAL,
-    description: 'Check Logic (set to, not set to, containing, not containing, greater than, or less than)',
+    description: 'Check Logic (set to, not set to, containing, not containing, greater than, less than, set, or not set)',
   }, {
     field: 'expectedValue',
     type: FieldDefinition.Type.ANYSCALAR,
+    optionality: FieldDefinition.Optionality.OPTIONAL,
     description: 'Expected field value',
   }];
   protected expectedRecords: ExpectedRecord[] = [{
@@ -78,6 +80,8 @@ export class CampaignMemberFieldEquals extends BaseStep implements StepInterface
     let campaignMember: Record<string, any>;
 
     const normalizedOperators = {
+      'set': 'be set',
+      'not set': 'not be set',
       'set to': 'be',
       'not set to': 'not be',
       'containing': 'contain',
@@ -87,6 +91,10 @@ export class CampaignMemberFieldEquals extends BaseStep implements StepInterface
     };
 
     operator = normalizedOperators[operator] || stepData.operator;
+
+    if (isNullOrUndefined(expectedValue) && !(operator == 'be set' || operator == 'not be set')) {
+      return this.error("The operator '%s' requires an expected value. Please provide one.", [operator]);
+    }
 
     try {
       campaignMember = await this.client.findCampaignMemberByEmailAndCampaignId(email, campaignId, [field]);

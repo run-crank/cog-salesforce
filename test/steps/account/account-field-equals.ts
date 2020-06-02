@@ -26,7 +26,7 @@ describe('AccountFieldEqualsStep', () => {
     const stepDef: StepDefinition = stepUnderTest.getDefinition();
     expect(stepDef.getStepId()).to.equal('AccountFieldEquals');
     expect(stepDef.getName()).to.equal('Check a field on a Salesforce Account');
-    expect(stepDef.getExpression()).to.equal('the (?<field>[a-zA-Z0-9_]+) field on salesforce account with (?<idField>[a-zA-Z0-9_]+) (?<identifier>.+) should (?<operator>be less than|be greater than|be|contain|not be|not contain) (?<expectedValue>.+)');
+    expect(stepDef.getExpression()).to.equal('the (?<field>[a-zA-Z0-9_]+) field on salesforce account with (?<idField>[a-zA-Z0-9_]+) (?<identifier>.+) should (?<operator>be set|not be set|be less than|be greater than|be|contain|not be|not contain) ?(?<expectedValue>.+)?');
     expect(stepDef.getType()).to.equal(StepDefinition.Type.VALIDATION);
   });
 
@@ -54,7 +54,7 @@ describe('AccountFieldEqualsStep', () => {
     expect(operator.type).to.equal(FieldDefinition.Type.STRING);
 
     const expectedValue: any = fields.filter(f => f.key === 'expectedValue')[0];
-    expect(expectedValue.optionality).to.equal(FieldDefinition.Optionality.REQUIRED);
+    expect(expectedValue.optionality).to.equal(FieldDefinition.Optionality.OPTIONAL);
     expect(expectedValue.type).to.equal(FieldDefinition.Type.ANYSCALAR);
   });
 
@@ -341,6 +341,43 @@ describe('AccountFieldEqualsStep', () => {
     protoStep.setData(Struct.fromJavaScript(expectations));
 
     const response: RunStepResponse = await stepUnderTest.executeStep(protoStep);
+    expect(response.getOutcome()).to.equal(RunStepResponse.Outcome.ERROR);
+  });
+
+  it("should respond with error when expectedValue is null when operator is not 'be set' or 'not be set'", async () => {
+    // Stub a response that matches expectations.
+    const expectedResponseMessage: string = "The operator '%s' requires an expected value. Please provide one.";
+
+    // Set step data corresponding to expectations
+    const expectations: any = {
+      idField: 'anyIdField',
+      identifier: 'anyIdentifier',
+      field: 'anyField',
+      operator: 'anyOperator',
+      expectedValue: null,
+    };
+    protoStep.setData(Struct.fromJavaScript(expectations));
+
+    const response: RunStepResponse = await stepUnderTest.executeStep(protoStep);
+    expect(response.getMessageFormat()).to.equal(expectedResponseMessage);
+    expect(response.getOutcome()).to.equal(RunStepResponse.Outcome.ERROR);
+  });
+
+  it("should respond with error when expectedValue is not provided when operator is not 'be set' or 'not be set'", async () => {
+    // Stub a response that matches expectations.
+    const expectedResponseMessage: string = "The operator '%s' requires an expected value. Please provide one.";
+
+    // Set step data corresponding to expectations
+    const expectations: any = {
+      idField: 'anyIdField',
+      identifier: 'anyIdentifier',
+      field: 'anyField',
+      operator: 'anyOperator',
+    };
+    protoStep.setData(Struct.fromJavaScript(expectations));
+
+    const response: RunStepResponse = await stepUnderTest.executeStep(protoStep);
+    expect(response.getMessageFormat()).to.equal(expectedResponseMessage);
     expect(response.getOutcome()).to.equal(RunStepResponse.Outcome.ERROR);
   });
 });

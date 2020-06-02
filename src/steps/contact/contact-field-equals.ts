@@ -4,12 +4,13 @@ import { BaseStep, Field, StepInterface, ExpectedRecord } from '../../core/base-
 import { Step, RunStepResponse, FieldDefinition, StepDefinition, RecordDefinition } from '../../proto/cog_pb';
 import * as util from '@run-crank/utilities';
 import { baseOperators } from '../../client/constants/operators';
+import { isNullOrUndefined } from 'util';
 
 export class ContactFieldEqualsStep extends BaseStep implements StepInterface {
 
   protected stepName: string = 'Check a field on a Salesforce Contact';
   /* tslint:disable-next-line:max-line-length */
-  protected stepExpression: string = 'the (?<field>[a-zA-Z0-9_]+) field on salesforce contact (?<email>.+) should (?<operator>be less than|be greater than|be|contain|not be|not contain) (?<expectedValue>.+)';
+  protected stepExpression: string = 'the (?<field>[a-zA-Z0-9_]+) field on salesforce contact (?<email>.+) should (?<operator>be set|not be set|be less than|be greater than|be|contain|not be|not contain) ?(?<expectedValue>.+)?';
   protected stepType: StepDefinition.Type = StepDefinition.Type.VALIDATION;
   protected expectedFields: Field[] = [{
     field: 'email',
@@ -23,10 +24,11 @@ export class ContactFieldEqualsStep extends BaseStep implements StepInterface {
     field: 'operator',
     type: FieldDefinition.Type.STRING,
     optionality: FieldDefinition.Optionality.OPTIONAL,
-    description: 'Check Logic (be, not be, contain, not contain, be greater than, or be less than)',
+    description: 'Check Logic (be, not be, contain, not contain, be greater than, be less than, be set, or not be set))',
   }, {
     field: 'expectedValue',
     type: FieldDefinition.Type.ANYSCALAR,
+    optionality: FieldDefinition.Optionality.OPTIONAL,
     description: 'Expected field value',
   }];
   protected expectedRecords: ExpectedRecord[] = [{
@@ -55,6 +57,10 @@ export class ContactFieldEqualsStep extends BaseStep implements StepInterface {
     const operator: string = stepData.operator || 'be';
     const expectedValue: string = stepData.expectedValue;
     let contact: Record<string, any>;
+
+    if (isNullOrUndefined(expectedValue) && !(operator == 'be set' || operator == 'not be set')) {
+      return this.error("The operator '%s' requires an expected value. Please provide one.", [operator]);
+    }
 
     try {
       contact = await this.client.findContactByEmail(email, [field]);
