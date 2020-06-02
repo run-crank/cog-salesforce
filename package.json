@@ -49,7 +49,7 @@
     "check-engine": "^1.8.1",
     "grpc-tools": "^1.7.3",
     "grpc_tools_node_protoc_ts": "^2.5.1",
-    "mocha": "^6.1.4",
+    "mocha": "^7.2.0",
     "nyc": "^14.1.1",
     "sinon-chai": "^3.3.0",
     "ts-sinon": "^1.0.17",
@@ -60,7 +60,7 @@
   "dependencies": {
     "@run-crank/utilities": "^0.2.0",
     "google-protobuf": "^3.8.0",
-    "grpc": "^1.21.1",
+    "grpc": "^1.24.2",
     "jsforce": "^1.9.3",
     "moment": "^2.24.0",
     "title-case": "^3.0.2",
