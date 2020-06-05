@@ -117,10 +117,10 @@ export class CampaignMemberFieldEquals extends BaseStep implements StepInterface
 
       if (this.compare(operator, campaignMember[field], expectedValue)) {
         // If the value of the field matches expectations, pass.
-        return this.pass(this.operatorSuccessMessages[operator], [field, expectedValue], [record]);
+        return this.pass(this.operatorSuccessMessages[operator], [field, expectedValue || ''], [record]);
       } else {
         // If the value of the field does not match expectations, fail.
-        return this.fail(this.operatorFailMessages[operator], [field, expectedValue, campaignMember[field]], [record]);
+        return this.fail(this.operatorFailMessages[operator], [field, expectedValue || '', campaignMember[field]], [record]);
       }
     } catch (e) {
       if (e instanceof util.UnknownOperatorError) {
