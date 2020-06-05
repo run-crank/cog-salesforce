@@ -78,9 +78,9 @@ export class ContactFieldEqualsStep extends BaseStep implements StepInterface {
       if (!contact.hasOwnProperty(field)) {
         return this.error('The %s field does not exist on Contact %s', [field, email], [record]);
       } else if (this.compare(operator, contact[field], expectedValue)) {
-        return this.pass(this.operatorSuccessMessages[operator], [field, expectedValue], [record]);
+        return this.pass(this.operatorSuccessMessages[operator], [field, expectedValue || ''], [record]);
       } else {
-        return this.fail(this.operatorFailMessages[operator], [field, expectedValue, contact[field]], [record]);
+        return this.fail(this.operatorFailMessages[operator], [field, expectedValue || '', contact[field]], [record]);
       }
     } catch (e) {
       if (e instanceof util.UnknownOperatorError) {

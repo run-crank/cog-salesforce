@@ -86,10 +86,10 @@ export class ObjectFieldEquals extends BaseStep implements StepInterface {
         return this.error('The %s field does not exist on %s Object %s', [field, objName, id], [record]);
       } else if (this.compare(operator, object[field], expectedValue)) {
         // If the value of the field matches expectations, pass.
-        return this.pass(this.operatorSuccessMessages[operator], [field, expectedValue], [record]);
+        return this.pass(this.operatorSuccessMessages[operator], [field, expectedValue || ''], [record]);
       } else {
         // If the value of the field does not match expectations, fail.
-        return this.fail(this.operatorFailMessages[operator], [field, expectedValue, object[field]], [record]);
+        return this.fail(this.operatorFailMessages[operator], [field, expectedValue || '', object[field]], [record]);
       }
     } catch (e) {
       if (e instanceof util.UnknownOperatorError) {
