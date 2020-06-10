@@ -10,7 +10,7 @@ export class CampaignMemberFieldEquals extends BaseStep implements StepInterface
 
   protected stepName: string = 'Check a field on a Salesforce Campaign Member';
   /* tslint:disable-next-line:max-line-length */
-  protected stepExpression: string = 'the salesforce lead (?<email>.+) should have campaign member (?<field>[a-z0-9_]+) (?<operator>set to|set|not set to|not set|containing|not containing|less than|greater than) ?(?<expectedValue>.+)? on campaign (?<campaignId>.+)';
+  protected stepExpression: string = 'the salesforce lead (?<email>.+) should have campaign member (?<field>[a-z0-9_]+) (?<operator>set to one of|set to|set|not set to one of|not set to|not set|containing|not containing|less than|greater than) ?(?<expectedValue>.+)? on campaign (?<campaignId>.+)';
   protected stepType: StepDefinition.Type = StepDefinition.Type.VALIDATION;
   protected expectedFields: Field[] = [{
     field: 'email',
@@ -28,7 +28,7 @@ export class CampaignMemberFieldEquals extends BaseStep implements StepInterface
     field: 'operator',
     type: FieldDefinition.Type.STRING,
     optionality: FieldDefinition.Optionality.OPTIONAL,
-    description: 'Check Logic (set to, not set to, containing, not containing, greater than, less than, set, or not set)',
+    description: 'Check Logic (set to, not set to, containing, not containing, greater than, less than, set, not set, set to one of, or not set to one of)',
   }, {
     field: 'expectedValue',
     type: FieldDefinition.Type.ANYSCALAR,
@@ -88,6 +88,8 @@ export class CampaignMemberFieldEquals extends BaseStep implements StepInterface
       'not containing': 'not contain',
       'less than': 'be less than',
       'greater than': 'be greater than',
+      'set to one of': 'be one of',
+      'not set to one of': 'not be one of',
     };
 
     operator = normalizedOperators[operator] || stepData.operator;
