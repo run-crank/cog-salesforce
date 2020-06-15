@@ -10,12 +10,10 @@ tokens:
   testCity: New York City
   testState: New York
   testsubmit: input[name=submit]
-  testcookie: a[id=cookie_action_close_header]
 
 steps:
 - step: Given I navigate to https://www.automatoninc.com/dev-qa-sfdc-web-to-lead/
-- step: When I click the page element {{testcookie}}
-- step: And I fill out input[id=first_name] with {{testFirstname}}
+- step: When I fill out input[id=first_name] with {{testFirstname}}
 - step: And I fill out input[id=last_name] with {{testLastname}}
 - step: And I fill out input[id=email] with {{testEmail}}
 - step: And I fill out input[id=company] with {{testCompany}}
