@@ -80,7 +80,7 @@ export class ContactFieldEqualsStep extends BaseStep implements StepInterface {
       } else if (this.compare(operator, contact[field], expectedValue)) {
         return this.pass(this.operatorSuccessMessages[operator], [field, expectedValue || ''], [record]);
       } else {
-        return this.fail(this.operatorFailMessages[operator], [field, expectedValue || '', contact[field]], [record]);
+        return this.fail(this.operatorFailMessages[operator], [field, expectedValue || contact[field], contact[field]], [record]);
       }
     } catch (e) {
       if (e instanceof util.UnknownOperatorError) {

@@ -97,7 +97,7 @@ export class OpportunityFieldEquals extends BaseStep implements StepInterface {
         // If the value of the field does not match expectations, fail.
         return this.fail(
           this.operatorFailMessages[operator],
-          [field, expectedValue || '', opportunity[0][field]],
+          [field, expectedValue || opportunity[0][field], opportunity[0][field]],
           [record],
         );
       }

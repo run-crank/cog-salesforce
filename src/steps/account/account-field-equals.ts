@@ -97,7 +97,7 @@ export class AccountFieldEquals extends BaseStep implements StepInterface {
         return this.pass(this.operatorSuccessMessages[operator], [field, expectedValue || ''], [record]);
       } else {
         // If the value of the field does not match expectations, fail.
-        return this.fail(this.operatorFailMessages[operator], [field, expectedValue || '', account[0][field]], [record]);
+        return this.fail(this.operatorFailMessages[operator], [field, expectedValue || account[0][field], account[0][field]], [record]);
       }
     } catch (e) {
       if (e instanceof util.UnknownOperatorError) {
