@@ -85,7 +85,7 @@ export class LeadFieldEquals extends BaseStep implements StepInterface {
         return this.pass(this.operatorSuccessMessages[operator], [field, expectedValue || ''], [record]);
       } else {
         // If the value of the field does not match expectations, fail.
-        return this.fail(this.operatorFailMessages[operator], [field, expectedValue || '', lead[field]], [record]);
+        return this.fail(this.operatorFailMessages[operator], [field, expectedValue || lead[field], lead[field]], [record]);
       }
     } catch (e) {
       if (e instanceof util.UnknownOperatorError) {
