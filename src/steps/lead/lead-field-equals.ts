@@ -57,6 +57,7 @@ export class LeadFieldEquals extends BaseStep implements StepInterface {
     const field: string = stepData.field;
     const operator: string = stepData.operator || 'be';
     const expectedValue: string = stepData.expectedValue;
+    const isSetOperator = ['be set', 'not be set'].includes(operator);
     let lead: Record<string, any>;
 
     if (isNullOrUndefined(expectedValue) && !(operator == 'be set' || operator == 'not be set')) {
@@ -85,7 +86,12 @@ export class LeadFieldEquals extends BaseStep implements StepInterface {
         return this.pass(this.operatorSuccessMessages[operator], [field, expectedValue || ''], [record]);
       } else {
         // If the value of the field does not match expectations, fail.
-        return this.fail(this.operatorFailMessages[operator], [field, expectedValue || lead[field], lead[field]], [record]);
+        const printValue = [null, undefined].includes(lead[field]) ? '' : lead[field];
+        return this.fail(
+          this.operatorFailMessages[operator],
+          [field, expectedValue || printValue, isSetOperator ? '' : printValue],
+          [record],
+        );
       }
     } catch (e) {
       if (e instanceof util.UnknownOperatorError) {
