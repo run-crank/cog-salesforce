@@ -117,13 +117,13 @@ export class CampaignMemberFieldEquals extends BaseStep implements StepInterface
         return this.error('The %s field does not exist on Campaign Member with email %s and campaign id %s', [field, email, campaignId], [record]);
       }
 
-      if (this.compare(operator, campaignMember[field], expectedValue)) {
-        // If the value of the field matches expectations, pass.
-        return this.pass(this.operatorSuccessMessages[operator], [field, expectedValue || ''], [record]);
-      } else {
-        // If the value of the field does not match expectations, fail.
-        return this.fail(this.operatorFailMessages[operator], [field, expectedValue || campaignMember[field], campaignMember[field]], [record]);
-      }
+      const result = this.assert(operator, campaignMember[field], expectedValue, field);
+
+      // If the value of the field matches expectations, pass.
+      // If the value of the field does not match expectations, fail.
+      return result.valid ? this.pass(result.message, [], [record])
+        : this.fail(result.message, [], [record]);
+
     } catch (e) {
       if (e instanceof util.UnknownOperatorError) {
         return this.error('%s Please provide one of: %s', [e.message, campaignMemberOperators.join(', ')]);
