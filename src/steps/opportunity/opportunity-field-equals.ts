@@ -90,7 +90,7 @@ export class OpportunityFieldEquals extends BaseStep implements StepInterface {
       if (!opportunity[0].hasOwnProperty(stepData.field)) {
         // If the given field does not exist on the opportunity, return an error.
         return this.error('The %s field does not exist on Opportunity %s', [field, identifier], [record]);
-      } 
+      }
 
       const result = this.assert(operator, opportunity[0][field], expectedValue, field);
 
