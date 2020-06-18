@@ -90,17 +90,15 @@ export class OpportunityFieldEquals extends BaseStep implements StepInterface {
       if (!opportunity[0].hasOwnProperty(stepData.field)) {
         // If the given field does not exist on the opportunity, return an error.
         return this.error('The %s field does not exist on Opportunity %s', [field, identifier], [record]);
-      } else if (this.compare(operator, opportunity[0][field], expectedValue)) {
-        // If the value of the field matches expectations, pass.
-        return this.pass(this.operatorSuccessMessages[operator], [field, expectedValue || ''], [record]);
-      } else {
-        // If the value of the field does not match expectations, fail.
-        return this.fail(
-          this.operatorFailMessages[operator],
-          [field, expectedValue || opportunity[0][field], opportunity[0][field]],
-          [record],
-        );
-      }
+      } 
+
+      const result = this.assert(operator, opportunity[0][field], expectedValue, field);
+
+      // If the value of the field matches expectations, pass.
+      // If the value of the field does not match expectations, fail.
+      return result.valid ? this.pass(result.message, [], [record])
+        : this.fail(result.message, [], [record]);
+
     } catch (e) {
       if (e instanceof util.UnknownOperatorError) {
         return this.error('%s Please provide one of: %s', [e.message, baseOperators.join(', ')]);
