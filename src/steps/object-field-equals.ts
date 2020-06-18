@@ -61,7 +61,6 @@ export class ObjectFieldEquals extends BaseStep implements StepInterface {
     const id: string = stepData.id;
     const operator: string = stepData.operator || 'be';
     const expectedValue: string = stepData.expectedValue;
-    const isSetOperator = ['be set', 'not be set'].includes(operator);
     let object: Record<string, any>;
 
     if (isNullOrUndefined(expectedValue) && !(operator == 'be set' || operator == 'not be set')) {
@@ -85,18 +84,13 @@ export class ObjectFieldEquals extends BaseStep implements StepInterface {
       if (!object.hasOwnProperty(field)) {
         // If the given field does not exist on the user, return an error.
         return this.error('The %s field does not exist on %s Object %s', [field, objName, id], [record]);
-      } else if (this.compare(operator, object[field], expectedValue)) {
-        // If the value of the field matches expectations, pass.
-        return this.pass(this.operatorSuccessMessages[operator], [field, expectedValue || ''], [record]);
-      } else {
-        // If the value of the field does not match expectations, fail.
-        const printValue = [null, undefined].includes(object[field]) ? '' : object[field];
-        return this.fail(
-          this.operatorFailMessages[operator],
-          [field, expectedValue || printValue, isSetOperator ? '' : printValue],
-          [record],
-        );
       }
+
+      const result = this.assert(operator, object[field], expectedValue, field);
+
+      return result.valid ? this.pass(result.message, [], [record])
+        : this.fail(result.message, [], [record]);
+
     } catch (e) {
       if (e instanceof util.UnknownOperatorError) {
         return this.error('%s Please provide one of: %s', [e.message, baseOperators.join(', ')]);

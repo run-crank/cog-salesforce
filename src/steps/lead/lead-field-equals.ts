@@ -81,18 +81,13 @@ export class LeadFieldEquals extends BaseStep implements StepInterface {
       if (!lead.hasOwnProperty(field)) {
         // If the given field does not exist on the user, return an error.
         return this.error('The %s field does not exist on Lead %s', [field, email], [record]);
-      } else if (this.compare(operator, lead[field], expectedValue)) {
-        // If the value of the field matches expectations, pass.
-        return this.pass(this.operatorSuccessMessages[operator], [field, expectedValue || ''], [record]);
-      } else {
-        // If the value of the field does not match expectations, fail.
-        const printValue = [null, undefined].includes(lead[field]) ? '' : lead[field];
-        return this.fail(
-          this.operatorFailMessages[operator],
-          [field, expectedValue || printValue, isSetOperator ? '' : printValue],
-          [record],
-        );
       }
+
+      const result = this.assert(operator, lead[field], expectedValue, field);
+
+      return result.valid ? this.pass(result.message, [], [record])
+        : this.fail(result.message, [], [record]);
+
     } catch (e) {
       if (e instanceof util.UnknownOperatorError) {
         return this.error('%s Please provide one of: %s', [e.message, baseOperators.join(', ')]);
