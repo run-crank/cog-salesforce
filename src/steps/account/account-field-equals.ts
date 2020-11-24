@@ -78,10 +78,10 @@ export class AccountFieldEquals extends BaseStep implements StepInterface {
     try {
       if (account.length === 0) {
         // If the client does not return an account, return an error.
-        return this.error('No Account was found with %s %s', [field, identifier]);
+        return this.fail('No Account was found with %s %s', [field, identifier]);
       } else if (account.length > 1) {
         // If the client returns more than one account, return an error.
-        return this.error('More than one account matches %s %s', [field, identifier], [this.createRecords(account)]);
+        return this.fail('More than one account matches %s %s', [field, identifier], [this.createRecords(account)]);
       }
 
       //// Account found
@@ -89,7 +89,7 @@ export class AccountFieldEquals extends BaseStep implements StepInterface {
 
       if (!account[0].hasOwnProperty(stepData.field)) {
         // If the given field does not exist on the account, return an error.
-        return this.error('The %s field does not exist on Account %s', [field, identifier], [record]);
+        return this.fail('The %s field does not exist on Account %s', [field, identifier], [record]);
       }
 
       const result = this.assert(operator, account[0][field], expectedValue, field);

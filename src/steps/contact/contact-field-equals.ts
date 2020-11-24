@@ -70,13 +70,13 @@ export class ContactFieldEqualsStep extends BaseStep implements StepInterface {
 
     try {
       if (!contact) {
-        return this.error('No Contact found with email %s', [email]);
+        return this.fail('No Contact found with email %s', [email]);
       }
 
       const record = this.keyValue('contact', 'Checked Contact', contact);
 
       if (!contact.hasOwnProperty(field)) {
-        return this.error('The %s field does not exist on Contact %s', [field, email], [record]);
+        return this.fail('The %s field does not exist on Contact %s', [field, email], [record]);
       }
 
       const result = this.assert(operator, contact[field], expectedValue, field);

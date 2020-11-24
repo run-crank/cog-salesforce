@@ -73,14 +73,14 @@ export class LeadFieldEquals extends BaseStep implements StepInterface {
     try {
       if (!lead) {
         // If no results were found, return an error.
-        return this.error('No Lead found with email %s', [email]);
+        return this.fail('No Lead found with email %s', [email]);
       }
 
       const record = this.createRecord(lead);
 
       if (!lead.hasOwnProperty(field)) {
         // If the given field does not exist on the user, return an error.
-        return this.error('The %s field does not exist on Lead %s', [field, email], [record]);
+        return this.fail('The %s field does not exist on Lead %s', [field, email], [record]);
       }
 
       const result = this.assert(operator, lead[field], expectedValue, field);

@@ -79,10 +79,10 @@ export class OpportunityFieldEquals extends BaseStep implements StepInterface {
     try {
       if (opportunity.length === 0) {
         // If the client does not return an opportunity, return an error.
-        return this.error('No opportunity matches %s %s', [field, identifier]);
+        return this.fail('No opportunity matches %s %s', [field, identifier]);
       } else if (opportunity.length > 1) {
         // If the client returns more than one opportunity, return an error.
-        return this.error('More than one opportunity matches %s %s', [field, identifier], [this.createRecords(opportunity)]);
+        return this.fail('More than one opportunity matches %s %s', [field, identifier], [this.createRecords(opportunity)]);
       }
 
       const record = this.createRecord(opportunity[0]);
