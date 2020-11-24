@@ -114,7 +114,7 @@ export class CampaignMemberFieldEquals extends BaseStep implements StepInterface
 
       if (!campaignMember.hasOwnProperty(field)) {
         // If the given field does not exist on the user, return an error.
-        return this.error('The %s field does not exist on Campaign Member with email %s and campaign id %s', [field, email, campaignId], [record]);
+        return this.fail('The %s field does not exist on Campaign Member with email %s and campaign id %s', [field, email, campaignId], [record]);
       }
 
       const result = this.assert(operator, campaignMember[field], expectedValue, field);
