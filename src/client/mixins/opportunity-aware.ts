@@ -41,7 +41,7 @@ export class OpportunityAwareMixin extends ObjectAwareMixin {
           return;
         }
 
-        if (!opps || !opps[0].Id) {
+        if (!opps[0] || !opps[0].Id) {
           reject(new Error(`No Opportunity found with ${idField} ${identifier}`));
           return;
         }

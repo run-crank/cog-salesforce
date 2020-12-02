@@ -39,7 +39,7 @@ export class AccountAwareMixin extends ObjectAwareMixin {
           return;
         }
 
-        if (!accounts || !accounts[0].Id) {
+        if (!accounts[0] || !accounts[0].Id) {
           reject(new Error(`No Account found with ${idField} ${identifier}`));
           return;
         }
