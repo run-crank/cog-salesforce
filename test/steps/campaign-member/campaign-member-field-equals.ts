@@ -155,7 +155,7 @@ describe('CampaignMemberFieldEqualsStep', () => {
 
     const response: RunStepResponse = await stepUnderTest.executeStep(protoStep);
     expect(response.getMessageFormat()).to.equal(expectedResponseMessage);
-    expect(response.getOutcome()).to.equal(RunStepResponse.Outcome.ERROR);
+    expect(response.getOutcome()).to.equal(RunStepResponse.Outcome.FAILED);
   });
 
   it('should respond with fail if API client resolved unexpected data', async () => {

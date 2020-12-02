@@ -149,7 +149,7 @@ describe('OpportunityFieldEqualsStep', () => {
     expect(response.getOutcome()).to.equal(RunStepResponse.Outcome.FAILED);
   });
 
-  it('should respond with error if more than one opportunity is retrieved', async () => {
+  it('should respond with fail if more than one opportunity is retrieved', async () => {
     // Stub a response that matches expectations.
     const sampleIdField = 'someIdField';
     const sampleIdentifier = 'someIdentifier';
@@ -185,10 +185,10 @@ describe('OpportunityFieldEqualsStep', () => {
     const response: RunStepResponse = await stepUnderTest.executeStep(protoStep);
     expect(clientWrapperStub.findOpportunityByIdentifier).to.have.been.calledWith(sampleIdField, sampleIdentifier, [sampleField]);
     expect(response.getMessageFormat()).to.equal(expectedResponseMessage);
-    expect(response.getOutcome()).to.equal(RunStepResponse.Outcome.ERROR);
+    expect(response.getOutcome()).to.equal(RunStepResponse.Outcome.FAILED);
   });
 
-  it('should respond with error if opportunity does not exist', async () => {
+  it('should respond with fail if opportunity does not exist', async () => {
     // Stub a response that matches expectations.
     const sampleIdField = 'someIdField';
     const sampleIdentifier = 'someIdentifier';
@@ -211,7 +211,7 @@ describe('OpportunityFieldEqualsStep', () => {
     const response: RunStepResponse = await stepUnderTest.executeStep(protoStep);
     expect(clientWrapperStub.findOpportunityByIdentifier).to.have.been.calledWith(sampleIdField, sampleIdentifier, [sampleField]);
     expect(response.getMessageFormat()).to.equal(expectedResponseMessage);
-    expect(response.getOutcome()).to.equal(RunStepResponse.Outcome.ERROR);
+    expect(response.getOutcome()).to.equal(RunStepResponse.Outcome.FAILED);
   });
 
   it('should respond with error if field does not exist on the opportunity', async () => {

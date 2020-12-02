@@ -127,7 +127,7 @@ describe('LeadFieldEqualsStep', () => {
     expect(response.getOutcome()).to.equal(RunStepResponse.Outcome.FAILED);
   });
 
-  it('should respond with error if API client resolves no results', async () => {
+  it('should respond with fail if API client resolves no results', async () => {
     // Stub a response with no results in the body.
     clientWrapperStub.findLeadByEmail.resolves(null);
 
@@ -138,10 +138,10 @@ describe('LeadFieldEqualsStep', () => {
     }));
 
     const response: RunStepResponse = await stepUnderTest.executeStep(protoStep);
-    expect(response.getOutcome()).to.equal(RunStepResponse.Outcome.ERROR);
+    expect(response.getOutcome()).to.equal(RunStepResponse.Outcome.FAILED);
   });
 
-  it('should respond with error if resolved user does not contain given field', async () => {
+  it('should respond with fail if resolved user does not contain given field', async () => {
     // Stub a response with valid response, but no expected field.
     const expectedUser: any = { someField: 'Expected Value' };
     clientWrapperStub.findLeadByEmail.resolves(expectedUser);
@@ -153,7 +153,7 @@ describe('LeadFieldEqualsStep', () => {
     }));
 
     const response: RunStepResponse = await stepUnderTest.executeStep(protoStep);
-    expect(response.getOutcome()).to.equal(RunStepResponse.Outcome.ERROR);
+    expect(response.getOutcome()).to.equal(RunStepResponse.Outcome.FAILED);
   });
 
   it('should respond with error if API client returns error', async () => {

@@ -105,9 +105,9 @@ describe('ContactFieldEqualsStep', () => {
       clientWrapperStub.findContactByEmail.returns(Promise.resolve(undefined));
     });
 
-    it('should respond with error', async () => {
+    it('should respond with fail', async () => {
       const response = await stepUnderTest.executeStep(protoStep);
-      expect(response.getOutcome()).to.equal(RunStepResponse.Outcome.ERROR);
+      expect(response.getOutcome()).to.equal(RunStepResponse.Outcome.FAILED);
     });
   });
 
@@ -123,9 +123,9 @@ describe('ContactFieldEqualsStep', () => {
       clientWrapperStub.findContactByEmail.returns(Promise.resolve({ Email: 'salesforce@test.com' }));
     });
 
-    it('should respond with error', async () => {
+    it('should respond with fail', async () => {
       const response = await stepUnderTest.executeStep(protoStep);
-      expect(response.getOutcome()).to.equal(RunStepResponse.Outcome.ERROR);
+      expect(response.getOutcome()).to.equal(RunStepResponse.Outcome.FAILED);
     });
   });
 
