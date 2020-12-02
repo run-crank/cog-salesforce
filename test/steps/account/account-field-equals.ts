@@ -191,7 +191,7 @@ describe('AccountFieldEqualsStep', () => {
     const response: RunStepResponse = await stepUnderTest.executeStep(protoStep);
     expect(clientWrapperStub.findAccountByIdentifier).to.have.been.calledWith(sampleIdField, sampleIdentifier);
     expect(response.getMessageFormat()).to.equal(expectedResponseMessage);
-    expect(response.getOutcome()).to.equal(RunStepResponse.Outcome.ERROR);
+    expect(response.getOutcome()).to.equal(RunStepResponse.Outcome.FAILED);
   });
 
   it('should respond with error if account does not exist', async () => {
@@ -217,7 +217,7 @@ describe('AccountFieldEqualsStep', () => {
     const response: RunStepResponse = await stepUnderTest.executeStep(protoStep);
     expect(clientWrapperStub.findAccountByIdentifier).to.have.been.calledWith(sampleIdField, sampleIdentifier);
     expect(response.getMessageFormat()).to.equal(expectedResponseMessage);
-    expect(response.getOutcome()).to.equal(RunStepResponse.Outcome.ERROR);
+    expect(response.getOutcome()).to.equal(RunStepResponse.Outcome.FAILED);
   });
 
   it('should respond with error if field does not exist on the account', async () => {
@@ -250,7 +250,7 @@ describe('AccountFieldEqualsStep', () => {
     const response: RunStepResponse = await stepUnderTest.executeStep(protoStep);
     expect(clientWrapperStub.findAccountByIdentifier).to.have.been.calledWith(sampleIdField, sampleIdentifier);
     expect(response.getMessageFormat()).to.equal(expectedResponseMessage);
-    expect(response.getOutcome()).to.equal(RunStepResponse.Outcome.ERROR);
+    expect(response.getOutcome()).to.equal(RunStepResponse.Outcome.FAILED);
   });
 
   it('should respond with error if API client returns error', async () => {
