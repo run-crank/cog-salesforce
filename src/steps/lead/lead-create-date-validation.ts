@@ -92,7 +92,7 @@ export class LeadCreateDateValidation extends BaseStep implements StepInterface 
       if (e instanceof util.InvalidOperandError) {
         return this.error(e.message);
       }
-      return this.error('There was an error during validation of lead field: %s', [e.message]);
+      return this.error('There was an validating lead creation date: %s', [e.message]);
     }
   }
 
