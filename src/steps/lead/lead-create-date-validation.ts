@@ -72,13 +72,13 @@ export class LeadCreateDateValidation extends BaseStep implements StepInterface 
         return this.fail('No Lead found with email %s', [email]);
       }
 
-      const record = this.createRecord(lead, submittedAt);
       const createdDate = lead.CreatedDate;
       const submittedAtMoment = moment.utc(submittedAt);
       const createdDateMoment = moment.utc(createdDate);
       const dateDiffInSeconds = createdDateMoment.diff(submittedAtMoment) / 1000;
       const humanizedDuration = moment.duration(createdDateMoment.diff(submittedAtMoment)).humanize();
 
+      const record = this.createRecord(lead, dateDiffInSeconds);
       const result = this.evaluate(dateDiffInSeconds, expectedValue, operator);
       result.message += ` (around ${humanizedDuration} ago)`;
 
@@ -96,9 +96,9 @@ export class LeadCreateDateValidation extends BaseStep implements StepInterface 
     }
   }
 
-  createRecord(lead: Record<string, any>, submittedAt) {
+  createRecord(lead: Record<string, any>, diffInSeconds) {
     delete lead.attributes;
-    const record = { ...lead, TimeSpan: submittedAt };
+    const record = { ...lead, TimeSpan: diffInSeconds };
     return this.keyValue('lead', 'Checked Lead', record);
   }
 
