@@ -20,7 +20,7 @@ export class LeadCreateDateValidation extends BaseStep implements StepInterface 
     field: 'operator',
     type: FieldDefinition.Type.STRING,
     optionality: FieldDefinition.Optionality.OPTIONAL,
-    description: 'Check Logic (be, not be, contain, not contain, be greater than, be less than, be set, not be set, be one of, or not be one of)',
+    description: 'Check Logic (be, not be, be greater than, be less than)',
   }, {
     field: 'submittedAt',
     type: FieldDefinition.Type.DATETIME,
