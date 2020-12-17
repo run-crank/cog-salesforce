@@ -23,8 +23,8 @@ export class LeadCreateDateValidation extends BaseStep implements StepInterface 
     description: 'Check Logic (be, not be, be greater than, be less than)',
   }, {
     field: 'submittedAt',
-    type: FieldDefinition.Type.DATETIME,
-    description: 'The datetime stamp when the form was submitted',
+    type: FieldDefinition.Type.STRING,
+    description: 'The datetime stamp when the form was submitted. Please use the {{web.form.submittedAt}} token if available.',
   }, {
     field: 'expectedValue',
     type: FieldDefinition.Type.NUMERIC,
