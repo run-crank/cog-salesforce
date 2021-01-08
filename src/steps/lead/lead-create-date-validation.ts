@@ -129,19 +129,19 @@ export class LeadCreateDateValidation extends BaseStep implements StepInterface 
     const messages = {
       'be': {
         passed: `Lead was created in ${expected} seconds after form submission, as expected`,
-        failed: `Expected Lead to be created in ${expected} seconds after form submission but it was actually ${actual} seconds`,
+        failed: `Expected Lead to be created in ${expected} seconds after form submission but it was actually ${Math.abs(actual)} seconds`,
       },
       'not be': {
         passed: `Lead was not created in ${expected} seconds after form submission, as expected`,
-        failed: `Expected Lead to not be created in ${expected} seconds after form submission but it was actually ${actual} seconds`,
+        failed: `Expected Lead to not be created in ${expected} seconds after form submission but it was actually ${Math.abs(actual)} seconds`,
       },
       'be greater than': {
         passed: `Lead was created in greater than ${expected} seconds after form submission, as expected`,
-        failed: `Expected Lead to be created in greater than ${expected} seconds after form submission but it was actually ${actual} seconds`,
+        failed: `Expected Lead to be created in greater than ${expected} seconds after form submission but it was actually ${Math.abs(actual)} seconds`,
       },
       'be less than': {
         passed: `Lead was created in less than ${expected} seconds after form submission, as expected`,
-        failed: `Expected Lead to be created in less than ${expected} seconds after form submission but it was actually ${actual} seconds`,
+        failed: `Expected Lead to be created in less than ${expected} seconds after form submission but it was actually ${Math.abs(actual)} seconds`,
       },
     };
 
