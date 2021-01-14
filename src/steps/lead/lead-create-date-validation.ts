@@ -8,7 +8,7 @@ import { baseOperators } from '../../client/constants/operators';
 
 export class LeadCreateDateValidation extends BaseStep implements StepInterface {
 
-  protected stepName: string = 'Validate time from form submission to Salesforce Lead Creation';
+  protected stepName: string = 'Calculate Time to Create Salesforce Lead from Form';
   /* tslint:disable-next-line:max-line-length */
   protected stepExpression: string = 'the salesforce lead (?<email>.+) created date difference from form submission on (?<submittedAt>.+) should (?<operator>be less than|be greater than|be|not be) ?(?<expectedValue>.+) seconds';
   protected stepType: StepDefinition.Type = StepDefinition.Type.VALIDATION;
@@ -78,7 +78,7 @@ export class LeadCreateDateValidation extends BaseStep implements StepInterface 
       const dateDiffInSeconds = createdDateMoment.diff(submittedAtMoment) / 1000;
       const humanizedDuration = moment.duration(createdDateMoment.diff(submittedAtMoment)).humanize();
 
-      const record = this.createRecord(lead, dateDiffInSeconds);
+      const record = this.createRecord(lead, dateDiffInSeconds, submittedAt);
       const result = this.evaluate(dateDiffInSeconds, expectedValue, operator);
       result.message += ` (around ${humanizedDuration} ago)`;
 
@@ -96,9 +96,9 @@ export class LeadCreateDateValidation extends BaseStep implements StepInterface 
     }
   }
 
-  createRecord(lead: Record<string, any>, diffInSeconds) {
+  createRecord(lead: Record<string, any>, diffInSeconds, submittedAt) {
     delete lead.attributes;
-    const record = { ...lead, TimeSpan: diffInSeconds };
+    const record = { ...lead, TimeSpan: Math.abs(diffInSeconds), FormSubmittedAt: submittedAt };
     return this.keyValue('lead', 'Checked Lead', record);
   }
 
@@ -128,19 +128,19 @@ export class LeadCreateDateValidation extends BaseStep implements StepInterface 
 
     const messages = {
       'be': {
-        passed: `Lead was created in ${expected} seconds after form submission, as expected`,
+        passed: `Lead was created in ${expected} seconds after form submission, as expected. Actual time is ${Math.abs(actual)} seconds`,
         failed: `Expected Lead to be created in ${expected} seconds after form submission but it was actually ${Math.abs(actual)} seconds`,
       },
       'not be': {
-        passed: `Lead was not created in ${expected} seconds after form submission, as expected`,
+        passed: `Lead was not created in ${expected} seconds after form submission, as expected. Actual time is ${Math.abs(actual)} seconds`,
         failed: `Expected Lead to not be created in ${expected} seconds after form submission but it was actually ${Math.abs(actual)} seconds`,
       },
       'be greater than': {
-        passed: `Lead was created in greater than ${expected} seconds after form submission, as expected`,
+        passed: `Lead was created in greater than ${expected} seconds after form submission, as expected. Actual time is ${Math.abs(actual)} seconds`,
         failed: `Expected Lead to be created in greater than ${expected} seconds after form submission but it was actually ${Math.abs(actual)} seconds`,
       },
       'be less than': {
-        passed: `Lead was created in less than ${expected} seconds after form submission, as expected`,
+        passed: `Lead was created in less than ${expected} seconds after form submission, as expected. Actual time is ${Math.abs(actual)} seconds`,
         failed: `Expected Lead to be created in less than ${expected} seconds after form submission but it was actually ${Math.abs(actual)} seconds`,
       },
     };
