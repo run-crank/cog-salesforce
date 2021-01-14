@@ -78,7 +78,7 @@ export class LeadCreateDateValidation extends BaseStep implements StepInterface 
       const dateDiffInSeconds = createdDateMoment.diff(submittedAtMoment) / 1000;
       const humanizedDuration = moment.duration(createdDateMoment.diff(submittedAtMoment)).humanize();
 
-      const record = this.createRecord(lead, dateDiffInSeconds);
+      const record = this.createRecord(lead, dateDiffInSeconds, submittedAt);
       const result = this.evaluate(dateDiffInSeconds, expectedValue, operator);
       result.message += ` (around ${humanizedDuration} ago)`;
 
@@ -96,9 +96,9 @@ export class LeadCreateDateValidation extends BaseStep implements StepInterface 
     }
   }
 
-  createRecord(lead: Record<string, any>, diffInSeconds) {
+  createRecord(lead: Record<string, any>, diffInSeconds, submittedAt) {
     delete lead.attributes;
-    const record = { ...lead, TimeSpan: Math.abs(diffInSeconds) };
+    const record = { ...lead, TimeSpan: Math.abs(diffInSeconds), FormSubmittedAt: submittedAt };
     return this.keyValue('lead', 'Checked Lead', record);
   }
 
