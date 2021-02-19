@@ -44,6 +44,7 @@ class ClientWrapper {
         oauth2: {
           clientId: auth.get('clientId').toString(),
           clientSecret: auth.get('clientSecret').toString(),
+          loginUrl: auth.get('instanceUrl').toString() || 'https://login.salesforce.com',
         },
         instanceUrl: auth.get('instanceUrl').toString(),
         accessToken: auth.get('accessToken').toString(),
