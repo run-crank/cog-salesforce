@@ -47,6 +47,7 @@ describe('ClientWrapper', () => {
       oauth2: {
         clientId: 'some-client-id',
         clientSecret: 'some-client-secret',
+        loginUrl: 'https://na123.salesforce.com',
       },
       instanceUrl: 'https://na123.salesforce.com',
       accessToken: 'some.access.token',
