@@ -16,7 +16,7 @@ export class TaskFieldEquals extends BaseStep implements StepInterface {
   protected expectedFields: Field[] = [{
     field: 'email',
     type: FieldDefinition.Type.EMAIL,
-    description: "Owner's email address",
+    description: "Recipient's email address",
   }, {
     field: 'field',
     type: FieldDefinition.Type.STRING,
@@ -33,7 +33,7 @@ export class TaskFieldEquals extends BaseStep implements StepInterface {
     description: 'Expected field value',
   }];
   protected expectedRecords: ExpectedRecord[] = [{
-    id: 'lead',
+    id: 'task',
     type: RecordDefinition.Type.KEYVALUE,
     fields: [{
       field: 'Id',
@@ -58,7 +58,7 @@ export class TaskFieldEquals extends BaseStep implements StepInterface {
     const operator: string = stepData.operator || 'be';
     const expectedValue: string = stepData.expectedValue;
     const isSetOperator = ['be set', 'not be set'].includes(operator);
-    let lead: Record<string, any>;
+    let recipient: Record<string, any>;
     let tasks: Record<string, any>[];
 
     if (isNullOrUndefined(expectedValue) && !(operator == 'be set' || operator == 'not be set')) {
@@ -66,22 +66,20 @@ export class TaskFieldEquals extends BaseStep implements StepInterface {
     }
 
     try {
-      lead = await this.client.findObjectByField('Lead', 'Email', email);
+      recipient = await this.client.findObjectByField('Lead', 'Email', email) || await this.client.findObjectByField('Contact', 'Email', email);
     } catch (e) {
       return this.error('There was a problem checking the Lead: %s', [e.toString()]);
     }
 
     try {
-      if (!lead) {
+      if (!recipient) {
         // If no results were found, return an error.
-        return this.fail('No Lead found with email %s', [email]);
+        return this.fail('No Recipient found with email %s', [email]);
       }
 
       const taskFieldMap = {
-        'WhoId': lead.Id,
+        'WhoId': recipient.Id,
       };
-
-      console.log(taskFieldMap);
 
       tasks = await this.client.findObjectsbyFields('Task', taskFieldMap);
 
