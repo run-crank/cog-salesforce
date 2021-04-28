@@ -64,14 +64,17 @@ export class CampaignMemberCampaignIdEquals extends BaseStep implements StepInte
     } catch (e) {
       return this.error('There was a problem checking the Campaign Member: %s', [e.toString()]);
     }
+    
+    const campaign = await this.client.findCampaignById(campaignId, ['Name']);
+    let textToDisplay = campaign ? `${campaign.Name} (${campaignId})` : campaignId;
 
     if (!campaignMember) {
       // If no results were found, return a failure.
-      return this.fail('No Campaign Membership found between %s and campaign %s', [email, campaignId]);
+      return this.fail('No Campaign Membership found between %s and campaign %s', [email, textToDisplay]);
     } else {
       // If the value of the field matches expectations, pass.
       const record = this.createRecord(campaignMember);
-      return this.pass('Lead belongs to Campaign with id %s, as expected', [campaignId], [record]);
+      return this.pass('Lead belongs to Campaign %s, as expected', [textToDisplay], [record]);
     }
   }
 
