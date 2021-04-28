@@ -64,9 +64,9 @@ export class CampaignMemberCampaignIdEquals extends BaseStep implements StepInte
     } catch (e) {
       return this.error('There was a problem checking the Campaign Member: %s', [e.toString()]);
     }
-    
+
     const campaign = await this.client.findCampaignById(campaignId, ['Name']);
-    let textToDisplay = campaign ? `${campaign.Name} (${campaignId})` : campaignId;
+    const textToDisplay = campaign ? `${campaign.Name} (${campaignId})` : campaignId;
 
     if (!campaignMember) {
       // If no results were found, return a failure.

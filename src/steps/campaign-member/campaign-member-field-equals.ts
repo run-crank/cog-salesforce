@@ -106,7 +106,7 @@ export class CampaignMemberFieldEquals extends BaseStep implements StepInterface
 
     try {
       const campaign = await this.client.findCampaignById(campaignId, [field, 'Name']);
-      let textToDisplay = campaign ? `${campaign.Name} (${campaignId})` : campaignId;
+      const textToDisplay = campaign ? `${campaign.Name} (${campaignId})` : campaignId;
 
       if (!campaignMember) {
         // If no results were found, return a failure.
