@@ -105,16 +105,19 @@ export class CampaignMemberFieldEquals extends BaseStep implements StepInterface
     }
 
     try {
+      const campaign = await this.client.findCampaignById(campaignId, [field, 'Name']);
+      const textToDisplay = campaign ? `${campaign.Name} (${campaignId})` : campaignId;
+
       if (!campaignMember) {
         // If no results were found, return a failure.
-        return this.fail('No Campaign Membership found between %s and campaign %s', [email, campaignId]);
+        return this.fail('No Campaign Membership found between %s and campaign %s', [email, textToDisplay]);
       }
 
       const record = this.createRecord(campaignMember);
 
       if (!campaignMember.hasOwnProperty(field)) {
         // If the given field does not exist on the user, return an error.
-        return this.fail('The %s field does not exist on Campaign Member with email %s and campaign id %s', [field, email, campaignId], [record]);
+        return this.fail('The %s field does not exist on Campaign Member with email %s and campaign %s', [field, email, textToDisplay], [record]);
       }
 
       const result = this.assert(operator, campaignMember[field], expectedValue, field);

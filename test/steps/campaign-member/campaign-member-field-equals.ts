@@ -18,6 +18,8 @@ describe('CampaignMemberFieldEqualsStep', () => {
 
   beforeEach(() => {
     clientWrapperStub.findCampaignMemberByEmailAndCampaignId = sinon.stub();
+    clientWrapperStub.findCampaignById = sinon.stub();
+    clientWrapperStub.findCampaignById.resolves({Name: 'Test Campaign'});
     stepUnderTest = new Step(clientWrapperStub);
     protoStep = new ProtoStep();
   });
@@ -140,7 +142,7 @@ describe('CampaignMemberFieldEqualsStep', () => {
 
   it('should respond with error if API client gets the campaign member without expected field', async () => {
     // Stub a response that matches expectations.
-    const expectedResponseMessage: string = 'The %s field does not exist on Campaign Member with email %s and campaign id %s';
+    const expectedResponseMessage: string = 'The %s field does not exist on Campaign Member with email %s and campaign %s';
     const expectedUser: any = { CampaignId: 'someId', someOtherField: 'someValue' };
     clientWrapperStub.findCampaignMemberByEmailAndCampaignId.resolves(expectedUser);
 

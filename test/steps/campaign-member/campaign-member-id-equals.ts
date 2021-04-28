@@ -17,6 +17,8 @@ describe('CampaignMemberCampaignIdEqualsStep', () => {
 
   beforeEach(() => {
     clientWrapperStub.findCampaignMemberByEmailAndCampaignId = sinon.stub();
+    clientWrapperStub.findCampaignById = sinon.stub();
+    clientWrapperStub.findCampaignById.resolves({Name: 'Test Campaign'});
     stepUnderTest = new Step(clientWrapperStub);
     protoStep = new ProtoStep();
   });
