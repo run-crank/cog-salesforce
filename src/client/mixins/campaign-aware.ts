@@ -10,6 +10,6 @@ export class CampaignAwareMixin extends ObjectAwareMixin {
    *   always be retrieved when finding campaigns.
    */
   public async findCampaignById(campaignId: string, alwaysRetrieve: string[] = []): Promise<Record<string, any>> {
-    return this.findObjectByFields('CampaignMember', { Id: campaignId }, alwaysRetrieve);
+    return this.findObjectByFields('Campaign', { Id: campaignId }, alwaysRetrieve);
   }
 }
