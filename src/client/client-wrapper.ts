@@ -9,6 +9,7 @@ import { Field } from '../core/base-step';
 import { FieldDefinition } from '../proto/cog_pb';
 import { OpportunityAwareMixin } from './mixins/opportunity-aware';
 import { CampaignAwareMixin } from './mixins/campaign-aware';
+import { CCIOAwareMixin } from './mixins/ccio-aware';
 
 class ClientWrapper {
 
@@ -93,8 +94,8 @@ class ClientWrapper {
   }
 }
 
-interface ClientWrapper extends ContactAwareMixin, AccountAwareMixin, OpportunityAwareMixin, CampaignMemberAwareMixin, LeadAwareMixin, ObjectAwareMixin, CampaignAwareMixin {}
-applyMixins(ClientWrapper, [ContactAwareMixin, AccountAwareMixin, OpportunityAwareMixin, CampaignMemberAwareMixin, LeadAwareMixin, ObjectAwareMixin, CampaignAwareMixin]);
+interface ClientWrapper extends ContactAwareMixin, AccountAwareMixin, OpportunityAwareMixin, CampaignMemberAwareMixin, LeadAwareMixin, ObjectAwareMixin, CampaignAwareMixin, CCIOAwareMixin {}
+applyMixins(ClientWrapper, [ContactAwareMixin, AccountAwareMixin, OpportunityAwareMixin, CampaignMemberAwareMixin, LeadAwareMixin, ObjectAwareMixin, CampaignAwareMixin, CCIOAwareMixin]);
 
 function applyMixins(derivedCtor: any, baseCtors: any[]) {
   baseCtors.forEach((baseCtor) => {
