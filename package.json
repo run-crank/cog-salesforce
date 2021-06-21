@@ -60,7 +60,7 @@
   "dependencies": {
     "@run-crank/utilities": "^0.4.4",
     "google-protobuf": "^3.8.0",
-    "grpc": "^1.24.3",
+    "grpc": "^1.24.10",
     "jsforce": "^1.9.3",
     "moment": "^2.29.1",
     "title-case": "^3.0.2",
