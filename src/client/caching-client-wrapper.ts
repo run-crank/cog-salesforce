@@ -181,12 +181,12 @@ class CachingClientWrapper {
   }
 
   public async updateObject(objName: string, object: Record<string, any>) {
-    this.clearCache();
+    await this.clearCache();
     return await this.client.updateObject(objName, object);
   }
 
   public async deleteObjectById(objName: string, id: string) {
-    this.clearCache();
+    await this.clearCache();
     return await this.client.deleteObjectById(objName, id);
   }
 
@@ -264,11 +264,15 @@ class CachingClientWrapper {
   public async clearCache() {
     try {
       // clears all the cachekeys used in this scenario run
-      const keysToDelete = await this.getCache(this.cachePrefix);
+      const keysToDelete = await this.getCache(this.cachePrefix) || [];
+      // get the keys from Salesloft
+      const salesloftKeys = await this.getCache(`${this.cachePrefix.slice(0, -10)}Salesloft`) || [];
+      keysToDelete.push(...salesloftKeys);
       if (keysToDelete.length) {
         keysToDelete.forEach((key: string) => this.delAsync(key));
       }
-      this.setAsync(this.cachePrefix, 600, '[]');
+      await this.setAsync(this.cachePrefix, 600, '[]');
+      await this.setAsync(`${this.cachePrefix.slice(0, -10)}Salesloft`, 600, '[]');
     } catch (err) {
       console.log(err);
     }
