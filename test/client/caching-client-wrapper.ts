@@ -380,9 +380,11 @@ describe('CachingClientWrapper', () => {
     const expectedObjName = 'Test';
     const expectedObj = {a: 1};
     cachingClientWrapperUnderTest = new CachingClientWrapper(clientWrapperStub, redisClientStub, idMap);
+    cachingClientWrapperUnderTest.clearCache = sinon.spy();
     cachingClientWrapperUnderTest.updateObject(expectedObjName, expectedObj);
 
     setTimeout(() => {
+      expect(cachingClientWrapperUnderTest.clearCache).to.have.been.called;
       expect(clientWrapperStub.updateObject).to.have.been.calledWith(expectedObjName, expectedObj);
       done();
     });
@@ -392,9 +394,11 @@ describe('CachingClientWrapper', () => {
     const expectedObjName = 'Test';
     const expectedId = '123';
     cachingClientWrapperUnderTest = new CachingClientWrapper(clientWrapperStub, redisClientStub, idMap);
+    cachingClientWrapperUnderTest.clearCache = sinon.spy();
     cachingClientWrapperUnderTest.deleteObjectById(expectedObjName, expectedId);
 
     setTimeout(() => {
+      expect(cachingClientWrapperUnderTest.clearCache).to.have.been.called;
       expect(clientWrapperStub.deleteObjectById).to.have.been.calledWith(expectedObjName, expectedId);
       done();
     });
