@@ -84,11 +84,11 @@ describe('CachingClientWrapper', () => {
   it('deleteContactByEmail', (done) => {
     const expectedEmail = 'test@example.com';
     cachingClientWrapperUnderTest = new CachingClientWrapper(clientWrapperStub, redisClientStub, idMap);
-    cachingClientWrapperUnderTest.delCache = sinon.spy();
+    cachingClientWrapperUnderTest.clearCache = sinon.spy();
     cachingClientWrapperUnderTest.deleteContactByEmail(expectedEmail);
 
     setTimeout(() => {
-      expect(cachingClientWrapperUnderTest.delCache).to.have.been.called;
+      expect(cachingClientWrapperUnderTest.clearCache).to.have.been.called;
       expect(clientWrapperStub.deleteContactByEmail).to.have.been.calledWith(expectedEmail);
       done();
     });
@@ -128,11 +128,11 @@ describe('CachingClientWrapper', () => {
     const expectedField = 'testField';
     const expectedId = '123';
     cachingClientWrapperUnderTest = new CachingClientWrapper(clientWrapperStub, redisClientStub, idMap);
-    cachingClientWrapperUnderTest.delCache = sinon.spy();
+    cachingClientWrapperUnderTest.clearCache = sinon.spy();
     cachingClientWrapperUnderTest.deleteAccountByIdentifier(expectedField, expectedId);
 
     setTimeout(() => {
-      expect(cachingClientWrapperUnderTest.delCache).to.have.been.called;
+      expect(cachingClientWrapperUnderTest.clearCache).to.have.been.called;
       expect(clientWrapperStub.deleteAccountByIdentifier).to.have.been.calledWith(expectedField, expectedId);
       done();
     });
@@ -172,11 +172,11 @@ describe('CachingClientWrapper', () => {
     const expectedField = 'testField';
     const expectedId = '123';
     cachingClientWrapperUnderTest = new CachingClientWrapper(clientWrapperStub, redisClientStub, idMap);
-    cachingClientWrapperUnderTest.delCache = sinon.spy();
+    cachingClientWrapperUnderTest.clearCache = sinon.spy();
     cachingClientWrapperUnderTest.deleteOpportunityByIdentifier(expectedField, expectedId);
 
     setTimeout(() => {
-      expect(cachingClientWrapperUnderTest.delCache).to.have.been.called;
+      expect(cachingClientWrapperUnderTest.clearCache).to.have.been.called;
       expect(clientWrapperStub.deleteOpportunityByIdentifier).to.have.been.calledWith(expectedField, expectedId);
       done();
     });
@@ -214,11 +214,11 @@ describe('CachingClientWrapper', () => {
   it('deleteLeadByEmail', (done) => {
     const expectedEmail = 'test@example.com';
     cachingClientWrapperUnderTest = new CachingClientWrapper(clientWrapperStub, redisClientStub, idMap);
-    cachingClientWrapperUnderTest.delCache = sinon.spy();
+    cachingClientWrapperUnderTest.clearCache = sinon.spy();
     cachingClientWrapperUnderTest.deleteLeadByEmail(expectedEmail);
 
     setTimeout(() => {
-      expect(cachingClientWrapperUnderTest.delCache).to.have.been.called;
+      expect(cachingClientWrapperUnderTest.clearCache).to.have.been.called;
       expect(clientWrapperStub.deleteLeadByEmail).to.have.been.calledWith(expectedEmail);
       done();
     });
@@ -407,46 +407,66 @@ describe('CachingClientWrapper', () => {
   it('createContact using original function', (done) => {
     const exampleObj = {a: 1};
     cachingClientWrapperUnderTest = new CachingClientWrapper(clientWrapperStub, redisClientStub, idMap);
+    cachingClientWrapperUnderTest.clearCache = sinon.spy();
     cachingClientWrapperUnderTest.createContact(exampleObj);
 
-    expect(clientWrapperStub.createContact).to.have.been.calledWith(exampleObj);
-    done();
+    setTimeout(() => {
+      expect(cachingClientWrapperUnderTest.clearCache).to.have.been.called;
+      expect(clientWrapperStub.createContact).to.have.been.calledWith(exampleObj);
+      done();
+    });
   });
 
   it('createAccount using original function', (done) => {
     const exampleObj = {a: 1};
     cachingClientWrapperUnderTest = new CachingClientWrapper(clientWrapperStub, redisClientStub, idMap);
+    cachingClientWrapperUnderTest.clearCache = sinon.spy();
     cachingClientWrapperUnderTest.createAccount(exampleObj);
 
-    expect(clientWrapperStub.createAccount).to.have.been.calledWith(exampleObj);
-    done();
+    setTimeout(() => {
+      expect(cachingClientWrapperUnderTest.clearCache).to.have.been.called;
+      expect(clientWrapperStub.createAccount).to.have.been.calledWith(exampleObj);
+      done();
+    });
   });
 
   it('createOpportunity using original function', (done) => {
     const exampleObj = {a: 1};
     cachingClientWrapperUnderTest = new CachingClientWrapper(clientWrapperStub, redisClientStub, idMap);
+    cachingClientWrapperUnderTest.clearCache = sinon.spy();
     cachingClientWrapperUnderTest.createOpportunity(exampleObj);
 
-    expect(clientWrapperStub.createOpportunity).to.have.been.calledWith(exampleObj);
-    done();
+    setTimeout(() => {
+      expect(cachingClientWrapperUnderTest.clearCache).to.have.been.called;
+      expect(clientWrapperStub.createOpportunity).to.have.been.calledWith(exampleObj);
+      done();
+    });
   });
 
   it('createLead using original function', (done) => {
     const exampleObj = {a: 1};
     cachingClientWrapperUnderTest = new CachingClientWrapper(clientWrapperStub, redisClientStub, idMap);
+    cachingClientWrapperUnderTest.clearCache = sinon.spy();
     cachingClientWrapperUnderTest.createLead(exampleObj);
 
-    expect(clientWrapperStub.createLead).to.have.been.calledWith(exampleObj);
-    done();
+    setTimeout(() => {
+      expect(cachingClientWrapperUnderTest.clearCache).to.have.been.called;
+      expect(clientWrapperStub.createLead).to.have.been.calledWith(exampleObj);
+      done();
+    });
   });
 
   it('createObject using original function', (done) => {
     const exampleObj = {a: 1};
     cachingClientWrapperUnderTest = new CachingClientWrapper(clientWrapperStub, redisClientStub, idMap);
+    cachingClientWrapperUnderTest.clearCache = sinon.spy();
     cachingClientWrapperUnderTest.createObject('test', exampleObj);
 
-    expect(clientWrapperStub.createObject).to.have.been.calledWith('test', exampleObj);
-    done();
+    setTimeout(() => {
+      expect(cachingClientWrapperUnderTest.clearCache).to.have.been.called;
+      expect(clientWrapperStub.createObject).to.have.been.calledWith('test', exampleObj);
+      done();
+    });
   });
 
   it('findObjectByFields using original function', (done) => {
@@ -487,7 +507,7 @@ describe('CachingClientWrapper', () => {
 
     setTimeout(() => {
       expect(redisClientStub.setex).to.have.been.calledWith('expectedKey', 600, '"expectedValue"');
-      expect(redisClientStub.setex).to.have.been.calledWith('testPrefix', 600, '["expectedKey"]');
+      expect(redisClientStub.setex).to.have.been.calledWith('cachekeys|testPrefix', 600, '["expectedKey"]');
       done();
     });
   });
@@ -513,7 +533,7 @@ describe('CachingClientWrapper', () => {
     setTimeout(() => {
       expect(redisClientStub.del).to.have.been.calledWith('testKey1');
       expect(redisClientStub.del).to.have.been.calledWith('testKey2');
-      expect(redisClientStub.setex).to.have.been.calledWith('testPrefix');
+      expect(redisClientStub.setex).to.have.been.calledWith('cachekeys|testPrefix');
       done();
     });
   });
