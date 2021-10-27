@@ -251,8 +251,8 @@ class CachingClientWrapper {
       // arrOfKeys will store an array of all cache keys used in this scenario run, so it can be cleared easily
       const arrOfKeys = await this.getCache(`cachekeys|${this.cachePrefix}`) || [];
       arrOfKeys.push(key);
-      await this.setAsync(key, 600, JSON.stringify(value));
-      await this.setAsync(`cachekeys|${this.cachePrefix}`, 600, JSON.stringify(arrOfKeys));
+      await this.setAsync(key, 55, JSON.stringify(value));
+      await this.setAsync(`cachekeys|${this.cachePrefix}`, 55, JSON.stringify(arrOfKeys));
     } catch (err) {
       console.log(err);
     }
@@ -273,7 +273,7 @@ class CachingClientWrapper {
       if (keysToDelete.length) {
         keysToDelete.forEach(async (key: string) => await this.delAsync(key));
       }
-      await this.setAsync(`cachekeys|${this.cachePrefix}`, 600, '[]');
+      await this.setAsync(`cachekeys|${this.cachePrefix}`, 55, '[]');
     } catch (err) {
       console.log(err);
     }

@@ -506,8 +506,8 @@ describe('CachingClientWrapper', () => {
     cachingClientWrapperUnderTest.setCache('expectedKey', 'expectedValue');
 
     setTimeout(() => {
-      expect(redisClientStub.setex).to.have.been.calledWith('expectedKey', 600, '"expectedValue"');
-      expect(redisClientStub.setex).to.have.been.calledWith('cachekeys|testPrefix', 600, '["expectedKey"]');
+      expect(redisClientStub.setex).to.have.been.calledWith('expectedKey', 55, '"expectedValue"');
+      expect(redisClientStub.setex).to.have.been.calledWith('cachekeys|testPrefix', 55, '["expectedKey"]');
       done();
     });
   });
