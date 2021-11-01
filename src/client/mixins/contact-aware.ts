@@ -39,7 +39,7 @@ export class ContactAwareMixin extends ObjectAwareMixin {
    * @param {String[]} alwaysRetrieve - An optional list of fields that should
    *   always be retrieved when finding this contact.
    */
-  public async findContactByEmail(email: string, alwaysRetrieve: string[] = []) {
-    return this.findObjectByField('Contact', 'Email', email, alwaysRetrieve);
+  public async findContactByEmail(email: string, alwaysRetrieve: string[] = [], mayGenerateBadRequest: Boolean = false) {
+    return this.findObjectByField('Contact', 'Email', email, alwaysRetrieve, mayGenerateBadRequest);
   }
 }

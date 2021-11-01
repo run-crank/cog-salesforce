@@ -19,8 +19,8 @@ export class LeadAwareMixin extends ObjectAwareMixin {
    * @param {String[]} alwaysRetrieveFields - An optional array of fields that
    *   should always be retrieved.
    */
-  public async findLeadByEmail(email: string, alwaysRetrieveFields: string[] = []): Promise<Record<string, any>> {
-    return this.findObjectByField('Lead', 'Email', email, alwaysRetrieveFields);
+  public async findLeadByEmail(email: string, alwaysRetrieveFields: string[] = [], mayGenerateBadRequest: Boolean = false): Promise<Record<string, any>> {
+    return this.findObjectByField('Lead', 'Email', email, alwaysRetrieveFields, mayGenerateBadRequest);
   }
 
   /**

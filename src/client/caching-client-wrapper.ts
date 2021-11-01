@@ -14,6 +14,10 @@ class CachingClientWrapper {
   // -------------------------------------------------------------------
 
   public async findContactByEmail(email: string, alwaysRetrieve: string[] = []) {
+    const mayGenerateBadRequest = await this.client.soqlSelectAllMayBeTooBig('Contact');
+    if (mayGenerateBadRequest) {
+      return await this.client.findContactByEmail(email, alwaysRetrieve, true);
+    }
     const cachekey = `Salesforce|Contact|${email}|${this.cachePrefix}`;
     const stored = await this.getCache(cachekey);
     if (stored) {
@@ -41,6 +45,10 @@ class CachingClientWrapper {
   // -------------------------------------------------------------------
 
   public async findAccountByIdentifier(idField: string, identifier: string, alwaysRetrieve: string[] = []): Promise<Record<string, any>[]> {
+    const mayGenerateBadRequest = await this.client.soqlSelectAllMayBeTooBig('Account');
+    if (mayGenerateBadRequest) {
+      return await this.client.findAccountByIdentifier(idField, identifier, alwaysRetrieve, true);
+    }
     const cachekey = `Salesforce|Account|${idField}${identifier}|${this.cachePrefix}`;
     const stored = await this.getCache(cachekey);
     if (stored) {
@@ -68,6 +76,10 @@ class CachingClientWrapper {
   // -------------------------------------------------------------------
 
   public async findOpportunityByIdentifier(idField: string, identifier: string, alwaysRetrieve: string[] = []): Promise<Record<string, any>[]> {
+    const mayGenerateBadRequest = await this.client.soqlSelectAllMayBeTooBig('Opportunity');
+    if (mayGenerateBadRequest) {
+      return await this.client.findOpportunityByIdentifier(idField, identifier, alwaysRetrieve, true);
+    }
     const cachekey = `Salesforce|Opportunity|${idField}${identifier}|${this.cachePrefix}`;
     const stored = await this.getCache(cachekey);
     if (stored) {
@@ -95,6 +107,10 @@ class CachingClientWrapper {
   // -------------------------------------------------------------------
 
   public async findLeadByEmail(email: string, alwaysRetrieve: string[] = []) {
+    const mayGenerateBadRequest = await this.client.soqlSelectAllMayBeTooBig('Lead');
+    if (mayGenerateBadRequest) {
+      return await this.client.findLeadByEmail(email, alwaysRetrieve, true);
+    }
     const cachekey = `Salesforce|Lead|${email}|${this.cachePrefix}`;
     const stored = await this.getCache(cachekey);
     if (stored) {
@@ -122,6 +138,10 @@ class CachingClientWrapper {
   // -------------------------------------------------------------------
 
   public async findCCIOById(id: string, alwaysRetrieveFields: string[] = []) {
+    const mayGenerateBadRequest = await this.client.soqlSelectAllMayBeTooBig('LeanData__CC_Inserted_Object__c');
+    if (mayGenerateBadRequest) {
+      return await this.client.findCCIOById(id, alwaysRetrieveFields, true);
+    }
     const cachekey = `Salesforce|CCIO|${id}|${this.cachePrefix}`;
     const stored = await this.getCache(cachekey);
     if (stored) {
@@ -139,6 +159,10 @@ class CachingClientWrapper {
   // -------------------------------------------------------------------
 
   public async findCampaignById(campaignId: string, alwaysRetrieve: string[] = []) {
+    const mayGenerateBadRequest = await this.client.soqlSelectAllMayBeTooBig('Campaign');
+    if (mayGenerateBadRequest) {
+      return await this.client.findCampaignById(campaignId, alwaysRetrieve, true);
+    }
     const cachekey = `Salesforce|Campaign|${campaignId}|${this.cachePrefix}`;
     const stored = await this.getCache(cachekey);
     if (stored) {
@@ -156,6 +180,10 @@ class CachingClientWrapper {
   // -------------------------------------------------------------------
 
   public async findCampaignMemberByEmailAndCampaignId(email: string, campaignId: string, alwaysRetrieve: string[] = []) {
+    const mayGenerateBadRequest = await this.client.soqlSelectAllMayBeTooBig('CampaignMember');
+    if (mayGenerateBadRequest) {
+      return await this.client.findCampaignMemberByEmailAndCampaignId(email, campaignId, alwaysRetrieve, true);
+    }
     const cachekey = `Salesforce|CampaignMember|${campaignId}|${this.cachePrefix}`;
     const stored = await this.getCache(cachekey);
     if (stored) {

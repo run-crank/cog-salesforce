@@ -38,6 +38,7 @@ describe('CachingClientWrapper', () => {
       createObject: sinon.spy(),
       findObjectByFields: sinon.spy(),
       findObjectsbyFields: sinon.spy(),
+      soqlSelectAllMayBeTooBig: sinon.spy(),
     };
 
     redisClientStub = {
@@ -60,6 +61,7 @@ describe('CachingClientWrapper', () => {
     cachingClientWrapperUnderTest.findContactByEmail(expectedEmail);
 
     setTimeout(() => {
+      expect(clientWrapperStub.soqlSelectAllMayBeTooBig).to.have.been.calledWith('Contact');
       expect(clientWrapperStub.findContactByEmail).to.have.been.calledWith(expectedEmail);
       done();
     });
@@ -102,6 +104,7 @@ describe('CachingClientWrapper', () => {
     cachingClientWrapperUnderTest.findAccountByIdentifier(expectedField, expectedId);
 
     setTimeout(() => {
+      expect(clientWrapperStub.soqlSelectAllMayBeTooBig).to.have.been.calledWith('Account');
       expect(clientWrapperStub.findAccountByIdentifier).to.have.been.calledWith(expectedField, expectedId);
       done();
     });
@@ -146,6 +149,7 @@ describe('CachingClientWrapper', () => {
     cachingClientWrapperUnderTest.findOpportunityByIdentifier(expectedField, expectedId);
 
     setTimeout(() => {
+      expect(clientWrapperStub.soqlSelectAllMayBeTooBig).to.have.been.calledWith('Opportunity');
       expect(clientWrapperStub.findOpportunityByIdentifier).to.have.been.calledWith(expectedField, expectedId);
       done();
     });
@@ -189,6 +193,7 @@ describe('CachingClientWrapper', () => {
     cachingClientWrapperUnderTest.findLeadByEmail(expectedEmail);
 
     setTimeout(() => {
+      expect(clientWrapperStub.soqlSelectAllMayBeTooBig).to.have.been.calledWith('Lead');
       expect(clientWrapperStub.findLeadByEmail).to.have.been.calledWith(expectedEmail);
       done();
     });
@@ -231,6 +236,7 @@ describe('CachingClientWrapper', () => {
     cachingClientWrapperUnderTest.findCCIOById(expectedId);
 
     setTimeout(() => {
+      expect(clientWrapperStub.soqlSelectAllMayBeTooBig).to.have.been.calledWith('LeanData__CC_Inserted_Object__c');
       expect(clientWrapperStub.findCCIOById).to.have.been.calledWith(expectedId);
       done();
     });
@@ -260,6 +266,7 @@ describe('CachingClientWrapper', () => {
     cachingClientWrapperUnderTest.findCampaignById(expectedId);
 
     setTimeout(() => {
+      expect(clientWrapperStub.soqlSelectAllMayBeTooBig).to.have.been.calledWith('Campaign');
       expect(clientWrapperStub.findCampaignById).to.have.been.calledWith(expectedId);
       done();
     });
@@ -290,6 +297,7 @@ describe('CachingClientWrapper', () => {
     cachingClientWrapperUnderTest.findCampaignMemberByEmailAndCampaignId(expectedEmail, expectedCampaignId);
 
     setTimeout(() => {
+      expect(clientWrapperStub.soqlSelectAllMayBeTooBig).to.have.been.calledWith('CampaignMember');
       expect(clientWrapperStub.findCampaignMemberByEmailAndCampaignId).to.have.been.calledWith(expectedEmail, expectedCampaignId);
       done();
     });

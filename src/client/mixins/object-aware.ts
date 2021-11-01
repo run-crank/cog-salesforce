@@ -37,8 +37,8 @@ export class ObjectAwareMixin {
    * @param {String[]} alwaysRetrieve - An optional list of fields that should
    *   always be retrieved for the given object.
    */
-  public async findObjectById(objName: string, id: string, alwaysRetrieve: string[] = []): Promise<Record<string, any>> {
-    return this.findObjectByField(objName, 'Id', id, alwaysRetrieve);
+  public async findObjectById(objName: string, id: string, alwaysRetrieve: string[] = [], mayGenerateBadRequest: Boolean = false): Promise<Record<string, any>> {
+    return this.findObjectByField(objName, 'Id', id, alwaysRetrieve, mayGenerateBadRequest);
   }
 
   /**
@@ -50,8 +50,8 @@ export class ObjectAwareMixin {
    * @param alwaysRetrieve - An optional list of fields that should always be
    *   retrieved for the given object.
    */
-  public async findObjectByField(objName: string, field: string, value: string, alwaysRetrieve: string[] = []): Promise<Record<string, any>> {
-    return this.findObjectByFields(objName, { [field]: value }, alwaysRetrieve);
+  public async findObjectByField(objName: string, field: string, value: string, alwaysRetrieve: string[] = [], mayGenerateBadRequest: Boolean = false): Promise<Record<string, any>> {
+    return this.findObjectByFields(objName, { [field]: value }, alwaysRetrieve, mayGenerateBadRequest);
   }
 
   /**
@@ -63,8 +63,10 @@ export class ObjectAwareMixin {
    *   retrieved (only ever used if the underlying object has an unexpectedly
    *   large number of fields).
    */
-  public async findObjectByFields(objName: string, fieldMap: Record<string, any>, alwaysRetrieve: string[] = []): Promise<Record<string, any>> {
-    const mayGenerateBadRequest = await this.soqlSelectAllMayBeTooBig(objName);
+  public async findObjectByFields(objName: string, fieldMap: Record<string, any>, alwaysRetrieve: string[] = [], mayGenerateBadRequest: Boolean = false): Promise<Record<string, any>> {
+    if (!mayGenerateBadRequest) {
+      mayGenerateBadRequest = await this.soqlSelectAllMayBeTooBig(objName);
+    }
     let retrieveFields = null;
 
     // If the request generated may be too large, only pull standard fields, as
@@ -100,8 +102,10 @@ export class ObjectAwareMixin {
    *   retrieved when finding objects of this type (only ever used if the
    *   underlying object type has an unexpectedly large number of fields).
    */
-  public async findObjectsbyFields(objName: string, fieldMap: Record<string, any>, alwaysRetrieve: string[] = []): Promise<Record<string, any>[]> {
-    const mayGenerateBadRequest = await this.soqlSelectAllMayBeTooBig(objName);
+  public async findObjectsbyFields(objName: string, fieldMap: Record<string, any>, alwaysRetrieve: string[] = [], mayGenerateBadRequest: Boolean = false): Promise<Record<string, any>[]> {
+    if (!mayGenerateBadRequest) {
+      mayGenerateBadRequest = await this.soqlSelectAllMayBeTooBig(objName);
+    }
     let retrieveFields = null;
 
     // If the request generated may be too large, only pull standard fields, as
@@ -217,7 +221,7 @@ export class ObjectAwareMixin {
    *
    * @see https://salesforce.stackexchange.com/questions/195449/what-is-the-longest-uri-that-salesforce-will-accept-through-the-rest-api/195450
    */
-  protected async soqlSelectAllMayBeTooBig(objName: string): Promise<Boolean> {
+  public async soqlSelectAllMayBeTooBig(objName: string): Promise<Boolean> {
     const description = await this.describeObject(objName);
     const mockql = encodeURIComponent(`select ${description.fields.map(f => f.name).join(', ')} from ${objName}`);
     return mockql.length > 15000;
