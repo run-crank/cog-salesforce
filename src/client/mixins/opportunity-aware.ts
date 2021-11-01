@@ -22,8 +22,8 @@ export class OpportunityAwareMixin extends ObjectAwareMixin {
    * @param {String} alwaysRetrieve - an optional list of fields that should
    *   always be retrieved when finding opportunities.
    */
-  public async findOpportunityByIdentifier(idField: string, identifier: string, alwaysRetrieve: string[] = []): Promise<Record<string, any>[]> {
-    return this.findObjectsbyFields('Opportunity', { [idField]: identifier }, alwaysRetrieve);
+  public async findOpportunityByIdentifier(idField: string, identifier: string, alwaysRetrieve: string[] = [], mayGenerateBadRequest: Boolean = false): Promise<Record<string, any>[]> {
+    return this.findObjectsbyFields('Opportunity', { [idField]: identifier }, alwaysRetrieve, mayGenerateBadRequest);
   }
 
   /**
