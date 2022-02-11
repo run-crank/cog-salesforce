@@ -1,7 +1,6 @@
-import { Field, ExpectedRecord } from '../../core/base-step';
+import { BaseStep, StepInterface, Field, ExpectedRecord } from '../../core/base-step';
 /*tslint:disable:no-else-after-return*/
 
-import { BaseStep, StepInterface } from '../../core/base-step';
 import { Step, RunStepResponse, FieldDefinition, StepDefinition, RecordDefinition } from '../../proto/cog_pb';
 import * as util from '@run-crank/utilities';
 import { baseOperators } from '../../client/constants/operators';
@@ -41,7 +40,6 @@ export class TenantUsageEntitlementsFieldEquals extends BaseStep implements Step
     }],
     dynamicFields: true,
   }];
-
 
   async executeStep(step: Step): Promise<RunStepResponse> {
     const stepData: any = step.getData().toJavaScript();
