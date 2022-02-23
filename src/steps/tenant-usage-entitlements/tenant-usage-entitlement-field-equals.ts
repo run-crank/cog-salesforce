@@ -74,7 +74,7 @@ export class TenantUsageEntitlementsFieldEquals extends BaseStep implements Step
         return this.fail('The %s field does not exist on Tenant Usage Entitlement Object %s', [field, id], [record]);
       }
 
-      var actual = object[field];
+      let actual = object[field];
 
       if (field === 'PercentageUsed') {
         if (object['CurrentAmountAllowed'] === null || object['CurrentAmountAllowed'] === undefined || object['CurrentAmountAllowed'] === 0) {
