@@ -81,8 +81,7 @@ export class TenantUsageEntitlementsFieldEquals extends BaseStep implements Step
           return this.error('There is no set CurrentAmountAllowed value for entitilement with id %s', [id]);
         }
 
-        actual = ((object['AmountUsed'] || 0) / object['CurrentAmountAllowed']) * 100;
-        console.log(actual);
+        actual = (((object['AmountUsed'] || 0) / object['CurrentAmountAllowed']) * 100).toFixed(2);
       }
 
       const result = this.assert(operator, actual, expectedValue, field);
