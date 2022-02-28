@@ -233,6 +233,11 @@ class CachingClientWrapper {
     return await this.client.createObject(objName, object);
   }
 
+  public async bulkcreateObjects(objName: string, objectArray: [Record<string, any>]) {
+    await this.clearCache();
+    return await this.client.createObject(objName, objectArray);
+  }
+
   public async updateObject(objName: string, object: Record<string, any>) {
     await this.clearCache();
     return await this.client.updateObject(objName, object);
