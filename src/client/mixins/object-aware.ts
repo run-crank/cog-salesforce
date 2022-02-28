@@ -30,6 +30,43 @@ export class ObjectAwareMixin {
   }
 
   /**
+   * Bulk Creates Salesforce Objects.
+   *
+   * @param {string} objName - Salesforce object name.
+   * @param [{Record<string, any>}] objectArray - The Object record to create.
+   */
+  public async bulkCreateObjects(objName: string, objectArray: [Record<string, any>]): Promise<jsforce.SuccessResult> {
+    await this.clientReady;
+    return new Promise((resolve, reject) => {
+      try {
+        const resultsObj = {
+          successArray: [],
+          failArray: [],
+        };
+        // Create job and batch
+        const job = this.client.bulk.createJob(objName, 'insert');
+        const batch = job.createBatch();
+        // Start job
+        batch.execute(objectArray);
+        // Listen for events
+        batch.on('error', (e) => {
+          reject(e);
+          return;
+        });
+        batch.on('queue', (batchInfo) => { // fired when batch request is queued in server.
+          // start polling - Do not poll until the batch has started
+          batch.poll(1000, 20000); // first param is interval (ms), second param is timeout (ms)
+        });
+        batch.on('response', (rets) => { // fired when batch finished and result retrieved
+          resolve(rets);
+        });
+      } catch (e) {
+        reject(e);
+      }
+    });
+  }
+
+  /**
    * Retrieves a single Object record for a given email address.
    *
    * @param {String} objName - Salesforce object name.
