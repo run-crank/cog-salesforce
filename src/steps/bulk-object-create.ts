@@ -3,7 +3,7 @@ import { Step, RunStepResponse, FieldDefinition, StepDefinition, RecordDefinitio
 
 export class BulkCreateObject extends BaseStep implements StepInterface {
 
-  protected stepName: string = 'Bulk create Salesforce Objects';
+  protected stepName: string = 'Bulk Create Salesforce Objects';
   protected stepExpression: string = 'bulk create salesforce (?<objName>[a-zA-Z0-9]+) objects';
   protected stepType: StepDefinition.Type = StepDefinition.Type.ACTION;
   protected expectedFields: Field[] = [{
