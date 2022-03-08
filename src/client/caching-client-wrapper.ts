@@ -228,6 +228,11 @@ class CachingClientWrapper {
     }
   }
 
+  public async bulkFindObjectsById(objName: string, idArray: []) {
+    await this.clearCache();
+    return await this.client.bulkFindObjectsById(objName, idArray);
+  }
+
   public async createObject(objName: string, object: Record<string, any>) {
     await this.clearCache();
     return await this.client.createObject(objName, object);
