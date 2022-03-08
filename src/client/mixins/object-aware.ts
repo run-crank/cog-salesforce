@@ -79,6 +79,31 @@ export class ObjectAwareMixin {
   }
 
   /**
+   * Retrieves a list of Object records based on a given map of fields/values.
+   *
+   * @param objName - Salesforce object name.
+   * @param idArray - An array of Salesforce object ids.
+   *
+   */
+  public async bulkFindObjectsById(objName: string, idArray: []): Promise<Record<string, any>[]> {
+    await this.clientReady;
+    return new Promise((resolve, reject) => {
+      try {
+        this.client.sobject(objName).retrieve(idArray, (err, record) => {
+          if (err) {
+            reject(err);
+            return;
+          }
+
+          resolve(record);
+        });
+      } catch (e) {
+        reject(e);
+      }
+    });
+  }
+
+  /**
    * Retrieves a single Object record based on a given field/value.
    *
    * @param objName - Salesforce object name.
