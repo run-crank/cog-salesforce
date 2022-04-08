@@ -1,5 +1,5 @@
 import { BaseStep, Field, StepInterface, ExpectedRecord } from '../../core/base-step';
-import { Step, RunStepResponse, FieldDefinition, StepDefinition, RecordDefinition } from '../../proto/cog_pb';
+import { Step, RunStepResponse, FieldDefinition, StepDefinition, RecordDefinition, StepRecord } from '../../proto/cog_pb';
 
 export class CreateOpportunity extends BaseStep implements StepInterface {
 
@@ -28,11 +28,20 @@ export class CreateOpportunity extends BaseStep implements StepInterface {
 
     try {
       const result = await this.client.createOpportunity(opportunity);
-      const record = this.keyValue('opportunity', 'Created Opportunity', { Id: result.id });
-      return this.pass('Successfully created Opportunity with ID %s', [result.id], [record]);
+      const record = this.createRecord(result);
+      const orderedRecord = this.createOrderedRecord(result, stepData['__stepOrder']);
+      return this.pass('Successfully created Opportunity with ID %s', [result.id], [record, orderedRecord]);
     } catch (e) {
       return this.error('There was a problem creating the Opportunity: %s', [e.toString()]);
     }
+  }
+
+  public createRecord(opportunity): StepRecord {
+    return this.keyValue('opportunity', 'Created Opportunity', { Id: opportunity.id });
+  }
+
+  public createOrderedRecord(opportunity, stepOrder = 1): StepRecord {
+    return this.keyValue(`opportunity.${stepOrder}`, `Created Opportunity from Step ${stepOrder}`, { Id: opportunity.id });
   }
 
 }

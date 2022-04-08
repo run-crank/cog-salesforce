@@ -1,5 +1,5 @@
 import { BaseStep, Field, StepInterface, ExpectedRecord } from '../../core/base-step';
-import { Step, RunStepResponse, FieldDefinition, StepDefinition, RecordDefinition } from '../../proto/cog_pb';
+import { Step, RunStepResponse, FieldDefinition, StepDefinition, RecordDefinition, StepRecord } from '../../proto/cog_pb';
 
 export class CreateLead extends BaseStep implements StepInterface {
 
@@ -28,11 +28,20 @@ export class CreateLead extends BaseStep implements StepInterface {
 
     try {
       const result = await this.client.createLead(lead);
-      const record = this.keyValue('lead', 'Created Lead', { Id: result.id });
-      return this.pass('Successfully created Lead with ID %s', [result.id], [record]);
+      const record = this.createRecord(result);
+      const orderedRecord = this.createOrderedRecord(result, stepData['__stepOrder']);
+      return this.pass('Successfully created Lead with ID %s', [result.id], [record, orderedRecord]);
     } catch (e) {
       return this.error('There was a problem creating the Lead: %s', [e.toString()]);
     }
+  }
+
+  public createRecord(lead): StepRecord {
+    return this.keyValue('lead', 'Created Lead', { Id: lead.id });
+  }
+
+  public createOrderedRecord(lead, stepOrder = 1): StepRecord {
+    return this.keyValue(`lead.${stepOrder}`, `Created Lead from Step ${stepOrder}`, { Id: lead.id });
   }
 
 }
