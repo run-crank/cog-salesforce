@@ -1,5 +1,5 @@
 import { BaseStep, Field, StepInterface, ExpectedRecord } from '../core/base-step';
-import { Step, RunStepResponse, FieldDefinition, StepDefinition, RecordDefinition } from '../proto/cog_pb';
+import { Step, RunStepResponse, FieldDefinition, StepDefinition, RecordDefinition, StepRecord } from '../proto/cog_pb';
 
 export class CreateObject extends BaseStep implements StepInterface {
 
@@ -33,11 +33,20 @@ export class CreateObject extends BaseStep implements StepInterface {
 
     try {
       const result = await this.client.createObject(objName, salesforceObject);
-      const record = this.keyValue('salesforceObject', 'Created Object', { Id: result.id });
-      return this.pass('Successfully created %s Object with ID %s', [objName, result.id], [record]);
+      const record = this.createRecord(result);
+      const orderedRecord = this.createOrderedRecord(result, stepData['__stepOrder']);
+      return this.pass('Successfully created %s Object with ID %s', [objName, result.id], [record, orderedRecord]);
     } catch (e) {
       return this.error('There was a problem creating the %s Object: %s', [objName, e.toString()]);
     }
+  }
+
+  public createRecord(salesforceObject): StepRecord {
+    return this.keyValue('salesforceObject', 'Created Object', { Id: salesforceObject.id });
+  }
+
+  public createOrderedRecord(salesforceObject, stepOrder = 1): StepRecord {
+    return this.keyValue(`salesforceObject.${stepOrder}`, `Created Object from Step ${stepOrder}`, { Id: salesforceObject.id });
   }
 
 }

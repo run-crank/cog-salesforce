@@ -1,5 +1,5 @@
 import { BaseStep, Field, StepInterface, ExpectedRecord } from '../../core/base-step';
-import { Step, RunStepResponse, FieldDefinition, StepDefinition, RecordDefinition } from '../../proto/cog_pb';
+import { Step, RunStepResponse, FieldDefinition, StepDefinition, RecordDefinition, StepRecord } from '../../proto/cog_pb';
 
 export class CreateAccount extends BaseStep implements StepInterface {
 
@@ -28,11 +28,20 @@ export class CreateAccount extends BaseStep implements StepInterface {
 
     try {
       const result = await this.client.createAccount(account);
-      const record = this.keyValue('account', 'Created Account', { Id: result.id });
-      return this.pass('Successfully created Account with ID %s', [result.id], [record]);
+      const record = this.createRecord(result);
+      const orderedRecord = this.createOrderedRecord(result, stepData['__stepOrder']);
+      return this.pass('Successfully created Account with ID %s', [result.id], [record, orderedRecord]);
     } catch (e) {
       return this.error('There was a problem creating the Account: %s', [e.toString()]);
     }
+  }
+
+  public createRecord(account): StepRecord {
+    return this.keyValue('account', 'Created Account', { Id: account.id });
+  }
+
+  public createOrderedRecord(account, stepOrder = 1): StepRecord {
+    return this.keyValue(`account.${stepOrder}`, `Created Account from Step ${stepOrder}`, { Id: account.id });
   }
 
 }

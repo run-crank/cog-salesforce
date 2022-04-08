@@ -1,5 +1,5 @@
 import { BaseStep, Field, StepInterface, ExpectedRecord } from '../core/base-step';
-import { Step, RunStepResponse, FieldDefinition, StepDefinition, RecordDefinition } from '../proto/cog_pb';
+import { Step, RunStepResponse, FieldDefinition, StepDefinition, RecordDefinition, StepRecord } from '../proto/cog_pb';
 
 export class UpdateObject extends BaseStep implements StepInterface {
 
@@ -39,12 +39,21 @@ export class UpdateObject extends BaseStep implements StepInterface {
     try {
       salesforceObject['Id'] = id;
       const result = await this.client.updateObject(objName, salesforceObject);
-      const record = this.keyValue('salesforceObject', 'Updated Object', { Id: result.id });
+      const record = this.createRecord(result);
+      const orderedRecord = this.createOrderedRecord(result, stepData['__stepOrder']);
 
-      return this.pass('Successfully updated %s Object with ID %s', [objName, result.id], [record]);
+      return this.pass('Successfully updated %s Object with ID %s', [objName, result.id], [record, orderedRecord]);
     } catch (e) {
       return this.error('There was a problem updating the %s Object: %s', [objName, e.toString()]);
     }
+  }
+
+  public createRecord(salesforceObject): StepRecord {
+    return this.keyValue('salesforceObject', 'Updated Object', { Id: salesforceObject.id });
+  }
+
+  public createOrderedRecord(salesforceObject, stepOrder = 1): StepRecord {
+    return this.keyValue(`salesforceObject.${stepOrder}`, `Updated Object from Step ${stepOrder}`, { Id: salesforceObject.id });
   }
 
 }
