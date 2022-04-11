@@ -23,7 +23,7 @@ export class CreateLead extends BaseStep implements StepInterface {
       type: FieldDefinition.Type.STRING,
       description: "Lead's Email Address",
     }],
-    dynamicFields: false,
+    dynamicFields: true,
   }];
 
   async executeStep(step: Step): Promise<RunStepResponse> {

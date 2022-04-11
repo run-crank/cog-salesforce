@@ -23,7 +23,7 @@ export class ContactCreateStep extends BaseStep implements StepInterface {
       type: FieldDefinition.Type.STRING,
       description: "Contact's Email Address",
     }],
-    dynamicFields: false,
+    dynamicFields: true,
   }];
 
   async executeStep(step: Step): Promise<RunStepResponse> {
