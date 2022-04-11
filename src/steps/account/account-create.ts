@@ -23,7 +23,7 @@ export class CreateAccount extends BaseStep implements StepInterface {
       type: FieldDefinition.Type.STRING,
       description: "Account's Name",
     }],
-    dynamicFields: false,
+    dynamicFields: true,
   }];
 
   async executeStep(step: Step): Promise<RunStepResponse> {
