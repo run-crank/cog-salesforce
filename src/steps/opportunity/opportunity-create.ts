@@ -18,6 +18,10 @@ export class CreateOpportunity extends BaseStep implements StepInterface {
       field: 'Id',
       type: FieldDefinition.Type.STRING,
       description: "Opportunity's SalesForce ID",
+    }, {
+      field: 'Name',
+      type: FieldDefinition.Type.STRING,
+      description: "Opportunity's Name",
     }],
     dynamicFields: false,
   }];
@@ -28,8 +32,13 @@ export class CreateOpportunity extends BaseStep implements StepInterface {
 
     try {
       const result = await this.client.createOpportunity(opportunity);
-      const record = this.createRecord(result);
-      const orderedRecord = this.createOrderedRecord(result, stepData['__stepOrder']);
+      let data: any = result;
+      if (result.success) {
+        data = await this.client.findOpportunityByIdentifier('Name', result.Name, []);
+        console.log(data);
+      }
+      const record = this.createRecord(data);
+      const orderedRecord = this.createOrderedRecord(data, stepData['__stepOrder']);
       return this.pass('Successfully created Opportunity with ID %s', [result.id], [record, orderedRecord]);
     } catch (e) {
       return this.error('There was a problem creating the Opportunity: %s', [e.toString()]);
@@ -37,11 +46,11 @@ export class CreateOpportunity extends BaseStep implements StepInterface {
   }
 
   public createRecord(opportunity): StepRecord {
-    return this.keyValue('opportunity', 'Created Opportunity', { Id: opportunity.id });
+    return this.keyValue('opportunity', 'Created Opportunity', opportunity);
   }
 
   public createOrderedRecord(opportunity, stepOrder = 1): StepRecord {
-    return this.keyValue(`opportunity.${stepOrder}`, `Created Opportunity from Step ${stepOrder}`, { Id: opportunity.id });
+    return this.keyValue(`opportunity.${stepOrder}`, `Created Opportunity from Step ${stepOrder}`, opportunity);
   }
 
 }
