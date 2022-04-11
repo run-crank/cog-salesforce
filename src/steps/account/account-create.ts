@@ -19,9 +19,9 @@ export class CreateAccount extends BaseStep implements StepInterface {
       type: FieldDefinition.Type.STRING,
       description: "Account's SalesForce ID",
     }, {
-      field: 'Email',
+      field: 'Name',
       type: FieldDefinition.Type.STRING,
-      description: "Account's Email Address",
+      description: "Account's Name",
     }],
     dynamicFields: false,
   }];

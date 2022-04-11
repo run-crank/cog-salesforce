@@ -18,6 +18,10 @@ export class CreateOpportunity extends BaseStep implements StepInterface {
       field: 'Id',
       type: FieldDefinition.Type.STRING,
       description: "Opportunity's SalesForce ID",
+    }, {
+      field: 'Name',
+      type: FieldDefinition.Type.STRING,
+      description: "Opportunity's Name",
     }],
     dynamicFields: false,
   }];
