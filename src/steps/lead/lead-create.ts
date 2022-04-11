@@ -18,6 +18,10 @@ export class CreateLead extends BaseStep implements StepInterface {
       field: 'Id',
       type: FieldDefinition.Type.STRING,
       description: "Lead's SalesForce ID",
+    }, {
+      field: 'Email',
+      type: FieldDefinition.Type.STRING,
+      description: "Lead's Email Address",
     }],
     dynamicFields: false,
   }];
@@ -28,8 +32,12 @@ export class CreateLead extends BaseStep implements StepInterface {
 
     try {
       const result = await this.client.createLead(lead);
-      const record = this.createRecord(result);
-      const orderedRecord = this.createOrderedRecord(result, stepData['__stepOrder']);
+      let data: any = result;
+      if (result.success) {
+        data = await this.client.findLeadByEmail(lead.Email, []);
+      }
+      const record = this.createRecord(data);
+      const orderedRecord = this.createOrderedRecord(data, stepData['__stepOrder']);
       return this.pass('Successfully created Lead with ID %s', [result.id], [record, orderedRecord]);
     } catch (e) {
       return this.error('There was a problem creating the Lead: %s', [e.toString()]);
@@ -37,11 +45,11 @@ export class CreateLead extends BaseStep implements StepInterface {
   }
 
   public createRecord(lead): StepRecord {
-    return this.keyValue('lead', 'Created Lead', { Id: lead.id });
+    return this.keyValue('lead', 'Created Lead', lead);
   }
 
   public createOrderedRecord(lead, stepOrder = 1): StepRecord {
-    return this.keyValue(`lead.${stepOrder}`, `Created Lead from Step ${stepOrder}`, { Id: lead.id });
+    return this.keyValue(`lead.${stepOrder}`, `Created Lead from Step ${stepOrder}`, lead);
   }
 
 }
