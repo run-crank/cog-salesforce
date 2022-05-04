@@ -45,11 +45,11 @@ export class CreateAccount extends BaseStep implements StepInterface {
   }
 
   public createRecord(account): StepRecord {
-    return this.keyValue('account', 'Created Account', account);
+    return this.keyValue('account', 'Created Account', account[0]);
   }
 
   public createOrderedRecord(account, stepOrder = 1): StepRecord {
-    return this.keyValue(`account.${stepOrder}`, `Created Account from Step ${stepOrder}`, account);
+    return this.keyValue(`account.${stepOrder}`, `Created Account from Step ${stepOrder}`, account[0]);
   }
 
 }

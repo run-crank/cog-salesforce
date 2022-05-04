@@ -18,6 +18,7 @@ describe('CreateObjectStep', () => {
 
   beforeEach(() => {
     clientWrapperStub.createObject = sinon.stub();
+    clientWrapperStub.findObjectById = sinon.stub();
     stepUnderTest = new Step(clientWrapperStub);
     protoStep = new ProtoStep();
   });
@@ -51,6 +52,7 @@ describe('CreateObjectStep', () => {
     const expectedResponse: any = { id: 'abcxyz' };
     const sampleObject: any = 'sampleObject';
     clientWrapperStub.createObject.resolves(expectedResponse);
+    clientWrapperStub.findObjectById.resolves(expectedResponse);
 
     // Set step data corresponding to expectations
     const expectedObject: any = { objName: sampleObject, salesforceObject: { Email: 'anything@example.com' } };
