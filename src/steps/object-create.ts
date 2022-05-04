@@ -33,8 +33,9 @@ export class CreateObject extends BaseStep implements StepInterface {
 
     try {
       const result = await this.client.createObject(objName, salesforceObject);
-      const record = this.createRecord(result);
-      const orderedRecord = this.createOrderedRecord(result, stepData['__stepOrder']);
+      const object = await this.client.findObjectById(objName, result['id'], []);
+      const record = this.createRecord(object);
+      const orderedRecord = this.createOrderedRecord(object, stepData['__stepOrder']);
       return this.pass('Successfully created %s Object with ID %s', [objName, result.id], [record, orderedRecord]);
     } catch (e) {
       return this.error('There was a problem creating the %s Object: %s', [objName, e.toString()]);
@@ -42,11 +43,11 @@ export class CreateObject extends BaseStep implements StepInterface {
   }
 
   public createRecord(salesforceObject): StepRecord {
-    return this.keyValue('salesforceObject', 'Created Object', { Id: salesforceObject.id });
+    return this.keyValue('salesforceObject', 'Created Object', salesforceObject);
   }
 
   public createOrderedRecord(salesforceObject, stepOrder = 1): StepRecord {
-    return this.keyValue(`salesforceObject.${stepOrder}`, `Created Object from Step ${stepOrder}`, { Id: salesforceObject.id });
+    return this.keyValue(`salesforceObject.${stepOrder}`, `Created Object from Step ${stepOrder}`, salesforceObject);
   }
 
 }
