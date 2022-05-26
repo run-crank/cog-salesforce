@@ -1,0 +1,14 @@
+scenario: Discover Lead test
+description: This validates the behavior of Lead discovery
+
+steps:
+- step: When I create a Salesforce Lead
+  data:
+    lead:
+      Email: timmy@thisisjust.atomatest.com
+      FirstName: timmy
+      LastName: turner
+      Company: oddparents
+
+- step: Then discover fields on salesforce lead timmy@thisisjust.atomatest.com
+- step: Finally, delete the timmy@thisisjust.atomatest.com Salesforce Lead
