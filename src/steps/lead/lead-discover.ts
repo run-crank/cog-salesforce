@@ -61,7 +61,7 @@ export class DiscoverLead extends BaseStep implements StepInterface {
 
   createRecord(lead: Record<string, any>) {
     delete lead.attributes;
-    return this.keyValue('lead', 'Checked Lead', lead);
+    return this.keyValue('lead', 'discoverLead', lead);
   }
 }
 
