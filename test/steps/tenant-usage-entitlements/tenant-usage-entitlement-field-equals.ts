@@ -5,12 +5,12 @@ import * as sinonChai from 'sinon-chai';
 import 'mocha';
 
 // tslint:disable-next-line:max-line-length
-import { Step as ProtoStep, StepDefinition, FieldDefinition, RunStepResponse } from '../../src/proto/cog_pb';
-import { Step } from '../../src/steps/object-field-equals';
+import { Step as ProtoStep, StepDefinition, FieldDefinition, RunStepResponse } from '../../../src/proto/cog_pb';
+import { Step } from '../../../src/steps/tenant-usage-entitlements/tenant-usage-entitlement-field-equals';
 
 chai.use(sinonChai);
 
-describe('ObjectFieldEqualsStep', () => {
+describe('TenantUsageEntitlementFieldEqualsStep', () => {
   const expect = chai.expect;
   let protoStep: ProtoStep;
   let stepUnderTest: Step;
@@ -24,9 +24,9 @@ describe('ObjectFieldEqualsStep', () => {
 
   it('should return expected step metadata', () => {
     const stepDef: StepDefinition = stepUnderTest.getDefinition();
-    expect(stepDef.getStepId()).to.equal('ObjectFieldEquals');
-    expect(stepDef.getName()).to.equal('Check a field on a Salesforce Object');
-    expect(stepDef.getExpression()).to.equal('the (?<field>[a-zA-Z0-9_]+) field on salesforce (?<objName>[a-zA-Z0-9]+) object with id (?<id>[^\s]+) should (?<operator>be set|not be set|be less than|be greater than|be one of|be|contain|not be one of|not be|not contain|match|not match) ?(?<expectedValue>.+)?');
+    expect(stepDef.getStepId()).to.equal('TenantUsageEntitlementsFieldEquals');
+    expect(stepDef.getName()).to.equal('Check Salesforce Usage');
+    expect(stepDef.getExpression()).to.equal('the (?<field>[a-zA-Z0-9_]+) field on salesforce tenant usage entitlements with id (?<id>[^\s]+) should (?<operator>be set|not be set|be less than|be greater than|be one of|be|contain|not be one of|not be|not contain|match|not match) ?(?<expectedValue>.+)?');
     expect(stepDef.getType()).to.equal(StepDefinition.Type.VALIDATION);
   });
 
@@ -40,11 +40,6 @@ describe('ObjectFieldEqualsStep', () => {
     const field: any = fields.filter(f => f.key === 'field')[0];
     expect(field.optionality).to.equal(FieldDefinition.Optionality.REQUIRED);
     expect(field.type).to.equal(FieldDefinition.Type.STRING);
-
-    // ObjName field
-    const objName: any = fields.filter(f => f.key === 'objName')[0];
-    expect(objName.optionality).to.equal(FieldDefinition.Optionality.REQUIRED);
-    expect(objName.type).to.equal(FieldDefinition.Type.STRING);
 
     // Id field
     const id: any = fields.filter(f => f.key === 'id')[0];
@@ -70,7 +65,6 @@ describe('ObjectFieldEqualsStep', () => {
     // Set step data corresponding to expectations
     const expectations: any = {
       field: 'someField',
-      objName: 'sampleObject',
       id: 'sampleId',
       operator: 'be',
       expectedValue: expectedUser.someField,
@@ -78,7 +72,6 @@ describe('ObjectFieldEqualsStep', () => {
     protoStep.setData(Struct.fromJavaScript(expectations));
 
     const response: RunStepResponse = await stepUnderTest.executeStep(protoStep);
-    expect(clientWrapperStub.findObjectById).to.have.been.calledWith(expectations.objName, expectations.id);
     expect(response.getOutcome()).to.equal(RunStepResponse.Outcome.PASSED);
   });
 
@@ -90,7 +83,6 @@ describe('ObjectFieldEqualsStep', () => {
     // Set step data corresponding to expectations
     const expectations: any = {
       field: 'someField',
-      objName: 'sampleObject',
       id: 'sampleId',
       operator: 'invalidOperator',
       expectedValue: expectedUser.someField,
@@ -109,7 +101,6 @@ describe('ObjectFieldEqualsStep', () => {
     // Set step data corresponding to expectations
     const expectations: any = {
       field: 'numericField',
-      objName: 'sampleObject',
       id: 'sampleId',
       operator: 'be greater than',
       expectedValue: 'nonNumeric',
@@ -128,7 +119,6 @@ describe('ObjectFieldEqualsStep', () => {
     // Set step data corresponding to expectations
     const expectations: any = {
       field: 'someField',
-      objName: 'sampleObject',
       id: 'sampleId',
       operator: 'be',
       expectedValue: 'otherValue',
@@ -147,7 +137,6 @@ describe('ObjectFieldEqualsStep', () => {
     // Set step data corresponding to expectations
     const expectations: any = {
       field: 'someField',
-      objName: 'sampleObject',
       id: 'sampleId',
       operator: 'be',
       expectedValue: expectedUser.someField,
@@ -165,7 +154,6 @@ describe('ObjectFieldEqualsStep', () => {
 
     const expectations: any = {
       field: 'someOtherField',
-      objName: 'sampleObject',
       id: 'sampleId',
       operator: 'be',
       expectedValue: expectedUser.someField,
@@ -185,7 +173,6 @@ describe('ObjectFieldEqualsStep', () => {
 
     const expectations: any = {
       field: 'someField',
-      objName: 'sampleObject',
       id: 'sampleId',
       operator: 'be',
       expectedValue: expectedUser.someField,
@@ -203,7 +190,6 @@ describe('ObjectFieldEqualsStep', () => {
     // Set step data corresponding to expectations
     const expectations: any = {
       field: 'anyField',
-      objName: 'anyObject',
       id: 'anyId',
       operator: 'anyOperator',
       expectedValue: null,
@@ -222,7 +208,6 @@ describe('ObjectFieldEqualsStep', () => {
     // Set step data corresponding to expectations
     const expectations: any = {
       field: 'anyField',
-      objName: 'anyObject',
       id: 'anyId',
       operator: 'anyOperator',
     };
@@ -231,5 +216,133 @@ describe('ObjectFieldEqualsStep', () => {
     const response: RunStepResponse = await stepUnderTest.executeStep(protoStep);
     expect(response.getMessageFormat()).to.equal(expectedResponseMessage);
     expect(response.getOutcome()).to.equal(RunStepResponse.Outcome.ERROR);
+  });
+
+  describe('PercentageUsed', () => {
+    it('should respond with pass if API client resolves expected data', async () => {
+      // Stub a response that matches expectations.
+      const expectedUser: any = { AmountUsed: 10, CurrentAmountAllowed: 100 };
+      clientWrapperStub.findObjectById.resolves(expectedUser);
+  
+      // Set step data corresponding to expectations
+      const expectations: any = {
+        field: 'PercentageUsed',
+        id: 'sampleId',
+        operator: 'be less than',
+        expectedValue: 50,
+      };
+      protoStep.setData(Struct.fromJavaScript(expectations));
+  
+      const response: RunStepResponse = await stepUnderTest.executeStep(protoStep);
+      expect(response.getOutcome()).to.equal(RunStepResponse.Outcome.PASSED);
+    });
+
+    it('should respond with pass if API client resolves expected data while AmountUsed is undefined', async () => {
+      // Stub a response that matches expectations.
+      const expectedUser: any = { CurrentAmountAllowed: 100 };
+      clientWrapperStub.findObjectById.resolves(expectedUser);
+  
+      // Set step data corresponding to expectations
+      const expectations: any = {
+        field: 'PercentageUsed',
+        id: 'sampleId',
+        operator: 'be less than',
+        expectedValue: 50,
+      };
+      protoStep.setData(Struct.fromJavaScript(expectations));
+  
+      const response: RunStepResponse = await stepUnderTest.executeStep(protoStep);
+      expect(response.getOutcome()).to.equal(RunStepResponse.Outcome.PASSED);
+    });
+
+    it('should respond with pass if API client resolves expected data while AmountUsed is null', async () => {
+      // Stub a response that matches expectations.
+      const expectedUser: any = { AmountUsed: 10, CurrentAmountAllowed: 100 };
+      clientWrapperStub.findObjectById.resolves(expectedUser);
+  
+      // Set step data corresponding to expectations
+      const expectations: any = {
+        field: 'PercentageUsed',
+        id: 'sampleId',
+        operator: 'be less than',
+        expectedValue: 50,
+      };
+      protoStep.setData(Struct.fromJavaScript(expectations));
+  
+      const response: RunStepResponse = await stepUnderTest.executeStep(protoStep);
+      expect(response.getOutcome()).to.equal(RunStepResponse.Outcome.PASSED);
+    });
+
+    it('should respond with pass if API client resolves expected data while AmountUsed is 0', async () => {
+      // Stub a response that matches expectations.
+      const expectedUser: any = { AmountUsed: 0, CurrentAmountAllowed: 100 };
+      clientWrapperStub.findObjectById.resolves(expectedUser);
+  
+      // Set step data corresponding to expectations
+      const expectations: any = {
+        field: 'PercentageUsed',
+        id: 'sampleId',
+        operator: 'be less than',
+        expectedValue: 50,
+      };
+      protoStep.setData(Struct.fromJavaScript(expectations));
+  
+      const response: RunStepResponse = await stepUnderTest.executeStep(protoStep);
+      expect(response.getOutcome()).to.equal(RunStepResponse.Outcome.PASSED);
+    });
+
+    it('should respond with error if API client resolves expected data while CurrentAmountAllowed used is null', async () => {
+      // Stub a response that matches expectations.
+      const expectedUser: any = { AmountUsed: 0, CurrentAmountAllowed: null };
+      clientWrapperStub.findObjectById.resolves(expectedUser);
+  
+      // Set step data corresponding to expectations
+      const expectations: any = {
+        field: 'PercentageUsed',
+        id: 'sampleId',
+        operator: 'be less than',
+        expectedValue: 50,
+      };
+      protoStep.setData(Struct.fromJavaScript(expectations));
+  
+      const response: RunStepResponse = await stepUnderTest.executeStep(protoStep);
+      expect(response.getOutcome()).to.equal(RunStepResponse.Outcome.ERROR);
+    });
+
+    it('should respond with error if API client resolves expected data while CurrentAmountAllowed used is 0', async () => {
+      // Stub a response that matches expectations.
+      const expectedUser: any = { AmountUsed: 0, CurrentAmountAllowed: 0 };
+      clientWrapperStub.findObjectById.resolves(expectedUser);
+  
+      // Set step data corresponding to expectations
+      const expectations: any = {
+        field: 'PercentageUsed',
+        id: 'sampleId',
+        operator: 'be less than',
+        expectedValue: 50,
+      };
+      protoStep.setData(Struct.fromJavaScript(expectations));
+  
+      const response: RunStepResponse = await stepUnderTest.executeStep(protoStep);
+      expect(response.getOutcome()).to.equal(RunStepResponse.Outcome.ERROR);
+    });
+
+    it('should respond with error if API client resolves expected data while CurrentAmountAllowed used is undefined', async () => {
+      // Stub a response that matches expectations.
+      const expectedUser: any = { AmountUsed: 0 };
+      clientWrapperStub.findObjectById.resolves(expectedUser);
+  
+      // Set step data corresponding to expectations
+      const expectations: any = {
+        field: 'PercentageUsed',
+        id: 'sampleId',
+        operator: 'be less than',
+        expectedValue: 50,
+      };
+      protoStep.setData(Struct.fromJavaScript(expectations));
+  
+      const response: RunStepResponse = await stepUnderTest.executeStep(protoStep);
+      expect(response.getOutcome()).to.equal(RunStepResponse.Outcome.ERROR);
+    });
   });
 });

@@ -1,5 +1,5 @@
 import { BaseStep, Field, StepInterface, ExpectedRecord } from '../../core/base-step';
-import { Step, RunStepResponse, FieldDefinition, StepDefinition, RecordDefinition } from '../../proto/cog_pb';
+import { Step, RunStepResponse, FieldDefinition, StepDefinition, RecordDefinition, StepRecord } from '../../proto/cog_pb';
 
 export class CreateAccount extends BaseStep implements StepInterface {
 
@@ -18,8 +18,12 @@ export class CreateAccount extends BaseStep implements StepInterface {
       field: 'Id',
       type: FieldDefinition.Type.STRING,
       description: "Account's SalesForce ID",
+    }, {
+      field: 'Name',
+      type: FieldDefinition.Type.STRING,
+      description: "Account's Name",
     }],
-    dynamicFields: false,
+    dynamicFields: true,
   }];
 
   async executeStep(step: Step): Promise<RunStepResponse> {
@@ -28,11 +32,24 @@ export class CreateAccount extends BaseStep implements StepInterface {
 
     try {
       const result = await this.client.createAccount(account);
-      const record = this.keyValue('account', 'Created Account', { Id: result.id });
-      return this.pass('Successfully created Account with ID %s', [result.id], [record]);
+      let data: any = result;
+      if (result.success) {
+        data = await this.client.findAccountByIdentifier('Name', account.Name, []);
+      }
+      const record = this.createRecord(data);
+      const orderedRecord = this.createOrderedRecord(data, stepData['__stepOrder']);
+      return this.pass('Successfully created Account with ID %s', [result.id], [record, orderedRecord]);
     } catch (e) {
       return this.error('There was a problem creating the Account: %s', [e.toString()]);
     }
+  }
+
+  public createRecord(account): StepRecord {
+    return this.keyValue('account', 'Created Account', account[0]);
+  }
+
+  public createOrderedRecord(account, stepOrder = 1): StepRecord {
+    return this.keyValue(`account.${stepOrder}`, `Created Account from Step ${stepOrder}`, account[0]);
   }
 
 }

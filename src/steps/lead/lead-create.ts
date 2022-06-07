@@ -1,5 +1,5 @@
 import { BaseStep, Field, StepInterface, ExpectedRecord } from '../../core/base-step';
-import { Step, RunStepResponse, FieldDefinition, StepDefinition, RecordDefinition } from '../../proto/cog_pb';
+import { Step, RunStepResponse, FieldDefinition, StepDefinition, RecordDefinition, StepRecord } from '../../proto/cog_pb';
 
 export class CreateLead extends BaseStep implements StepInterface {
 
@@ -18,8 +18,12 @@ export class CreateLead extends BaseStep implements StepInterface {
       field: 'Id',
       type: FieldDefinition.Type.STRING,
       description: "Lead's SalesForce ID",
+    }, {
+      field: 'Email',
+      type: FieldDefinition.Type.STRING,
+      description: "Lead's Email Address",
     }],
-    dynamicFields: false,
+    dynamicFields: true,
   }];
 
   async executeStep(step: Step): Promise<RunStepResponse> {
@@ -28,11 +32,24 @@ export class CreateLead extends BaseStep implements StepInterface {
 
     try {
       const result = await this.client.createLead(lead);
-      const record = this.keyValue('lead', 'Created Lead', { Id: result.id });
-      return this.pass('Successfully created Lead with ID %s', [result.id], [record]);
+      let data: any = result;
+      if (result.success) {
+        data = await this.client.findLeadByEmail(lead.Email, []);
+      }
+      const record = this.createRecord(data);
+      const orderedRecord = this.createOrderedRecord(data, stepData['__stepOrder']);
+      return this.pass('Successfully created Lead with ID %s', [result.id], [record, orderedRecord]);
     } catch (e) {
       return this.error('There was a problem creating the Lead: %s', [e.toString()]);
     }
+  }
+
+  public createRecord(lead): StepRecord {
+    return this.keyValue('lead', 'Created Lead', lead);
+  }
+
+  public createOrderedRecord(lead, stepOrder = 1): StepRecord {
+    return this.keyValue(`lead.${stepOrder}`, `Created Lead from Step ${stepOrder}`, lead);
   }
 
 }

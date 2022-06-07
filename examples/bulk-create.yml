@@ -1,0 +1,20 @@
+scenario: Demonstrate the Salesforce bulk api
+description: A scenario that creates multiple leads
+
+steps:
+- step: When I bulk create salesforce lead objects
+  data:
+    objName: Lead
+    salesforceObjects:
+      1:
+        Email: atoma13.tommy1@example.com
+        FirstName: Tommy
+        LastName: Tommy
+        Company: Stack Moxie
+        Country: Spain
+      2:
+        Email: atoma14.tommy2@example.com
+        FirstName: Tommy
+        LastName: Tommy
+        Company: Stack Moxie
+        Country: Spain

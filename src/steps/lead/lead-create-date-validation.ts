@@ -72,6 +72,10 @@ export class LeadCreateDateValidation extends BaseStep implements StepInterface 
         return this.fail('No Lead found with email %s', [email]);
       }
 
+      if (!moment.utc(submittedAt).isValid()) {
+        return this.error('The submittedAt value of %s is not a valid Date', [submittedAt]);
+      }
+
       const createdDate = lead.CreatedDate;
       const submittedAtMoment = moment.utc(submittedAt);
       const createdDateMoment = moment.utc(createdDate);

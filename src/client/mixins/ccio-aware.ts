@@ -10,7 +10,7 @@ export class CCIOAwareMixin extends ObjectAwareMixin {
    * @param {String[]} alwaysRetrieveFields - An optional array of fields that
    *   should always be retrieved.
    */
-  public async findCCIOById(id: string, alwaysRetrieveFields: string[] = []): Promise<Record<string, any>> {
-    return this.findObjectByField('LeanData__CC_Inserted_Object__c', 'LeanData__Lead__c', id, alwaysRetrieveFields);
+  public async findCCIOById(id: string, alwaysRetrieveFields: string[] = [], mayGenerateBadRequest: Boolean = false): Promise<Record<string, any>> {
+    return this.findObjectByField('LeanData__CC_Inserted_Object__c', 'LeanData__Lead__c', id, alwaysRetrieveFields, mayGenerateBadRequest);
   }
 }

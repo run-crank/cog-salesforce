@@ -1,0 +1,57 @@
+scenario: Demonstrate Caching Works 
+description: Proves that methods are hitting the cache appropriately.
+
+steps:
+- step: When I create a salesforce contact
+  data:
+    contact:
+      Email: LJ12345@gmail.com
+      FirstName: Leeroy
+      LastName: Jenkins
+- step: Then the FirstName field on salesforce contact LJ12345@gmail.com should be Leeroy
+- step: Then the LastName field on salesforce contact LJ12345@gmail.com should be Jenkins
+- step: Then delete the LJ12345@gmail.com salesforce contact
+
+- step: When I create a salesforce account
+  data:
+    account:
+      Name: Atoma
+      AccountNumber: 1234
+      Phone: 123-456-7890
+      BillingCity: Miami
+- step: Then the AccountNumber field on salesforce account with Name Atoma should be 1234
+- step: Then the Phone field on salesforce account with Name Atoma should be 123-456-7890
+- step: Then the BillingCity field on salesforce account with Name Atoma should be Miami
+- step: Then delete the salesforce account with Name Atoma
+
+- step: When I create a salesforce opportunity
+  data:
+    opportunity:
+      Name: Jay McCarrol
+      Description: musician
+      NextStep: play piano
+      StageName: JayMC
+      CloseDate: 2050-12-12
+- step: Then the Description field on salesforce opportunity with name Jay McCarrol should be musician
+- step: Then the NextStep field on salesforce opportunity with name Jay McCarrol should be play piano
+- step: Then delete the salesforce opportunity with name Jay McCarrol
+
+- step: When I create a salesforce lead
+  data:
+    lead:
+      Email: MattJohnson@gmail.com
+      FirstName: Matt
+      LastName: Johnson
+      Company: NTBTS
+- step: Then the FirstName field on salesforce lead MattJohnson@gmail.com should be Matt
+- step: Then the LastName field on salesforce lead MattJohnson@gmail.com should be Johnson
+- step: Then the Company field on salesforce lead MattJohnson@gmail.com should be NTBTS
+- step: Then delete the MattJohnson@gmail.com salesforce lead
+
+- step: When I create a salesforce lead object
+  data:
+    salesforceObject:
+      FirstName: Charlie
+      LastName: Kelly
+      Company: IASIP
+- step: Finally, delete the salesforce lead object with id {{salesforce.salesforceObject.Id}}

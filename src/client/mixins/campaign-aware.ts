@@ -9,7 +9,7 @@ export class CampaignAwareMixin extends ObjectAwareMixin {
    * @param {String[]} alwaysRetrieve - An optional list of fields that should
    *   always be retrieved when finding campaigns.
    */
-  public async findCampaignById(campaignId: string, alwaysRetrieve: string[] = []): Promise<Record<string, any>> {
-    return this.findObjectByFields('Campaign', { Id: campaignId }, alwaysRetrieve);
+  public async findCampaignById(campaignId: string, alwaysRetrieve: string[] = [], mayGenerateBadRequest: Boolean = false): Promise<Record<string, any>> {
+    return this.findObjectByFields('Campaign', { Id: campaignId }, alwaysRetrieve, mayGenerateBadRequest);
   }
 }
