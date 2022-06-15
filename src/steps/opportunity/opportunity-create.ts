@@ -34,8 +34,7 @@ export class CreateOpportunity extends BaseStep implements StepInterface {
       const result = await this.client.createOpportunity(opportunity);
       let data: any = result;
       if (result.success) {
-        data = await this.client.findOpportunityByIdentifier('Name', result.Name, []);
-        console.log(data);
+        data = await this.client.findOpportunityByIdentifier('Id', result.id, []);
       }
       const record = this.createRecord(data);
       const orderedRecord = this.createOrderedRecord(data, stepData['__stepOrder']);
@@ -46,11 +45,11 @@ export class CreateOpportunity extends BaseStep implements StepInterface {
   }
 
   public createRecord(opportunity): StepRecord {
-    return this.keyValue('opportunity', 'Created Opportunity', opportunity);
+    return this.keyValue('opportunity', 'Created Opportunity', opportunity[0]);
   }
 
   public createOrderedRecord(opportunity, stepOrder = 1): StepRecord {
-    return this.keyValue(`opportunity.${stepOrder}`, `Created Opportunity from Step ${stepOrder}`, opportunity);
+    return this.keyValue(`opportunity.${stepOrder}`, `Created Opportunity from Step ${stepOrder}`, opportunity[0]);
   }
 
 }
