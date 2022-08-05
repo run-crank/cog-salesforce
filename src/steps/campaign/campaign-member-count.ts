@@ -7,24 +7,14 @@ import { baseOperators } from '../../client/constants/operators';
 
 export class CampaignMemberCountStep extends BaseStep implements StepInterface {
 
-  protected stepName: string = 'Check the number on a Salesforce Campaign Member';
+  protected stepName: string = 'Count a Salesforce Campaign';
   /* tslint:disable-next-line:max-line-length */
-  protected stepExpression: string = 'the number of members from salesforce campaign (?<campaignId>.+) should (?<operator>be set|not be set|be less than|be greater than|be one of|be|contain|not be one of|not be|not contain|match|not match) ?(?<expectation>.+)?';
+  protected stepExpression: string = 'check the number of members from salesforce campaign (?<campaignId>.+)';
   protected stepType: StepDefinition.Type = StepDefinition.Type.VALIDATION;
   protected expectedFields: Field[] = [{
     field: 'campaignId',
     type: FieldDefinition.Type.STRING,
     description: 'Campaign ID',
-  }, {
-    field: 'operator',
-    type: FieldDefinition.Type.STRING,
-    optionality: FieldDefinition.Optionality.OPTIONAL,
-    description: 'Check Logic (be, not be, contain, not contain, be greater than, be less than, be set, not be set, be one of, or not be one of)',
-  }, {
-    field: 'expectedValue',
-    type: FieldDefinition.Type.ANYSCALAR,
-    optionality: FieldDefinition.Optionality.OPTIONAL,
-    description: 'Expected field value',
   }];
   protected expectedRecords: ExpectedRecord[] = [{
     id: 'campaign',
@@ -48,12 +38,6 @@ export class CampaignMemberCountStep extends BaseStep implements StepInterface {
   async executeStep(step: Step): Promise<RunStepResponse> {
     const stepData: any = step.getData().toJavaScript();
     const campaignId: string = stepData.campaignId;
-    const operator: string = stepData.operator || 'be';
-    const expectedValue: string = stepData.expectedValue;
-
-    if ((expectedValue === null || expectedValue === undefined) && !(operator == 'be set' || operator == 'not be set')) {
-      return this.error("The operator '%s' requires an expected value. Please provide one.", [operator]);
-    }
 
     try {
       const data = await this.client.findCampaignById(campaignId, ['Name', 'NumberOfLeads', 'NumberOfContacts']);
@@ -66,20 +50,11 @@ export class CampaignMemberCountStep extends BaseStep implements StepInterface {
 
       const totalMembers = +data.NumberOfLeads + +data.NumberOfContacts;
 
-      const result = this.assert(operator, totalMembers.toString(), expectedValue, 'member count');
-
       const record = this.createRecord(campaignId, data.Name, totalMembers);
+      const orderRecord = this.createOrderedRecord(campaignId, data.Name, totalMembers, stepData['__stepOrder']);
 
-      result.message = result.message.replace(' field', '');
-      return result.valid ? this.pass(result.message, [], [record])
-        : this.fail(result.message, [], [record]);
+      return this.pass('Program %s has %s members', [campaignId, totalMembers], [record, orderRecord]);
     } catch (e) {
-      if (e instanceof util.UnknownOperatorError) {
-        return this.error('%s Please provide one of: %s', [e.message, baseOperators.join(', ')]);
-      }
-      if (e instanceof util.InvalidOperandError) {
-        return this.error(e.message);
-      }
       return this.error('There was a problem checking the Campaign Member Count: %s', [e.message]);
     }
   }
@@ -91,6 +66,15 @@ export class CampaignMemberCountStep extends BaseStep implements StepInterface {
       campaignMemberCount: count,
     };
     return this.keyValue('campaign', 'Checked Campaign Member Count', record);
+  }
+
+  createOrderedRecord(id: string, name: string, count: number, stepOrder = 1) {
+    const record = {
+      campaignId: id,
+      campaignName: name,
+      campaignMemberCount: count,
+    };
+    return this.keyValue(`campaign.${stepOrder}`, `Checked Campaign Member Count from Step ${stepOrder}`, record);
   }
 }
 
