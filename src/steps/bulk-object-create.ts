@@ -52,10 +52,9 @@ export class BulkCreateObject extends BaseStep implements StepInterface {
       const data = await this.client.bulkCreateObjects(objName, objArray);
 
       // we should parse out the original CSV array if provided, or handle it if missing
-      stepData.csvArray = stepData.csvArray ? JSON.parse(stepData.csvArray) : [];
-
-      const csvColumns = stepData.csvArray[0];
-      const csvRows = stepData.csvArray.slice(1);
+      const csvArray =  stepData.csvArray ? JSON.parse(stepData.csvArray) : [];
+      const csvColumns = csvArray[0];
+      const csvRows = csvArray.slice(1);
       const failArrayOriginal = [csvColumns];
 
       if (data.length === 0) {
