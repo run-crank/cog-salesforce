@@ -78,7 +78,7 @@ export class BulkCreateObject extends BaseStep implements StepInterface {
       if (objArray.length !== returnedObjCount) {
         records.push(this.createTable('createdObjects', 'Objects Created', successArray));
         records.push(this.createTable('failedObjects', 'Objects Failed', failArray));
-        records.push(this.keyValue('failedOriginal', 'Objects Failed (Original format)', failArrayOriginal));
+        records.push(this.keyValue('failedOriginal', 'Objects Failed (Original format)', { 'array': failArrayOriginal }));
         return this.fail(
           'Only %d of %d %s Objects were successfully created in Salesforce',
           [returnedObjCount, objArray.length, objName],
@@ -94,7 +94,7 @@ export class BulkCreateObject extends BaseStep implements StepInterface {
       } else {
         records.push(this.createTable('createdObjects', 'Objects Created', successArray));
         records.push(this.createTable('failedObjects', 'Objects Failed', failArray));
-        records.push(this.keyValue('failedOriginal', 'Objects Failed (Original format)', failArrayOriginal));
+        records.push(this.keyValue('failedOriginal', 'Objects Failed (Original format)', { 'array': failArrayOriginal }));
         return this.fail(
           'Failed to create %d %s Objects in Salesforce',
           [failArray.length, objName],
