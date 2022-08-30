@@ -53,7 +53,7 @@ describe('BulkCreateObjectStep', () => {
     clientWrapperStub.bulkCreateObjects.resolves(expectedResponse);
 
     // Set step data corresponding to expectations
-    const expectedObject: any = { objName: sampleObject, salesforceObjects: { 1: { Email: 'anything@example.com' }, 2: { Email: 'anything2@example.com' } }, csvArray: [["email"],["anything@example.com"],["anything2@example.com"]] };
+    const expectedObject: any = { objName: sampleObject, salesforceObjects: { 1: { Email: 'anything@example.com' }, 2: { Email: 'anything2@example.com' } } };
     protoStep.setData(Struct.fromJavaScript(expectedObject));
 
     const response: RunStepResponse = await stepUnderTest.executeStep(protoStep);

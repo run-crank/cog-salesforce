@@ -14,12 +14,7 @@ export class BulkCreateObject extends BaseStep implements StepInterface {
     field: 'salesforceObjects',
     type: FieldDefinition.Type.MAP,
     description: 'A map of index to object',
-  }, {
-    field: 'csvArray',
-    type: FieldDefinition.Type.STRING,
-    description: 'a stringified array containing the full CSV the user provided',
-  },
-  ];
+  }];
   protected expectedRecords: ExpectedRecord[] = [{
     id: 'createdObjects',
     type: RecordDefinition.Type.TABLE,
@@ -55,6 +50,11 @@ export class BulkCreateObject extends BaseStep implements StepInterface {
       const successArray = [];
       const failArray = [];
       const data = await this.client.bulkCreateObjects(objName, objArray);
+
+      if (!stepData.csvArray) {
+        // we should be able to handle the csvArray being missing, even though this shouldn't really occur
+        stepData.csvArray = [];
+      }
 
       const csvColumns = stepData.csvArray[0];
       const csvRows = stepData.csvArray.slice(1);
