@@ -55,7 +55,7 @@ export class ObjectAwareMixin {
         });
         batch.on('queue', (batchInfo) => { // fired when batch request is queued in server.
           // start polling - Do not poll until the batch has started
-          batch.poll(1000, 20000); // first param is interval (ms), second param is timeout (ms)
+          batch.poll(1000, 5 * 60 * 1000); // first param is interval (ms), second param is timeout (ms)
         });
         batch.on('response', (rets) => { // fired when batch finished and result retrieved
           resolve(rets);
