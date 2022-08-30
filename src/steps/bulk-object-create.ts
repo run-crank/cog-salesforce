@@ -51,10 +51,8 @@ export class BulkCreateObject extends BaseStep implements StepInterface {
       const failArray = [];
       const data = await this.client.bulkCreateObjects(objName, objArray);
 
-      if (!stepData.csvArray) {
-        // we should be able to handle the csvArray being missing, even though this shouldn't really occur
-        stepData.csvArray = [];
-      }
+      // we should parse out the original CSV array if provided, or handle it if missing
+      stepData.csvArray = stepData.csvArray ? JSON.parse(stepData.csvArray) : [];
 
       const csvColumns = stepData.csvArray[0];
       const csvRows = stepData.csvArray.slice(1);
@@ -79,9 +77,9 @@ export class BulkCreateObject extends BaseStep implements StepInterface {
       const returnedObjCount = successArray.length + failArray.length;
 
       if (objArray.length !== returnedObjCount) {
-        records.push(this.createTable('failedObjects', 'Objects Failed', failArray));
         records.push(this.createTable('createdObjects', 'Objects Created', successArray));
-        records.push(this.keyValue('failedOriginal', '', failArrayOriginal));
+        records.push(this.createTable('failedObjects', 'Objects Failed', failArray));
+        records.push(this.keyValue('failedOriginal', 'Objects Failed (Original format)', failArrayOriginal));
         return this.fail(
           'Only %d of %d %s Objects were successfully created in Salesforce',
           [returnedObjCount, objArray.length, objName],
@@ -95,9 +93,9 @@ export class BulkCreateObject extends BaseStep implements StepInterface {
           records,
         );
       } else {
-        records.push(this.createTable('failedObjects', 'Objects Failed', failArray));
         records.push(this.createTable('createdObjects', 'Objects Created', successArray));
-        records.push(this.keyValue('failedOriginal', '', failArrayOriginal));
+        records.push(this.createTable('failedObjects', 'Objects Failed', failArray));
+        records.push(this.keyValue('failedOriginal', 'Objects Failed (Original format)', failArrayOriginal));
         return this.fail(
           'Failed to create %d %s Objects in Salesforce',
           [failArray.length, objName],
