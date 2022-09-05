@@ -1,7 +1,7 @@
 import { BaseStep, StepInterface, Field, ExpectedRecord } from '../../core/base-step';
 /*tslint:disable:no-else-after-return*/
 
-import { Step, RunStepResponse, FieldDefinition, StepDefinition, RecordDefinition } from '../../proto/cog_pb';
+import { Step, RunStepResponse, FieldDefinition, StepDefinition, RecordDefinition, StepRecord } from '../../proto/cog_pb';
 import * as util from '@run-crank/utilities';
 import { baseOperators } from '../../client/constants/operators';
 import { isNullOrUndefined } from 'util';
@@ -66,12 +66,13 @@ export class TenantUsageEntitlementsFieldEquals extends BaseStep implements Step
       }
 
       const record = this.createRecord(object);
+      const orderedRecord = this.createOrderedRecord(object, stepData['__stepOrder']);
 
       object['PercentageUsed'] = 0;
 
       if (!object.hasOwnProperty(field)) {
         // If the given field does not exist on the user, return an error.
-        return this.fail('The %s field does not exist on Tenant Usage Entitlement Object %s', [field, id], [record]);
+        return this.fail('The %s field does not exist on Tenant Usage Entitlement Object %s', [field, id], [record, orderedRecord]);
       }
 
       let actual = object[field];
@@ -86,8 +87,8 @@ export class TenantUsageEntitlementsFieldEquals extends BaseStep implements Step
 
       const result = this.assert(operator, actual, expectedValue, field);
 
-      return result.valid ? this.pass(result.message, [], [record])
-        : this.fail(result.message, [], [record]);
+      return result.valid ? this.pass(result.message, [], [record, orderedRecord])
+        : this.fail(result.message, [], [record, orderedRecord]);
 
     } catch (e) {
       if (e instanceof util.UnknownOperatorError) {
@@ -100,9 +101,14 @@ export class TenantUsageEntitlementsFieldEquals extends BaseStep implements Step
     }
   }
 
-  createRecord(object: Record<string, any>) {
+  public createRecord(object: Record<string, any>): StepRecord {
     delete object.attributes;
     return this.keyValue('salesforceTenantUsageEntitlement', 'Checked Tenant Usage Entitlement', object);
+  }
+
+  public createOrderedRecord(object: Record<string, any>, stepOrder = 1): StepRecord {
+    delete object.attributes;
+    return this.keyValue(`salesforceTenantUsageEntitlement.${stepOrder}`, `Checked Tenant Usage Entitlement from Step ${stepOrder}`, object);
   }
 }
 

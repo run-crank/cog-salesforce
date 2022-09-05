@@ -3,7 +3,7 @@ import { Field, ExpectedRecord } from '../../core/base-step';
 
 // tslint:disable-next-line:no-duplicate-imports
 import { BaseStep, StepInterface } from '../../core/base-step';
-import { Step, RunStepResponse, FieldDefinition, StepDefinition, RecordDefinition } from '../../proto/cog_pb';
+import { Step, RunStepResponse, FieldDefinition, StepDefinition, RecordDefinition, StepRecord } from '../../proto/cog_pb';
 import * as util from '@run-crank/utilities';
 import { baseOperators } from '../../client/constants/operators';
 import { titleCase } from 'title-case';
@@ -86,18 +86,19 @@ export class OpportunityFieldEquals extends BaseStep implements StepInterface {
       }
 
       const record = this.createRecord(opportunity[0]);
+      const orderedRecord = this.createOrderedRecord(opportunity[0], stepData['__stepOrder']);
 
       if (!opportunity[0].hasOwnProperty(stepData.field)) {
         // If the given field does not exist on the opportunity, return an error.
-        return this.error('The %s field does not exist on Opportunity %s', [field, identifier], [record]);
+        return this.error('The %s field does not exist on Opportunity %s', [field, identifier], [record, orderedRecord]);
       }
 
       const result = this.assert(operator, opportunity[0][field], expectedValue, field);
 
       // If the value of the field matches expectations, pass.
       // If the value of the field does not match expectations, fail.
-      return result.valid ? this.pass(result.message, [], [record])
-        : this.fail(result.message, [], [record]);
+      return result.valid ? this.pass(result.message, [], [record, orderedRecord])
+        : this.fail(result.message, [], [record, orderedRecord]);
 
     } catch (e) {
       if (e instanceof util.UnknownOperatorError) {
@@ -110,9 +111,14 @@ export class OpportunityFieldEquals extends BaseStep implements StepInterface {
     }
   }
 
-  createRecord(opportunity: Record<string, any>) {
+  public createRecord(opportunity: Record<string, any>): StepRecord {
     delete opportunity.attributes;
-    return this.keyValue('opportunity', 'Checked Opportunity', opportunity);
+    return this.keyValue('lead', 'Checked Opportunity', opportunity);
+  }
+
+  public createOrderedRecord(opportunity: Record<string, any>, stepOrder = 1): StepRecord {
+    delete opportunity.attributes;
+    return this.keyValue(`opportunity.${stepOrder}`, `Checked Opportunity from Step ${stepOrder}`, opportunity);
   }
 
   createRecords(opportunities: Record<string, any>[]) {

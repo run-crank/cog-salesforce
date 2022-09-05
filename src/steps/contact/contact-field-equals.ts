@@ -1,7 +1,7 @@
 /*tslint:disable:no-else-after-return*/
 
 import { BaseStep, Field, StepInterface, ExpectedRecord } from '../../core/base-step';
-import { Step, RunStepResponse, FieldDefinition, StepDefinition, RecordDefinition } from '../../proto/cog_pb';
+import { Step, RunStepResponse, FieldDefinition, StepDefinition, RecordDefinition, StepRecord } from '../../proto/cog_pb';
 import * as util from '@run-crank/utilities';
 import { baseOperators } from '../../client/constants/operators';
 import { isNullOrUndefined } from 'util';
@@ -73,16 +73,17 @@ export class ContactFieldEqualsStep extends BaseStep implements StepInterface {
         return this.fail('No Contact found with email %s', [email]);
       }
 
-      const record = this.keyValue('contact', 'Checked Contact', contact);
+      const record = this.createRecord(contact);
+      const orderedRecord = this.createOrderedRecord(contact, stepData['__stepOrder']);
 
       if (!contact.hasOwnProperty(field)) {
-        return this.fail('The %s field does not exist on Contact %s', [field, email], [record]);
+        return this.fail('The %s field does not exist on Contact %s', [field, email], [record, orderedRecord]);
       }
 
       const result = this.assert(operator, contact[field], expectedValue, field);
 
-      return result.valid ? this.pass(result.message, [], [record])
-        : this.fail(result.message, [], [record]);
+      return result.valid ? this.pass(result.message, [], [record, orderedRecord])
+        : this.fail(result.message, [], [record, orderedRecord]);
 
     } catch (e) {
       if (e instanceof util.UnknownOperatorError) {
@@ -95,9 +96,14 @@ export class ContactFieldEqualsStep extends BaseStep implements StepInterface {
     }
   }
 
-  createRecord(contact: Record<string, any>) {
+  public createRecord(contact: Record<string, any>): StepRecord {
     delete contact.attributes;
     return this.keyValue('contact', 'Checked Contact', contact);
+  }
+
+  public createOrderedRecord(contact: Record<string, any>, stepOrder = 1): StepRecord {
+    delete contact.attributes;
+    return this.keyValue(`contact.${stepOrder}`, `Checked Contact from Step ${stepOrder}`, contact);
   }
 }
 

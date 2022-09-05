@@ -3,7 +3,7 @@ import { Field, ExpectedRecord } from '../../core/base-step';
 
 // tslint:disable-next-line:no-duplicate-imports
 import { BaseStep, StepInterface } from '../../core/base-step';
-import { Step, RunStepResponse, FieldDefinition, StepDefinition, RecordDefinition } from '../../proto/cog_pb';
+import { Step, RunStepResponse, FieldDefinition, StepDefinition, RecordDefinition, StepRecord } from '../../proto/cog_pb';
 import * as util from '@run-crank/utilities';
 import { baseOperators } from '../../client/constants/operators';
 import { isObject, isNullOrUndefined } from 'util';
@@ -86,18 +86,19 @@ export class AccountFieldEquals extends BaseStep implements StepInterface {
 
       //// Account found
       const record = this.createRecord(account[0]);
+      const orderedRecord = this.createOrderedRecord(account[0], stepData['__stepOrder']);
 
       if (!account[0].hasOwnProperty(stepData.field)) {
         // If the given field does not exist on the account, return an error.
-        return this.fail('The %s field does not exist on Account %s', [field, identifier], [record]);
+        return this.fail('The %s field does not exist on Account %s', [field, identifier], [record, orderedRecord]);
       }
 
       const result = this.assert(operator, account[0][field], expectedValue, field);
 
       // If the value of the field matches expectations, pass.
       // If the value of the field does not match expectations, fail.
-      return result.valid ? this.pass(result.message, [], [record])
-        : this.fail(result.message, [], [record]);
+      return result.valid ? this.pass(result.message, [], [record, orderedRecord])
+        : this.fail(result.message, [], [record, orderedRecord]);
 
     } catch (e) {
       if (e instanceof util.UnknownOperatorError) {
@@ -110,9 +111,14 @@ export class AccountFieldEquals extends BaseStep implements StepInterface {
     }
   }
 
-  createRecord(account: Record<string, any>) {
+  public createRecord(account): StepRecord {
     delete account.attributes;
     return this.keyValue('account', 'Checked Account', account);
+  }
+
+  public createOrderedRecord(account, stepOrder = 1): StepRecord {
+    delete account.attributes;
+    return this.keyValue(`account.${stepOrder}`, `Checked Account from Step ${stepOrder}`, account);
   }
 
   createRecords(accounts: Record<string, any>[]) {
