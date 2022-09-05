@@ -2,7 +2,7 @@ import { Field, ExpectedRecord } from './../../core/base-step';
 /*tslint:disable:no-else-after-return*/
 
 import { BaseStep, StepInterface } from '../../core/base-step';
-import { Step, RunStepResponse, FieldDefinition, StepDefinition, RecordDefinition } from '../../proto/cog_pb';
+import { Step, RunStepResponse, FieldDefinition, StepDefinition, RecordDefinition, StepRecord } from '../../proto/cog_pb';
 import * as util from '@run-crank/utilities';
 import { baseOperators } from '../../client/constants/operators';
 import { isNullOrUndefined } from 'util';
@@ -76,16 +76,17 @@ export class CCIOFieldEquals extends BaseStep implements StepInterface {
       }
 
       const record = this.createRecord(ccio);
+      const orderedRecord = this.createOrderedRecord(ccio, stepData['__stepOrder']);
 
       if (!ccio.hasOwnProperty(field)) {
         // If the given field does not exist on the user, return an error.
-        return this.fail('The %s field does not exist on CCIO %s', [field, id], [record]);
+        return this.fail('The %s field does not exist on CCIO %s', [field, id], [record, orderedRecord]);
       }
 
       const result = this.assert(operator, ccio[field], expectedValue, field);
 
-      return result.valid ? this.pass(result.message, [], [record])
-        : this.fail(result.message, [], [record]);
+      return result.valid ? this.pass(result.message, [], [record, orderedRecord])
+        : this.fail(result.message, [], [record, orderedRecord]);
 
     } catch (e) {
       if (e instanceof util.UnknownOperatorError) {
@@ -98,9 +99,14 @@ export class CCIOFieldEquals extends BaseStep implements StepInterface {
     }
   }
 
-  createRecord(ccio: Record<string, any>) {
+  public createRecord(ccio: Record<string, any>): StepRecord {
     delete ccio.attributes;
     return this.keyValue('ccio', 'Checked CCIO', ccio);
+  }
+
+  public createOrderedRecord(ccio: Record<string, any>, stepOrder = 1): StepRecord {
+    delete ccio.attributes;
+    return this.keyValue(`ccio.${stepOrder}`, `Checked CCIO from Step ${stepOrder}`, ccio);
   }
 }
 

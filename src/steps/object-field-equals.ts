@@ -2,7 +2,7 @@ import { Field, ExpectedRecord } from './../core/base-step';
 /*tslint:disable:no-else-after-return*/
 
 import { BaseStep, StepInterface } from '../core/base-step';
-import { Step, RunStepResponse, FieldDefinition, StepDefinition, RecordDefinition } from '../proto/cog_pb';
+import { Step, RunStepResponse, FieldDefinition, StepDefinition, RecordDefinition, StepRecord } from '../proto/cog_pb';
 import * as util from '@run-crank/utilities';
 import { baseOperators } from '../client/constants/operators';
 import { isNullOrUndefined } from 'util';
@@ -80,16 +80,17 @@ export class ObjectFieldEquals extends BaseStep implements StepInterface {
       }
 
       const record = this.createRecord(object);
+      const orderedRecord = this.createOrderedRecord(object, stepData['__stepOrder']);
 
       if (!object.hasOwnProperty(field)) {
         // If the given field does not exist on the user, return an error.
-        return this.fail('The %s field does not exist on %s Object %s', [field, objName, id], [record]);
+        return this.fail('The %s field does not exist on %s Object %s', [field, objName, id], [record, orderedRecord]);
       }
 
       const result = this.assert(operator, object[field], expectedValue, field);
 
-      return result.valid ? this.pass(result.message, [], [record])
-        : this.fail(result.message, [], [record]);
+      return result.valid ? this.pass(result.message, [], [record, orderedRecord])
+        : this.fail(result.message, [], [record, orderedRecord]);
 
     } catch (e) {
       if (e instanceof util.UnknownOperatorError) {
@@ -102,9 +103,14 @@ export class ObjectFieldEquals extends BaseStep implements StepInterface {
     }
   }
 
-  createRecord(object: Record<string, any>) {
+  public createRecord(object: Record<string, any>): StepRecord {
     delete object.attributes;
     return this.keyValue('salesforceObject', 'Checked Object', object);
+  }
+
+  public createOrderedRecord(object: Record<string, any>, stepOrder = 1): StepRecord {
+    delete object.attributes;
+    return this.keyValue(`salesforceObject.${stepOrder}`, `Checked Object from Step ${stepOrder}`, object);
   }
 }
 

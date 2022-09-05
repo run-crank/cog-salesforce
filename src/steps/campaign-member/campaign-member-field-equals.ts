@@ -2,7 +2,7 @@ import { campaignMemberOperators } from './../../client/constants/operators';
 /*tslint:disable:no-else-after-return*/
 
 import { BaseStep, Field, StepInterface, ExpectedRecord } from '../../core/base-step';
-import { Step, RunStepResponse, FieldDefinition, StepDefinition, RecordDefinition } from '../../proto/cog_pb';
+import { Step, RunStepResponse, FieldDefinition, StepDefinition, RecordDefinition, StepRecord } from '../../proto/cog_pb';
 import * as util from '@run-crank/utilities';
 import { isNullOrUndefined } from 'util';
 
@@ -114,18 +114,19 @@ export class CampaignMemberFieldEquals extends BaseStep implements StepInterface
       }
 
       const record = this.createRecord(campaignMember);
+      const orderedRecord = this.createOrderedRecord(campaignMember, stepData['__stepOrder']);
 
       if (!campaignMember.hasOwnProperty(field)) {
         // If the given field does not exist on the user, return an error.
-        return this.fail('The %s field does not exist on Campaign Member with email %s and campaign %s', [field, email, textToDisplay], [record]);
+        return this.fail('The %s field does not exist on Campaign Member with email %s and campaign %s', [field, email, textToDisplay], [record, orderedRecord]);
       }
 
       const result = this.assert(operator, campaignMember[field], expectedValue, field);
 
       // If the value of the field matches expectations, pass.
       // If the value of the field does not match expectations, fail.
-      return result.valid ? this.pass(result.message, [], [record])
-        : this.fail(result.message, [], [record]);
+      return result.valid ? this.pass(result.message, [], [record, orderedRecord])
+        : this.fail(result.message, [], [record, orderedRecord]);
 
     } catch (e) {
       if (e instanceof util.UnknownOperatorError) {
@@ -138,9 +139,14 @@ export class CampaignMemberFieldEquals extends BaseStep implements StepInterface
     }
   }
 
-  createRecord(campaignMember: Record<string, any>) {
+  public createRecord(campaignMember: Record<string, any>): StepRecord {
     delete campaignMember.attributes;
     return this.keyValue('campaignMember', 'Checked Campaign Member', campaignMember);
+  }
+
+  public createOrderedRecord(campaignMember: Record<string, any>, stepOrder = 1): StepRecord {
+    delete campaignMember.attributes;
+    return this.keyValue(`campaignMember.${stepOrder}`, `Checked Campaign Member from Step ${stepOrder}`, campaignMember);
   }
 }
 

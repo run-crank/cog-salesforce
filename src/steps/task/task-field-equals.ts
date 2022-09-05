@@ -2,7 +2,7 @@ import { Field, ExpectedRecord } from './../../core/base-step';
 /*tslint:disable:no-else-after-return*/
 
 import { BaseStep, StepInterface } from '../../core/base-step';
-import { Step, RunStepResponse, FieldDefinition, StepDefinition, RecordDefinition } from '../../proto/cog_pb';
+import { Step, RunStepResponse, FieldDefinition, StepDefinition, RecordDefinition, StepRecord } from '../../proto/cog_pb';
 import * as util from '@run-crank/utilities';
 import { baseOperators } from '../../client/constants/operators';
 import { isNullOrUndefined } from 'util';
@@ -84,6 +84,7 @@ export class TaskFieldEquals extends BaseStep implements StepInterface {
       tasks = await this.client.findObjectsbyFields('Task', taskFieldMap);
 
       const record = this.createRecord(tasks[0]);
+      const orderedRecord = this.createOrderedRecord(tasks[0], stepData['__stepOrder']);
       const validResults = [];
       let result = {
         valid: false,
@@ -107,8 +108,8 @@ export class TaskFieldEquals extends BaseStep implements StepInterface {
         return this.fail('Task for email %s found. Expected %s field %s %s but it was actually %s', [email, field, operator, expectedValue, tasks[0][field]]);
       }
 
-      return result.valid ? this.pass(result.message, [], [record])
-        : this.fail(result.message, [], [record]);
+      return result.valid ? this.pass(result.message, [], [record, orderedRecord])
+        : this.fail(result.message, [], [record, orderedRecord]);
 
     } catch (e) {
       if (e instanceof util.UnknownOperatorError) {
@@ -121,9 +122,14 @@ export class TaskFieldEquals extends BaseStep implements StepInterface {
     }
   }
 
-  createRecord(task: Record<string, any>) {
+  public createRecord(task: Record<string, any>): StepRecord {
     delete task.attributes;
     return this.keyValue('task', 'Checked Task', task);
+  }
+
+  public createOrderedRecord(task: Record<string, any>, stepOrder = 1): StepRecord {
+    delete task.attributes;
+    return this.keyValue(`task.${stepOrder}`, `Checked Task from Step ${stepOrder}`, task);
   }
 }
 
