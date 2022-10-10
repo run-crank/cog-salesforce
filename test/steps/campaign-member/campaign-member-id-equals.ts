@@ -48,7 +48,7 @@ describe('CampaignMemberCampaignIdEqualsStep', () => {
     expect(campaignId.type).to.equal(FieldDefinition.Type.STRING);
 
     // Status field
-    const status: any = fields.filter(f => f.key === 'status')[0];
+    const status: any = fields.filter(f => f.key === 'memberStatus')[0];
     expect(status.optionality).to.equal(FieldDefinition.Optionality.OPTIONAL);
     expect(status.type).to.equal(FieldDefinition.Type.STRING);
   });
@@ -72,7 +72,7 @@ describe('CampaignMemberCampaignIdEqualsStep', () => {
 
   it('should respond with fail if API client does not find Campaign Member', async () => {
     // Stub a response that matches expectations.
-    const expectedResponseMessage: string = 'No Campaign Membership found between %s and campaign %s';
+    const expectedResponseMessage: string = 'No Campaign Membership found between "%s" and campaign "%s"';
     clientWrapperStub.findCampaignMemberByEmailAndCampaignId.resolves(null);
 
     // Set step data corresponding to expectations

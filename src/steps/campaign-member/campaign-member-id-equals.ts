@@ -18,7 +18,7 @@ export class CampaignMemberCampaignIdEquals extends BaseStep implements StepInte
     type: FieldDefinition.Type.STRING,
     description: 'Campaign ID',
   }, {
-    field: 'status',
+    field: 'memberStatus',
     type: FieldDefinition.Type.STRING,
     optionality: FieldDefinition.Optionality.OPTIONAL,
     description: 'Campaign Member Status',
@@ -62,7 +62,7 @@ export class CampaignMemberCampaignIdEquals extends BaseStep implements StepInte
     const stepData: any = step.getData().toJavaScript();
     const email: string = stepData.email;
     const campaignId: string = stepData.campaignId;
-    const status: string = stepData.status || null;
+    const status: string = stepData.memberStatus || null;
     let campaignMember: Record<string, any>;
 
     const campaignMemberFields = [
@@ -78,23 +78,28 @@ export class CampaignMemberCampaignIdEquals extends BaseStep implements StepInte
 
     try {
       campaignMember = await this.client.findCampaignMemberByEmailAndCampaignId(email, campaignId, campaignMemberFields);
+      const campaign = await this.client.findCampaignById(campaignId, ['Name']);
+      const textToDisplay = campaign ? `${campaign.Name} (${campaignId})` : campaignId;
+
+      if (!campaignMember) {
+        // If no results were found, return a failure.
+        return this.fail('No Campaign Membership found between "%s" and campaign "%s"', [email, textToDisplay]);
+      }
+
+      const record = this.createRecord(campaignMember);
+      // If status is provided, check if it matches expectation
+      if (status) {
+        if (campaignMember['Status'] === status) {
+          return this.pass('Lead belongs to Campaign "%s" with status "%s", as expected', [textToDisplay, status], [record]);
+        }
+        return this.fail('No Campaign Membership found between "%s" and campaign "%s" with status "%s"', [email, textToDisplay, status]);
+      }
+
+      return this.pass('Lead belongs to Campaign "%s", as expected', [textToDisplay], [record]);
     } catch (e) {
       return this.error('There was a problem checking the Campaign Member: %s', [e.toString()]);
     }
 
-    const campaign = await this.client.findCampaignById(campaignId, ['Name']);
-    const textToDisplay = campaign ? `${campaign.Name} (${campaignId})` : campaignId;
-
-    if (!campaignMember) {
-      // If no results were found, return a failure.
-      return this.fail('No Campaign Membership found between %s and campaign %s', [email, textToDisplay]);
-    } else if (status && campaignMember['Status'].ToLowerCase() !== status) {
-      return this.fail('No Campaign Membership found between %s and campaign %s with status %s', [email, textToDisplay, status]);
-    } else {
-      // If the value of the field matches expectations, pass.
-      const record = this.createRecord(campaignMember);
-      return this.pass('Lead belongs to Campaign %s, as expected', [textToDisplay], [record]);
-    }
   }
 
   createRecord(campaignMember: Record<string, any>) {
