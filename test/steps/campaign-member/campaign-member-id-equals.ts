@@ -46,6 +46,11 @@ describe('CampaignMemberCampaignIdEqualsStep', () => {
     const campaignId: any = fields.filter(f => f.key === 'campaignId')[0];
     expect(campaignId.optionality).to.equal(FieldDefinition.Optionality.REQUIRED);
     expect(campaignId.type).to.equal(FieldDefinition.Type.STRING);
+
+    // Status field
+    const status: any = fields.filter(f => f.key === 'status')[0];
+    expect(status.optionality).to.equal(FieldDefinition.Optionality.OPTIONAL);
+    expect(status.type).to.equal(FieldDefinition.Type.STRING);
   });
 
   it('should respond with pass if API client resolves expected data', async () => {
