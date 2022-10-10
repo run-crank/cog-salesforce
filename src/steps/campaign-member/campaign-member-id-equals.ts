@@ -17,6 +17,11 @@ export class CampaignMemberCampaignIdEquals extends BaseStep implements StepInte
     field: 'campaignId',
     type: FieldDefinition.Type.STRING,
     description: 'Campaign ID',
+  }, {
+    field: 'status',
+    type: FieldDefinition.Type.STRING,
+    optionality: FieldDefinition.Optionality.OPTIONAL,
+    description: 'Campaign Member Status',
   }];
   protected expectedRecords: ExpectedRecord[] = [{
     id: 'campaignMember',
@@ -57,10 +62,22 @@ export class CampaignMemberCampaignIdEquals extends BaseStep implements StepInte
     const stepData: any = step.getData().toJavaScript();
     const email: string = stepData.email;
     const campaignId: string = stepData.campaignId;
+    const status: string = stepData.status || null;
     let campaignMember: Record<string, any>;
 
+    const campaignMemberFields = [
+      'CampaignId',
+      'Name',
+      'Status',
+      'LeadId',
+      'ContactId',
+      'FirstName',
+      'LastName',
+      'Email',
+    ];
+
     try {
-      campaignMember = await this.client.findCampaignMemberByEmailAndCampaignId(email, campaignId);
+      campaignMember = await this.client.findCampaignMemberByEmailAndCampaignId(email, campaignId, campaignMemberFields);
     } catch (e) {
       return this.error('There was a problem checking the Campaign Member: %s', [e.toString()]);
     }
@@ -71,6 +88,8 @@ export class CampaignMemberCampaignIdEquals extends BaseStep implements StepInte
     if (!campaignMember) {
       // If no results were found, return a failure.
       return this.fail('No Campaign Membership found between %s and campaign %s', [email, textToDisplay]);
+    } else if (status && campaignMember['Status'].ToLowerCase() !== status) {
+      return this.fail('No Campaign Membership found between %s and campaign %s with status %s', [email, textToDisplay, status]);
     } else {
       // If the value of the field matches expectations, pass.
       const record = this.createRecord(campaignMember);
