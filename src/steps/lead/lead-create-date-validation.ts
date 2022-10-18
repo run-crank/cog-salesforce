@@ -56,7 +56,7 @@ export class LeadCreateDateValidation extends BaseStep implements StepInterface 
   async executeStep(step: Step): Promise<RunStepResponse> {
     const stepData: any = step.getData().toJavaScript();
     const email: string = stepData.email;
-    const submittedAt = stepData.submittedAt;
+    const submittedAt = stepData.submittedAt.trim();
     const operator: string = stepData.operator || 'be';
     const expectedValue: number = stepData.expectedValue;
     let lead: Record<string, any>;
