@@ -112,17 +112,18 @@ export class Cog implements ICogServiceServer {
     call.on('data', async (runStepRequest: RunStepRequest) => {
       processing = processing + 1;
 
+      const step: Step = runStepRequest.getStep();
       if (!clientCreated) {
         idMap = this.redisClient ? {
           requestId: runStepRequest.getRequestId(),
           scenarioId: runStepRequest.getScenarioId(),
           requestorId: runStepRequest.getRequestorId(),
+          connectionId: step.getData().toJavaScript()['connection'] || null,
         } : null;
         client = await this.getClientWrapper(call.metadata, idMap);
         clientCreated = true;
       }
 
-      const step: Step = runStepRequest.getStep();
       const response: RunStepResponse = await this.dispatchStep(step, runStepRequest, call.metadata, client);
       call.write(response);
 
@@ -168,6 +169,7 @@ export class Cog implements ICogServiceServer {
         requestId: runStepRequest.getRequestId(),
         scenarioId: runStepRequest.getScenarioId(),
         requestorId: runStepRequest.getRequestorId(),
+        connectionId: step.getData().toJavaScript()['connection'] || null,
       };
       wrapper = this.getClientWrapper(metadata, idMap);
     }
