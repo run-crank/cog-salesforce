@@ -85,7 +85,7 @@ export class TenantUsageEntitlementsFieldEquals extends BaseStep implements Step
         actual = (((object['AmountUsed'] || 0) / object['CurrentAmountAllowed']) * 100).toFixed(2);
       }
 
-      const result = this.assert(operator, actual, expectedValue, field);
+      const result = this.assert(operator, actual, expectedValue, field, stepData['__piiSuppressionLevel']);
 
       return result.valid ? this.pass(result.message, [], [record, orderedRecord])
         : this.fail(result.message, [], [record, orderedRecord]);

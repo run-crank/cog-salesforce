@@ -84,7 +84,7 @@ export class LeadFieldEquals extends BaseStep implements StepInterface {
         return this.fail('The %s field does not exist on Lead %s', [field, email], [record, orderedRecord]);
       }
 
-      const result = this.assert(operator, lead[field], expectedValue, field);
+      const result = this.assert(operator, lead[field], expectedValue, field, stepData['__piiSuppressionLevel']);
 
       return result.valid ? this.pass(result.message, [], [record, orderedRecord])
         : this.fail(result.message, [], [record, orderedRecord]);

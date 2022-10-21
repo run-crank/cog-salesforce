@@ -83,7 +83,7 @@ export class CCIOFieldEquals extends BaseStep implements StepInterface {
         return this.fail('The %s field does not exist on CCIO %s', [field, id], [record, orderedRecord]);
       }
 
-      const result = this.assert(operator, ccio[field], expectedValue, field);
+      const result = this.assert(operator, ccio[field], expectedValue, field, stepData['__piiSuppressionLevel']);
 
       return result.valid ? this.pass(result.message, [], [record, orderedRecord])
         : this.fail(result.message, [], [record, orderedRecord]);
