@@ -85,8 +85,8 @@ export abstract class BaseStep {
     return stepDefinition;
   }
 
-  assert(operator: string, actualValue: string, expectedValue: string, field: string): util.AssertionResult {
-    return util.assert(operator, actualValue, expectedValue, field);
+  assert(operator: string, actualValue: string, expectedValue: string, field: string, piiLevel: string = null): util.AssertionResult {
+    return util.assert(operator, actualValue, expectedValue, field, piiLevel);
   }
 
   protected pass(message: string, messageArgs: any[] = [], records: StepRecord[] = []): RunStepResponse {

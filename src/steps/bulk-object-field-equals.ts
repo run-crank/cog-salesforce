@@ -94,7 +94,7 @@ export class BulkObjectFieldEquals extends BaseStep implements StepInterface {
           // If the given field does not exist on the object, add it to the failArray
           failArray.push({ Id: obj.Id, message: `The ${field} field does not exist on this ${objName} object` });
         } else {
-          const assertResult = this.assert(operator, obj[field], expectedValue, field);
+          const assertResult = this.assert(operator, obj[field], expectedValue, field, stepData['__piiSuppressionLevel']);
           if (assertResult.valid) {
             successArray.push({ Id: obj.Id, message: assertResult.message });
           } else {

@@ -121,7 +121,7 @@ export class CampaignMemberFieldEquals extends BaseStep implements StepInterface
         return this.fail('The %s field does not exist on Campaign Member with email %s and campaign %s', [field, email, textToDisplay], [record, orderedRecord]);
       }
 
-      const result = this.assert(operator, campaignMember[field], expectedValue, field);
+      const result = this.assert(operator, campaignMember[field], expectedValue, field, stepData['__piiSuppressionLevel']);
 
       // If the value of the field matches expectations, pass.
       // If the value of the field does not match expectations, fail.

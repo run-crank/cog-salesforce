@@ -93,7 +93,7 @@ export class TaskFieldEquals extends BaseStep implements StepInterface {
 
       // Assert field
       tasks.forEach((task) => {
-        const assertResult = this.assert(operator, task[field], expectedValue, field);
+        const assertResult = this.assert(operator, task[field], expectedValue, field, stepData['__piiSuppressionLevel']);
         if (assertResult.valid) {
           validResults.push(task);
           result = assertResult;
