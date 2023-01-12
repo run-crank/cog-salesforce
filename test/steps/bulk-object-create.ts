@@ -25,7 +25,7 @@ describe('BulkCreateObjectStep', () => {
   it('should return expected step metadata', () => {
     const stepDef: StepDefinition = stepUnderTest.getDefinition();
     expect(stepDef.getStepId()).to.equal('BulkCreateObject');
-    expect(stepDef.getName()).to.equal('Bulk create Salesforce Objects');
+    expect(stepDef.getName()).to.equal('Bulk create Salesforce objects');
     expect(stepDef.getExpression()).to.equal('bulk create salesforce (?<objName>[a-zA-Z0-9]+) objects');
     expect(stepDef.getType()).to.equal(StepDefinition.Type.ACTION);
   });

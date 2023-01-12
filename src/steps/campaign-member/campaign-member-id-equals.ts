@@ -5,10 +5,12 @@ import { Step, RunStepResponse, FieldDefinition, StepDefinition, RecordDefinitio
 
 export class CampaignMemberCampaignIdEquals extends BaseStep implements StepInterface {
 
-  protected stepName: string = 'Check Salesforce Campaign Membership';
+  protected stepName: string = 'Check Salesforce campaign membership';
   /* tslint:disable-next-line:max-line-length */
   protected stepExpression: string = 'the salesforce lead (?<email>.+) should be a member of campaign (?<campaignId>.+)';
   protected stepType: StepDefinition.Type = StepDefinition.Type.VALIDATION;
+  protected actionList: string[] = ['check'];
+  protected targetObject: string = 'Campaign Membership';
   protected expectedFields: Field[] = [{
     field: 'email',
     type: FieldDefinition.Type.EMAIL,

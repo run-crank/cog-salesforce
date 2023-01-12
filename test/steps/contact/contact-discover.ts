@@ -25,7 +25,7 @@ describe('DiscoverContactStep', () => {
   it('should return expected step metadata', () => {
     const stepDef: StepDefinition = stepUnderTest.getDefinition();
     expect(stepDef.getStepId()).to.equal('DiscoverContact');
-    expect(stepDef.getName()).to.equal('Discover fields on a Salesforce Contact');
+    expect(stepDef.getName()).to.equal('Discover fields on a Salesforce contact');
     expect(stepDef.getExpression()).to.equal('discover fields on salesforce contact (?<email>.+)');
     expect(stepDef.getType()).to.equal(StepDefinition.Type.ACTION);
   });

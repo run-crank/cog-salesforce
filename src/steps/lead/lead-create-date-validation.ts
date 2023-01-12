@@ -8,10 +8,12 @@ import { baseOperators } from '../../client/constants/operators';
 
 export class LeadCreateDateValidation extends BaseStep implements StepInterface {
 
-  protected stepName: string = 'Calculate Time to Create Salesforce Lead from Form';
+  protected stepName: string = 'Calculate time to create Salesforce lead from form';
   /* tslint:disable-next-line:max-line-length */
   protected stepExpression: string = 'the salesforce lead (?<email>.+) created date difference from form submission on (?<submittedAt>.+) should (?<operator>be less than|be greater than|be|not be) ?(?<expectedValue>.+) seconds';
   protected stepType: StepDefinition.Type = StepDefinition.Type.VALIDATION;
+  protected actionList: string[] = ['check'];
+  protected targetObject: string = 'Time to Create Lead';
   protected expectedFields: Field[] = [{
     field: 'email',
     type: FieldDefinition.Type.EMAIL,

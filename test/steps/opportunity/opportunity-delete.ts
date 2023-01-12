@@ -26,7 +26,7 @@ describe('DeleteOpportunityStep', () => {
   it('should return expected step metadata', () => {
     const stepDef: StepDefinition = stepUnderTest.getDefinition();
     expect(stepDef.getStepId()).to.equal('DeleteOpportunity');
-    expect(stepDef.getName()).to.equal('Delete a Salesforce Opportunity');
+    expect(stepDef.getName()).to.equal('Delete a Salesforce opportunity');
     expect(stepDef.getExpression()).to.equal('delete the salesforce opportunity with (?<field>[a-zA-Z0-9_]+) (?<identifier>.+)');
     expect(stepDef.getType()).to.equal(StepDefinition.Type.ACTION);
   });

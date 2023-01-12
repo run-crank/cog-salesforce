@@ -25,7 +25,7 @@ describe('BulkObjectFieldEqualsStep', () => {
   it('should return expected step metadata', () => {
     const stepDef: StepDefinition = stepUnderTest.getDefinition();
     expect(stepDef.getStepId()).to.equal('BulkObjectFieldEquals');
-    expect(stepDef.getName()).to.equal('Check a field on multiple Salesforce Objects');
+    expect(stepDef.getName()).to.equal('Check a field on multiple Salesforce objects');
     expect(stepDef.getExpression()).to.equal('the (?<field>[a-zA-Z0-9_]+) field on multiple salesforce (?<objName>[a-zA-Z0-9]+) objects should (?<operator>be set|not be set|be less than|be greater than|be one of|be|contain|not be one of|not be|not contain|match|not match) ?(?<expectedValue>.+)?');
     expect(stepDef.getType()).to.equal(StepDefinition.Type.VALIDATION);
   });

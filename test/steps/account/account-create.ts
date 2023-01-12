@@ -26,7 +26,7 @@ describe('CreateAccountStep', () => {
   it('should return expected step metadata', () => {
     const stepDef: StepDefinition = stepUnderTest.getDefinition();
     expect(stepDef.getStepId()).to.equal('CreateAccount');
-    expect(stepDef.getName()).to.equal('Create a Salesforce Account');
+    expect(stepDef.getName()).to.equal('Create a Salesforce account');
     expect(stepDef.getExpression()).to.equal('create a salesforce account');
     expect(stepDef.getType()).to.equal(StepDefinition.Type.ACTION);
   });

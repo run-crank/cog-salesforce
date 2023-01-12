@@ -6,10 +6,12 @@ import { Step, RunStepResponse, FieldDefinition, StepDefinition, RecordDefinitio
 
 export class DiscoverContact extends BaseStep implements StepInterface {
 
-  protected stepName: string = 'Discover fields on a Salesforce Contact';
+  protected stepName: string = 'Discover fields on a Salesforce contact';
   /* tslint:disable-next-line:max-line-length */
   protected stepExpression: string = 'discover fields on salesforce contact (?<email>.+)';
   protected stepType: StepDefinition.Type = StepDefinition.Type.ACTION;
+  protected actionList: string[] = ['discover'];
+  protected targetObject: string = 'Contact';
   protected expectedFields: Field[] = [{
     field: 'email',
     type: FieldDefinition.Type.EMAIL,

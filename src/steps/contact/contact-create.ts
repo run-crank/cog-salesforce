@@ -3,9 +3,11 @@ import { Step, RunStepResponse, FieldDefinition, StepDefinition, RecordDefinitio
 
 export class ContactCreateStep extends BaseStep implements StepInterface {
 
-  protected stepName: string = 'Create a Salesforce Contact';
+  protected stepName: string = 'Create a Salesforce contact';
   protected stepExpression: string = 'create a salesforce contact';
   protected stepType: StepDefinition.Type = StepDefinition.Type.ACTION;
+  protected actionList: string[] = ['create'];
+  protected targetObject: string = 'Contact';
   protected expectedFields: Field[] = [{
     field: 'contact',
     type: FieldDefinition.Type.MAP,

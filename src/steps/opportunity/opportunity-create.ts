@@ -3,9 +3,11 @@ import { Step, RunStepResponse, FieldDefinition, StepDefinition, RecordDefinitio
 
 export class CreateOpportunity extends BaseStep implements StepInterface {
 
-  protected stepName: string = 'Create a Salesforce Opportunity';
+  protected stepName: string = 'Create a Salesforce opportunity';
   protected stepExpression: string = 'create a salesforce opportunity';
   protected stepType: StepDefinition.Type = StepDefinition.Type.ACTION;
+  protected actionList: string[] = ['create'];
+  protected targetObject: string = 'Opportunity';
   protected expectedFields: Field[] = [{
     field: 'opportunity',
     type: FieldDefinition.Type.MAP,

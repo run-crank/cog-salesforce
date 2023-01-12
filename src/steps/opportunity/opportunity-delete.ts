@@ -3,9 +3,11 @@ import { Step, RunStepResponse, FieldDefinition, StepDefinition, RecordDefinitio
 
 export class DeleteOpportunity extends BaseStep implements StepInterface {
 
-  protected stepName: string = 'Delete a Salesforce Opportunity';
+  protected stepName: string = 'Delete a Salesforce opportunity';
   protected stepExpression: string = 'delete the salesforce opportunity with (?<field>[a-zA-Z0-9_]+) (?<identifier>.+)';
   protected stepType: StepDefinition.Type = StepDefinition.Type.ACTION;
+  protected actionList: string[] = ['delete'];
+  protected targetObject: string = 'Opportunity';
   protected expectedFields: Field[] = [{
     field: 'field',
     type: FieldDefinition.Type.STRING,

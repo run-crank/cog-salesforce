@@ -27,7 +27,7 @@ describe('CampaignMemberFieldEqualsStep', () => {
   it('should return expected step metadata', () => {
     const stepDef: StepDefinition = stepUnderTest.getDefinition();
     expect(stepDef.getStepId()).to.equal('CampaignMemberFieldEquals');
-    expect(stepDef.getName()).to.equal('Check a field on a Salesforce Campaign Member');
+    expect(stepDef.getName()).to.equal('Check a field on a Salesforce campaign member');
     expect(stepDef.getExpression()).to.equal('the salesforce lead (?<email>.+) should have campaign member (?<field>[a-z0-9_]+) (?<operator>set to one of|set to|set|not set to one of|not set to|not set|containing|not containing|less than|greater than) ?(?<expectedValue>.+)? on campaign (?<campaignId>.+)');
     expect(stepDef.getType()).to.equal(StepDefinition.Type.VALIDATION);
   });

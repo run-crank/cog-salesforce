@@ -3,9 +3,11 @@ import { Step, RunStepResponse, FieldDefinition, StepDefinition, RecordDefinitio
 
 export class DeleteLead extends BaseStep implements StepInterface {
 
-  protected stepName: string = 'Delete a Salesforce Lead';
+  protected stepName: string = 'Delete a Salesforce lead';
   protected stepExpression: string = 'delete the (?<email>.+) salesforce lead';
   protected stepType: StepDefinition.Type = StepDefinition.Type.ACTION;
+  protected actionList: string[] = ['delete'];
+  protected targetObject: string = 'Lead';
   protected expectedFields: Field[] = [{
     field: 'email',
     type: FieldDefinition.Type.EMAIL,

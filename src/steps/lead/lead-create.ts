@@ -3,9 +3,11 @@ import { Step, RunStepResponse, FieldDefinition, StepDefinition, RecordDefinitio
 
 export class CreateLead extends BaseStep implements StepInterface {
 
-  protected stepName: string = 'Create a Salesforce Lead';
+  protected stepName: string = 'Create a Salesforce lead';
   protected stepExpression: string = 'create a salesforce lead';
   protected stepType: StepDefinition.Type = StepDefinition.Type.ACTION;
+  protected actionList: string[] = ['create'];
+  protected targetObject: string = 'Lead';
   protected expectedFields: Field[] = [{
     field: 'lead',
     type: FieldDefinition.Type.MAP,

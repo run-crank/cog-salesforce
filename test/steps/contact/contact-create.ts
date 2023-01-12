@@ -32,7 +32,7 @@ describe('ContactCreateStep', () => {
     it('should return expected step metadata', () => {
       const stepDef: StepDefinition = stepUnderTest.getDefinition();
       expect(stepDef.getStepId()).to.equal('ContactCreateStep');
-      expect(stepDef.getName()).to.equal('Create a Salesforce Contact');
+      expect(stepDef.getName()).to.equal('Create a Salesforce contact');
       expect(stepDef.getExpression()).to.equal('create a salesforce contact');
       expect(stepDef.getType()).to.equal(StepDefinition.Type.ACTION);
     });
