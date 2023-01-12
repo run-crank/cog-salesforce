@@ -26,7 +26,7 @@ describe('DeleteAccountStep', () => {
   it('should return expected step metadata', () => {
     const stepDef: StepDefinition = stepUnderTest.getDefinition();
     expect(stepDef.getStepId()).to.equal('DeleteAccount');
-    expect(stepDef.getName()).to.equal('Delete a Salesforce Account');
+    expect(stepDef.getName()).to.equal('Delete a Salesforce account');
     expect(stepDef.getExpression()).to.equal('delete the salesforce account with (?<field>[a-zA-Z0-9_]+) (?<identifier>.+)');
     expect(stepDef.getType()).to.equal(StepDefinition.Type.ACTION);
   });

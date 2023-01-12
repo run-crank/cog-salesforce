@@ -26,7 +26,7 @@ describe('CampaignMemberCountStep', () => {
   it('should return expected step metadata', () => {
     const stepDef: StepDefinition = stepUnderTest.getDefinition();
     expect(stepDef.getStepId()).to.equal('CampaignMemberCountStep');
-    expect(stepDef.getName()).to.equal('Count a Salesforce Campaign');
+    expect(stepDef.getName()).to.equal('Count a Salesforce campaign');
     expect(stepDef.getExpression()).to.equal('check the number of members from salesforce campaign (?<campaignId>.+)');
     expect(stepDef.getType()).to.equal(StepDefinition.Type.VALIDATION);
   });

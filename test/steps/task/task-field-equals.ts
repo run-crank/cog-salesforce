@@ -26,7 +26,7 @@ describe('TaskFieldEqualsStep', () => {
   it('should return expected step metadata', () => {
     const stepDef: StepDefinition = stepUnderTest.getDefinition();
     expect(stepDef.getStepId()).to.equal('TaskFieldEquals');
-    expect(stepDef.getName()).to.equal('Check a field on a Salesforce Task');
+    expect(stepDef.getName()).to.equal('Check a field on a Salesforce task');
     expect(stepDef.getExpression()).to.equal('the (?<field>[a-zA-Z0-9_]+) field on salesforce task from (?<email>.+) should (?<operator>be set|not be set|be less than|be greater than|be one of|be|contain|not be one of|not be|not contain|match|not match) ?(?<expectedValue>.+)?');
     expect(stepDef.getType()).to.equal(StepDefinition.Type.VALIDATION);
   });

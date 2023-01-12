@@ -25,7 +25,7 @@ describe('UpdateObjectStep', () => {
   it('should return expected step metadata', () => {
     const stepDef: StepDefinition = stepUnderTest.getDefinition();
     expect(stepDef.getStepId()).to.equal('UpdateObject');
-    expect(stepDef.getName()).to.equal('Update a Salesforce Object');
+    expect(stepDef.getName()).to.equal('Update a Salesforce object');
     expect(stepDef.getExpression()).to.equal('update the salesforce (?<objName>[a-zA-Z0-9]+) object identified by id (?<identifier>[^\s]+)');
     expect(stepDef.getType()).to.equal(StepDefinition.Type.ACTION);
   });

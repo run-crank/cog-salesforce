@@ -26,7 +26,7 @@ describe('CreateObjectStep', () => {
   it('should return expected step metadata', () => {
     const stepDef: StepDefinition = stepUnderTest.getDefinition();
     expect(stepDef.getStepId()).to.equal('CreateObject');
-    expect(stepDef.getName()).to.equal('Create a Salesforce Object');
+    expect(stepDef.getName()).to.equal('Create a Salesforce object');
     expect(stepDef.getExpression()).to.equal('create a salesforce (?<objName>[a-zA-Z0-9]+) object');
     expect(stepDef.getType()).to.equal(StepDefinition.Type.ACTION);
   });

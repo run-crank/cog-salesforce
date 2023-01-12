@@ -3,9 +3,11 @@ import { Step, RunStepResponse, FieldDefinition, StepDefinition, RecordDefinitio
 
 export class CreateObject extends BaseStep implements StepInterface {
 
-  protected stepName: string = 'Create a Salesforce Object';
+  protected stepName: string = 'Create a Salesforce object';
   protected stepExpression: string = 'create a salesforce (?<objName>[a-zA-Z0-9]+) object';
   protected stepType: StepDefinition.Type = StepDefinition.Type.ACTION;
+  protected actionList: string[] = ['create'];
+  protected targetObject: string = 'Object';
   protected expectedFields: Field[] = [{
     field: 'objName',
     type: FieldDefinition.Type.STRING,

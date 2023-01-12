@@ -25,7 +25,7 @@ describe('TenantUsageEntitlementFieldEqualsStep', () => {
   it('should return expected step metadata', () => {
     const stepDef: StepDefinition = stepUnderTest.getDefinition();
     expect(stepDef.getStepId()).to.equal('TenantUsageEntitlementsFieldEquals');
-    expect(stepDef.getName()).to.equal('Check Salesforce Usage');
+    expect(stepDef.getName()).to.equal('Check Salesforce usage');
     expect(stepDef.getExpression()).to.equal('the (?<field>[a-zA-Z0-9_]+) field on salesforce tenant usage entitlements with id (?<id>[^\s]+) should (?<operator>be set|not be set|be less than|be greater than|be one of|be|contain|not be one of|not be|not contain|match|not match) ?(?<expectedValue>.+)?');
     expect(stepDef.getType()).to.equal(StepDefinition.Type.VALIDATION);
   });

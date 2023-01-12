@@ -26,7 +26,7 @@ describe('CreateOpportunityStep', () => {
   it('should return expected step metadata', () => {
     const stepDef: StepDefinition = stepUnderTest.getDefinition();
     expect(stepDef.getStepId()).to.equal('CreateOpportunity');
-    expect(stepDef.getName()).to.equal('Create a Salesforce Opportunity');
+    expect(stepDef.getName()).to.equal('Create a Salesforce opportunity');
     expect(stepDef.getExpression()).to.equal('create a salesforce opportunity');
     expect(stepDef.getType()).to.equal(StepDefinition.Type.ACTION);
   });

@@ -32,7 +32,7 @@ describe('ContactDeleteStep', () => {
     it('should return expected step metadata', () => {
       const stepDef: StepDefinition = stepUnderTest.getDefinition();
       expect(stepDef.getStepId()).to.equal('ContactDeleteStep');
-      expect(stepDef.getName()).to.equal('Delete a Salesforce Contact');
+      expect(stepDef.getName()).to.equal('Delete a Salesforce contact');
       expect(stepDef.getExpression()).to.equal('delete the (?<email>.+) salesforce contact');
       expect(stepDef.getType()).to.equal(StepDefinition.Type.ACTION);
     });

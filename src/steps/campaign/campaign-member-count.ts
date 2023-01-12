@@ -7,10 +7,12 @@ import { baseOperators } from '../../client/constants/operators';
 
 export class CampaignMemberCountStep extends BaseStep implements StepInterface {
 
-  protected stepName: string = 'Count a Salesforce Campaign';
+  protected stepName: string = 'Count a Salesforce campaign';
   /* tslint:disable-next-line:max-line-length */
   protected stepExpression: string = 'check the number of members from salesforce campaign (?<campaignId>.+)';
   protected stepType: StepDefinition.Type = StepDefinition.Type.VALIDATION;
+  protected actionList: string[] = ['check'];
+  protected targetObject: string = 'Campaign Member Count';
   protected expectedFields: Field[] = [{
     field: 'campaignId',
     type: FieldDefinition.Type.STRING,

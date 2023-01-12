@@ -3,9 +3,11 @@ import { Step, RunStepResponse, FieldDefinition, StepDefinition, RecordDefinitio
 
 export class ContactDeleteStep extends BaseStep implements StepInterface {
 
-  protected stepName: string = 'Delete a Salesforce Contact';
+  protected stepName: string = 'Delete a Salesforce contact';
   protected stepExpression: string = 'delete the (?<email>.+) salesforce contact';
   protected stepType: StepDefinition.Type = StepDefinition.Type.ACTION;
+  protected actionList: string[] = ['delete'];
+  protected targetObject: string = 'Contact';
   protected expectedFields: Field[] = [{
     field: 'email',
     type: FieldDefinition.Type.EMAIL,
