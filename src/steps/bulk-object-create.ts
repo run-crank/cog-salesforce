@@ -7,7 +7,7 @@ export class BulkCreateObject extends BaseStep implements StepInterface {
   protected stepExpression: string = 'bulk create salesforce (?<objName>[a-zA-Z0-9]+) objects';
   protected stepType: StepDefinition.Type = StepDefinition.Type.ACTION;
   protected actionList: string[] = ['create'];
-  protected targetObject: string = 'Objects';
+  protected targetObject: string = 'Bulk Objects';
   protected expectedFields: Field[] = [{
     field: 'objName',
     type: FieldDefinition.Type.STRING,

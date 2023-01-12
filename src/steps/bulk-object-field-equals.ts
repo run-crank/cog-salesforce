@@ -14,7 +14,7 @@ export class BulkObjectFieldEquals extends BaseStep implements StepInterface {
   protected stepExpression: string = 'the (?<field>[a-zA-Z0-9_]+) field on multiple salesforce (?<objName>[a-zA-Z0-9]+) objects should (?<operator>be set|not be set|be less than|be greater than|be one of|be|contain|not be one of|not be|not contain|match|not match) ?(?<expectedValue>.+)?';
   protected stepType: StepDefinition.Type = StepDefinition.Type.VALIDATION;
   protected actionList: string[] = ['check'];
-  protected targetObject: string = 'Objects';
+  protected targetObject: string = 'Bulk Objects';
   protected expectedFields: Field[] = [{
     field: 'objName',
     type: FieldDefinition.Type.STRING,
