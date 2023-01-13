@@ -60,7 +60,7 @@
   "dependencies": {
     "@run-crank/utilities": "^0.5.2",
     "google-protobuf": "^3.8.0",
-    "grpc": "^1.24.3",
+    "grpc": "^1.24.11",
     "jsforce": "^1.9.3",
     "mailgun-js": "^0.22.0",
     "moment": "^2.29.1",
