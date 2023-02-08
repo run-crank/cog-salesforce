@@ -7,7 +7,7 @@ export class CreateObject extends BaseStep implements StepInterface {
   protected stepExpression: string = 'create a salesforce (?<objName>[a-zA-Z0-9]+) object';
   protected stepType: StepDefinition.Type = StepDefinition.Type.ACTION;
   protected actionList: string[] = ['create'];
-  protected targetObject: string = 'Object';
+  protected targetObject: string = 'Any Object';
   protected expectedFields: Field[] = [{
     field: 'objName',
     type: FieldDefinition.Type.STRING,

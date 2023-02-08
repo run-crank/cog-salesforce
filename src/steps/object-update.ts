@@ -7,7 +7,7 @@ export class UpdateObject extends BaseStep implements StepInterface {
   protected stepExpression: string = 'update the salesforce (?<objName>[a-zA-Z0-9]+) object identified by id (?<identifier>[^\s]+)';
   protected stepType: StepDefinition.Type = StepDefinition.Type.ACTION;
   protected actionList: string[] = ['update'];
-  protected targetObject: string = 'Object';
+  protected targetObject: string = 'Any Object';
   protected expectedFields: Field[] = [{
     field: 'objName',
     type: FieldDefinition.Type.STRING,
