@@ -39,8 +39,9 @@ export class ContactCreateStep extends BaseStep implements StepInterface {
         data = await this.client.findContactByEmail(contact.Email, []);
       }
       const record = this.createRecord(data);
+      const passingRecord = this.createPassingRecord(data, Object.keys(contact));
       const orderedRecord = this.createOrderedRecord(data, stepData['__stepOrder']);
-      return this.pass('Successfully created Contact with ID %s', [result.id], [record, orderedRecord]);
+      return this.pass('Successfully created Contact with ID %s', [result.id], [record, passingRecord, orderedRecord]);
     } catch (e) {
       return this.error('There was a problem creating the Contact: %s', [e.toString()]);
     }
@@ -48,6 +49,18 @@ export class ContactCreateStep extends BaseStep implements StepInterface {
 
   public createRecord(contact): StepRecord {
     return this.keyValue('contact', 'Created Contact', contact);
+  }
+
+  public createPassingRecord(data, fields): StepRecord {
+    const filteredData = {};
+    if (data) {
+      Object.keys(data).forEach((key) => {
+        if (fields.includes(key)) {
+          filteredData[key] = data[key];
+        }
+      });
+    }
+    return this.keyValue('exposeOnPass:contact', 'Created Contact', filteredData);
   }
 
   public createOrderedRecord(contact, stepOrder = 1): StepRecord {
