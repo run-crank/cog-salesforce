@@ -38,20 +38,31 @@ export class CreateAccount extends BaseStep implements StepInterface {
       if (result.success) {
         data = await this.client.findAccountByIdentifier('Name', account.Name, []);
       }
-      const record = this.createRecord(data);
-      const orderedRecord = this.createOrderedRecord(data, stepData['__stepOrder']);
-      return this.pass('Successfully created Account with ID %s', [result.id], [record, orderedRecord]);
+      const record = this.createRecord(data[0]);
+      const passingrecord = this.createPassingRecord(data[0], Object.keys(account));
+      const orderedRecord = this.createOrderedRecord(data[0], stepData['__stepOrder']);
+      return this.pass('Successfully created Account with ID %s', [result.id], [record, passingrecord, orderedRecord]);
     } catch (e) {
       return this.error('There was a problem creating the Account: %s', [e.toString()]);
     }
   }
 
   public createRecord(account): StepRecord {
-    return this.keyValue('account', 'Created Account', account[0]);
+    return this.keyValue('account', 'Created Account', account);
+  }
+
+  public createPassingRecord(data, fields): StepRecord {
+    const filteredData = {};
+    Object.keys(data).forEach((key) => {
+      if (fields.includes(key)) {
+        filteredData[key] = data[key];
+      }
+    });
+    return this.keyValue('exposeOnPass:account', 'Created Account', filteredData);
   }
 
   public createOrderedRecord(account, stepOrder = 1): StepRecord {
-    return this.keyValue(`account.${stepOrder}`, `Created Account from Step ${stepOrder}`, account[0]);
+    return this.keyValue(`account.${stepOrder}`, `Created Account from Step ${stepOrder}`, account);
   }
 
 }
