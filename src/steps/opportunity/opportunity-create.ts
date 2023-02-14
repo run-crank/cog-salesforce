@@ -39,8 +39,9 @@ export class CreateOpportunity extends BaseStep implements StepInterface {
         data = await this.client.findOpportunityByIdentifier('Id', result.id, []);
       }
       const record = this.createRecord(data);
+      const passingRecord = this.createPassingRecord(data, Object.keys(opportunity));
       const orderedRecord = this.createOrderedRecord(data, stepData['__stepOrder']);
-      return this.pass('Successfully created Opportunity with ID %s', [result.id], [record, orderedRecord]);
+      return this.pass('Successfully created Opportunity with ID %s', [result.id], [record, passingRecord, orderedRecord]);
     } catch (e) {
       return this.error('There was a problem creating the Opportunity: %s', [e.toString()]);
     }
@@ -48,6 +49,18 @@ export class CreateOpportunity extends BaseStep implements StepInterface {
 
   public createRecord(opportunity): StepRecord {
     return this.keyValue('opportunity', 'Created Opportunity', opportunity[0]);
+  }
+
+  public createPassingRecord(data, fields): StepRecord {
+    const filteredData = {};
+    if (data) {
+      Object.keys(data).forEach((key) => {
+        if (fields.includes(key)) {
+          filteredData[key] = data[key];
+        }
+      });
+    }
+    return this.keyValue('exposeOnPass:opportunity', 'Created Opportunity', filteredData);
   }
 
   public createOrderedRecord(opportunity, stepOrder = 1): StepRecord {

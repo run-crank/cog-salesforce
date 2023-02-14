@@ -37,9 +37,9 @@ export class CreateObject extends BaseStep implements StepInterface {
       const result = await this.client.createObject(objName, salesforceObject);
       const object = await this.client.findObjectById(objName, result['id'], []);
       const record = this.createRecord(object);
-      const passingrecord = this.createPassingRecord(object, Object.keys(salesforceObject));
+      const passingRecord = this.createPassingRecord(object, Object.keys(salesforceObject));
       const orderedRecord = this.createOrderedRecord(object, stepData['__stepOrder']);
-      return this.pass('Successfully created %s Object with ID %s', [objName, result.id], [record, passingrecord, orderedRecord]);
+      return this.pass('Successfully created %s Object with ID %s', [objName, result.id], [record, passingRecord, orderedRecord]);
     } catch (e) {
       return this.error('There was a problem creating the %s Object: %s', [objName, e.toString()]);
     }
@@ -51,11 +51,13 @@ export class CreateObject extends BaseStep implements StepInterface {
 
   public createPassingRecord(data, fields): StepRecord {
     const filteredData = {};
-    Object.keys(data).forEach((key) => {
-      if (fields.includes(key)) {
-        filteredData[key] = data[key];
-      }
-    });
+    if (data) {
+      Object.keys(data).forEach((key) => {
+        if (fields.includes(key)) {
+          filteredData[key] = data[key];
+        }
+      });
+    }
     return this.keyValue('exposeOnPass:salesforceObject', 'Created Object', filteredData);
   }
 
