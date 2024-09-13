@@ -2,12 +2,12 @@ version: 2.1
 executors:
   docker-publisher:
     environment:
-      IMAGE_NAME: automatoninc/salesforce
+      IMAGE_NAME: stackmoxie/salesforce
     docker:
       - image: cimg/base:stable
   docker-user:
     environment:
-      IMAGE_NAME: automatoninc/salesforce
+      IMAGE_NAME: stackmoxie/salesforce
     machine:
       image: ubuntu-2004:202201-02
 
@@ -111,10 +111,17 @@ jobs:
       - run:
           name: Publish Docker Image to Docker Hub
           command: |
-            echo "$DOCKERHUB_PASS" | docker login -u "$DOCKERHUB_USERNAME" --password-stdin
+            echo "$DOCKERHUB_PASS" | docker login -u "$DOCKERHUB_SM_USERNAME" --password-stdin
             IMAGE_TAG="dev-v${CIRCLE_BUILD_NUM}"
             docker tag $IMAGE_NAME:latest $IMAGE_NAME:$IMAGE_TAG
             docker push $IMAGE_NAME:$IMAGE_TAG
+      - run:
+          name: Publish Docker Image to Azure Container Registry (ACR)
+          command: |
+            echo "$AZURE_ACR_PASSWORD" | docker login "$AZURE_ACR_NAME.azurecr.io" --username "$AZURE_ACR_USERNAME" --password-stdin
+            ACR_IMAGE_TAG="$AZURE_ACR_NAME.azurecr.io/$IMAGE_NAME:dev-v${CIRCLE_BUILD_NUM}"
+            docker tag $IMAGE_NAME:latest $ACR_IMAGE_TAG
+            docker push $ACR_IMAGE_TAG
 
   publish-tag:
     executor: docker-publisher
@@ -128,7 +135,7 @@ jobs:
       - run:
           name: Publish Docker Image to Docker Hub
           command: |
-            echo "$DOCKERHUB_PASS" | docker login -u "$DOCKERHUB_USERNAME" --password-stdin
+            echo "$DOCKERHUB_PASS" | docker login -u "$DOCKERHUB_SM_USERNAME" --password-stdin
             IMAGE_TAG=${CIRCLE_TAG/v/''}
             docker tag $IMAGE_NAME:latest $IMAGE_NAME:$IMAGE_TAG
             docker push $IMAGE_NAME:latest
