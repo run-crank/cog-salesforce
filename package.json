@@ -73,7 +73,7 @@
     "jsforce": "^1.9.3",
     "lodash": "^4.17.21",
     "mailgun-js": "^0.22.0",
-    "minimatch": "^3.1.2",
+    "minimatch": "^4.0.0",
     "minimist": "^1.2.7",
     "moment": "^2.29.4",
     "path-parse": "^1.0.7",
